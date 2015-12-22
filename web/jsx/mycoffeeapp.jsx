@@ -1,4 +1,9 @@
-/** @jsx React.DOM */
+var React = require('react');
+var ReactDOM = require('react-dom');
+var ReactFireMixin = require('reactfire');
+var Firebase = require('firebase');
+var ReactIntl = require('react-intl');
+
 var FacebookLogin = React.createClass({
   getInitialState: function() {
     return {login: null};
@@ -36,12 +41,13 @@ var FacebookLogin = React.createClass({
 });
 
 var CoffeeOrderList = React.createClass({
+  mixins: [ReactIntl.IntlMixin],
   render: function() {
     var _this = this;
     var createItem = function(item, index) {
       return (
         <li key={ index }>
-          { item.text } ( { item.displayName } on { Date(item.timestamp*1000) })
+          { item.text } ( { item.displayName } <ReactIntl.FormattedRelative value={item.timestamp} /> )
           <span onClick={ _this.props.removeItem.bind(null, item['.key']) }
                 style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
             X
@@ -105,4 +111,9 @@ var MyCoffeeApp = React.createClass({
   }
 });
 
-React.render(<MyCoffeeApp />, document.getElementById('MyCoffeeApp'));
+ReactDOM.render(
+    <ReactIntl.IntlProvider locale="en">
+        <MyCoffeeApp />
+    </ReactIntl.IntlProvider>,
+    document.getElementById('MyCoffeeApp')
+);

@@ -1,0 +1,10 @@
+{
+  "name": "mycoffeeapp",
+  "version": "0.1.0",
+  "description": "A Coffee Run App",
+  "author": "Aloys Baillet <aloys.baillet@gmail.com>",
+  "scripts": {
+    "build": "browserify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/resources/js/mycoffeeapp.js",
+    "watch": "watchify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/resources/js/mycoffeeapp.js --debug --verbose"
+  }
+}
