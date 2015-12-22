@@ -5,27 +5,43 @@ var OrderRow = require('./orderrow.jsx');
 
 module.exports = React.createClass({
 
+  getInitialState: function() {
+    return {
+      numSelected: 0,
+      selectedOrders: []
+    };
+  },
+
   componentWillMount: function() {
-    this.firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/');
-    this.firebaseRef.orderByChild('selectedBy')
-                    .equalTo(this.firebaseRef.getAuth().uid)
-                    .on('value', this.onSelectedByMe);
+    var firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/');
+    firebaseRef.orderByChild('selectedBy')
+               .equalTo(firebaseRef.getAuth().uid)
+               .on('value', this.onSelectedByMe);
   },
 
   onSelectedByMe: function(querySnapshot) {
     var numSelected = querySnapshot.numChildren();
-    this.setState({numSelected: numSelected});
-  },
-
-  getInitialState: function() {
-    return {
-      numSelected: 0
-    };
+    var selectedOrders = [];
+    querySnapshot.forEach(function(orderSnapshot) {
+      selectedOrders.push(orderSnapshot.key());
+    });
+    this.setState({numSelected: numSelected,
+                   selectedOrders: selectedOrders});
   },
 
   handleSubmit: function(e) {
     e.preventDefault();
-    console.log("Pay!");
+    var firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/');
+    this.state.selectedOrders.forEach(function(key) {
+      firebaseRef.child(key).update({'paidBy': this.firebaseRef.getAuth().uid,
+                                     'selectedBy': null})
+    });
+    var receiptRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeReceiptList/items/');
+    receiptRef.push({displayName: firebaseRef.getAuth().facebook.displayName,
+                     timestamp: Firebase.ServerValue.TIMESTAMP,
+                     orders: this.state.selectedOrders,
+                     uid: firebaseRef.getAuth().uid
+                    });
   },
 
   render: function() {
