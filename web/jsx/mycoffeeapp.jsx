@@ -30,10 +30,6 @@ var MyCoffeeApp = React.createClass({
     this.bindAsArray(this.firebaseRef.limitToLast(25), 'items', this.cancelCallback);
   },
 
-  onChange: function(e) {
-    this.setState({text: e.target.value});
-  },
-
   removeItem: function(key) {
     this.firebaseRef.child(key).remove();
   },
@@ -45,12 +41,20 @@ var MyCoffeeApp = React.createClass({
     this.firebaseRefs['items'].push(data);
   },
 
+  selectItem: function(key, sel) {
+    this.firebaseRefs['items'].child(key).update({selectedBy: sel ? this.firebaseRef.getAuth().uid : null});
+  },
+
   render: function() {
     return (
       <div>
         <FacebookLogin />
         <NewCoffeeOrder items={ this.state.items } addItem={ this.addItem } />
-        <CoffeeOrderList items={ this.state.items } removeItem={ this.removeItem } />
+        <CoffeeOrderList
+          items={ this.state.items }
+          removeItem={ this.removeItem }
+          selectItem={ this.selectItem }
+          uid={ this.firebaseRef.getAuth().uid }/>
       </div>
     );
   }
