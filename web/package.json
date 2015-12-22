@@ -3,8 +3,26 @@
   "version": "0.1.0",
   "description": "A Coffee Run App",
   "author": "Aloys Baillet <aloys.baillet@gmail.com>",
+  "style": "public/bundle.css",
   "scripts": {
-    "build": "browserify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/resources/js/mycoffeeapp.js",
-    "watch": "watchify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/resources/js/mycoffeeapp.js --debug --verbose"
+    "build": "browserify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js && npm-css css/entry.css > public/bundle.css",
+    "watch": "watchify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js --debug --verbose",
+    "test": "jest",
+    "deploy": "NODE_ENV=production npm run build && firebase deploy",
+    "upload-data": "node data/upload.js"
+  },
+  "devDependencies": {
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
+    "jest-cli": "^0.8.2",
+    "firebase-token-generator": "^2.0.0"
+  },
+  "dependencies": {
+    "firebase": "^2.3.2",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-intl": "^2.0.0-beta-2",
+    "react-select": "^1.0.0-beta8",
+    "reactfire": "^0.5.1"
   }
 }

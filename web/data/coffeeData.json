@@ -1,0 +1,51 @@
+{
+  "coffeeTypeList":
+ [
+  {
+  "name": "cappucino",
+  "shortName": "cap"
+  },
+  {
+  "name": "latte",
+  "shortName": "latte"
+  },
+  {
+  "name": "machiato",
+  "shortName": "mac"
+  },
+  {
+  "name": "hot chocolate",
+  "shortName": "choc"
+  }
+ ],
+  "sugarTypeList":
+[
+  {
+    "name": "no sugar",
+    "quantity": 0
+  },
+  {
+    "name": "1 sugar",
+    "quantity": 1
+  },
+  {
+    "name": "2 sugars",
+    "quantity": 2
+  }
+],
+"milkTypeList":
+[
+  {
+    "name": "full cream",
+    "displayName": ""
+  },
+  {
+    "name": "skim",
+    "displayName": "skim"
+  },
+  {
+    "name": "soy",
+    "displayName": "soy"
+  }
+]
+}
