@@ -6,14 +6,8 @@ var ReactFireMixin = require('reactfire');
 module.exports = React.createClass({
   mixins: [ReactFireMixin],
 
-  getInitialState: function() {
-    return {
-      selectedBy: ''
-    };
-  },
-
   componentWillMount: function() {
-    this.firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/' + this.props.order['.key']);
+    this.firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/' + this.props.orderKey);
     this.bindAsObject(this.firebaseRef, 'order');
   },
 
@@ -39,8 +33,8 @@ module.exports = React.createClass({
   render: function() {
     return (
       <li>
-        <input type="checkbox" checked={ this.state.order["selectedBy"] == this.firebaseRef.getAuth().uid } onChange={ this.onSelectionChange }/>
-        { this.formatOrder(this.props.order) } ( { this.props.order.displayName } <ReactIntl.FormattedRelative value={this.props.order.timestamp} /> )
+        <input type="checkbox" checked={ this.state.order.selectedBy == this.firebaseRef.getAuth().uid } onChange={ this.onSelectionChange }/>
+        { this.formatOrder(this.state.order) } ( { this.state.order.displayName } <ReactIntl.FormattedRelative value={this.state.order.timestamp} /> )
         <span onClick={ this.onDelete }
               style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
           X
