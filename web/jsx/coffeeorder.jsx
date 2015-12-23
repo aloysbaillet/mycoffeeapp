@@ -65,12 +65,17 @@ module.exports = React.createClass({
     e.preventDefault();
     if(this.state.coffeeType == "")
       return;
+    firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/');
+
     var item = {
       coffeeType: this.state.coffeeType,
       sugar: this.state.sugar,
-      milk: this.state.milk
+      milk: this.state.milk,
+      uid: firebaseRef.getAuth().uid,
+      displayName: firebaseRef.getAuth().facebook.displayName,
+      timestamp: Firebase.ServerValue.TIMESTAMP
     }
-    this.props.addItem(item);
+    firebaseRef.push(item);
   },
 
   componentWillMount: function() {

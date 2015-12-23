@@ -16,9 +16,10 @@ module.exports = React.createClass({
     if (error) {
       console.log("Login Failed!", error);
       this.setState( {login: null} );
+      this.props.onLogin(false);
     } else {
-      console.log("Authenticated successfully with payload:", authData);
       this.setState( {login: authData.facebook.displayName} );
+      this.props.onLogin(true);
     }
   },
 
@@ -29,6 +30,7 @@ module.exports = React.createClass({
   handleLogout: function(event) {
     this.firebaseRef.unauth();
     this.setState( {login: null} );
+    this.props.onLogin(false);
   },
 
   render: function() {

@@ -1,6 +1,5 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
 var ReactIntl = require('react-intl');
 
@@ -10,45 +9,40 @@ var PendingOrderList = require('./pendingorderlist.jsx');
 var PaidOrderList = require('./paidorderlist.jsx');
 
 var MyCoffeeApp = React.createClass({
-  mixins: [ReactFireMixin],
 
   getInitialState: function() {
     return {
-      items: [],
-      text: ''
+      uid: null
     };
   },
 
-  cancelCallback: function(error){
+  onLogin: function(uid){
     this.setState({
-      items: [],
-      text: ''
+      uid: uid
     });
+    this.componentWillMount();
   },
 
   componentWillMount: function() {
-    this.firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/');
-    this.bindAsArray(this.firebaseRef.orderByChild('paidBy').equalTo(null), 'items', this.cancelCallback);
-  },
-
-  addItem: function(data) {
-    data["uid"] = this.firebaseRef.getAuth().uid;
-    data["displayName"] = this.firebaseRef.getAuth().facebook.displayName;
-    data["timestamp"] = Firebase.ServerValue.TIMESTAMP;
-    this.firebaseRefs['items'].push(data);
+    this.firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/');
+    if(this.firebaseRef.getAuth())
+      this.setState({uid: this.firebaseRef.getAuth().uid});
   },
 
   render: function() {
+    var MainApp;
+    if(this.state.uid)
+      MainApp = <div>
+        <NewCoffeeOrder />
+        <PendingOrderList uid={ this.state.uid } />
+        <PaidOrderList/>
+      </div>;
+    else
+      MainApp = <p>Once logged in, you can start ordering coffees from your friends!</p>
     return (
       <div>
-        <FacebookLogin />
-        <NewCoffeeOrder items={ this.state.items } addItem={ this.addItem } />
-        <PendingOrderList
-          items={ this.state.items }
-          removeItem={ this.removeItem }
-          uid={ this.firebaseRef.getAuth() ? this.firebaseRef.getAuth().uid : null }
-        />
-        <PaidOrderList/>
+        <FacebookLogin onLogin={this.onLogin} />
+        {MainApp}
       </div>
     );
   }
