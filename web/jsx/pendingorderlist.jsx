@@ -14,7 +14,7 @@ var PendingOrderList = React.createClass({
 
   componentWillMount: function() {
     this.selectionListRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeSelectionList/items/');
-    this.selectionListRef.orderByValue().equalTo(this.selectionListRef.getAuth().uid).on('value', this.onSelected);
+    this.selectionListRef.orderByValue().equalTo(this.props.uid).on('value', this.onSelected);
   },
 
   onSelected: function(querySnapshot) {

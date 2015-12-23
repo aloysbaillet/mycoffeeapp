@@ -46,6 +46,7 @@ var MyCoffeeApp = React.createClass({
         <PendingOrderList
           items={ this.state.items }
           removeItem={ this.removeItem }
+          uid={ this.firebaseRef.getAuth() ? this.firebaseRef.getAuth().uid : null }
         />
         <PaidOrderList/>
       </div>
