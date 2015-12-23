@@ -27,7 +27,7 @@ var MyCoffeeApp = React.createClass({
 
   componentWillMount: function() {
     this.firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/');
-    this.bindAsArray(this.firebaseRef.limitToLast(25), 'items', this.cancelCallback);
+    this.bindAsArray(this.firebaseRef.orderByChild('paidBy').equalTo(null), 'items', this.cancelCallback);
   },
 
   addItem: function(data) {
