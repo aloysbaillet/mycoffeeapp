@@ -6,7 +6,8 @@ var ReactIntl = require('react-intl');
 
 var FacebookLogin = require('./login.jsx');
 var NewCoffeeOrder = require('./coffeeorder.jsx');
-var CoffeeOrderList = require('./orderlist.jsx');
+var PendingOrderList = require('./pendingorderlist.jsx');
+var PaidOrderList = require('./paidorderlist.jsx');
 
 var MyCoffeeApp = React.createClass({
   mixins: [ReactFireMixin],
@@ -42,10 +43,11 @@ var MyCoffeeApp = React.createClass({
       <div>
         <FacebookLogin />
         <NewCoffeeOrder items={ this.state.items } addItem={ this.addItem } />
-        <CoffeeOrderList
+        <PendingOrderList
           items={ this.state.items }
           removeItem={ this.removeItem }
-          uid={ this.firebaseRef.getAuth().uid }/>
+        />
+        <PaidOrderList/>
       </div>
     );
   }

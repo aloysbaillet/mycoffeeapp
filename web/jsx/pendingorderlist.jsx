@@ -3,7 +3,7 @@ var Firebase = require('firebase');
 
 var OrderRow = require('./orderrow.jsx');
 
-module.exports = React.createClass({
+var PendingOrderList = React.createClass({
 
   getInitialState: function() {
     return {
@@ -59,3 +59,4 @@ module.exports = React.createClass({
     );
   }
 });
+module.exports = PendingOrderList;
