@@ -26,6 +26,7 @@ var CoffeeOrder = React.createClass({
     coffeeDataRef.child('sugarTypeList').on('value', this.onSugarListValue);
     coffeeDataRef.child('milkTypeList').on('value', this.onMilkListValue);
     this.props.model.firebaseRef.child('users').on('value', this.onUserListValue);
+    this.setUser(this.props.model.uid, this.props.model.userDisplayName);
   },
 
   componentWillUnMount: function() {
@@ -48,7 +49,11 @@ var CoffeeOrder = React.createClass({
   },
 
   onCoffeeTypeChange: function(value){
-    this.setState({coffeeType: value.value})
+    var coffeeType = '';
+    if(value)
+      coffeeType = value.value;
+    this.setState({coffeeType: coffeeType})
+    this.props.model.firebaseRef.child('users').child(this.state.uid).update({preferredCoffeeType: coffeeType})
   },
 
   onSugarListValue: function(snapshot) {
@@ -63,7 +68,11 @@ var CoffeeOrder = React.createClass({
   },
 
   onSugarChange: function(value){
-    this.setState({sugar: value.value})
+    var sugar = 0;
+    if(value)
+      sugar = value.value;
+    this.setState({sugar: sugar})
+    this.props.model.firebaseRef.child('users').child(this.state.uid).update({preferredSugar: sugar})
   },
 
   onMilkListValue: function(snapshot) {
@@ -78,10 +87,11 @@ var CoffeeOrder = React.createClass({
   },
 
   onMilkChange: function(value){
+    var milk = '';
     if(value)
-      this.setState({milk: value.value});
-    else
-      this.setState({milk: ''});
+      milk = value.value;
+    this.setState({milk: milk});
+    this.props.model.firebaseRef.child('users').child(this.state.uid).update({preferredMilk: milk})
   },
 
   onUserListValue: function(snapshot) {
@@ -95,10 +105,21 @@ var CoffeeOrder = React.createClass({
     this.setState({userList: options});
   },
 
+  setUser: function(uid, userDisplayName){
+    this.setState({uid: uid,
+                   userDisplayName: userDisplayName});
+    var _this = this;
+    this.props.model.firebaseRef.child('users').child(uid).once('value', function(snapshot){
+      var u = snapshot.val();
+      _this.setState({coffeeType: u.preferredCoffeeType ? u.preferredCoffeeType : '',
+                      sugar: u.preferredSugar ? u.preferredSugar : 0,
+                      milk: u.preferredMilk ? u.preferredMilk: ''});
+    });
+  },
+
   onUserChange: function(value){
     if(value){
-      this.setState({uid: value.value,
-                     userDisplayName: value.label});
+      this.setUser(value.value, value.label);
     }
     else
       this.setState({uid: '',

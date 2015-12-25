@@ -38,7 +38,7 @@ var MyCoffeeApp = React.createClass({
     var MainApp;
     if(this.state.uid)
       MainApp = <div>
-        <h3>My Order</h3>
+        <h3>New Order</h3>
         <CoffeeOrder model={this.model} />
         <h3>Pending Orders</h3>
         <PendingOrderList model={this.model} />
