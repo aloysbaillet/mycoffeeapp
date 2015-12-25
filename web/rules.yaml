@@ -1,0 +1,83 @@
+functions:
+  - isLoggedIn(): auth.uid !== null
+
+schema:
+  definitions:
+    order:
+      type: object
+      properties:
+        coffeeType: {type: string}
+        sugar: {type: number}
+        milk: {type: string}
+        uid: {type: string}
+        timestamp: {type: number}
+        clientName: {type: string}
+        payerId: {type: string}
+        payerName: {type: string}
+
+  type: object
+  properties:
+    users: # the users subtree is a collection of users
+      type: object
+      $uid: #wildchild expression of many children
+        type: object
+        properties: #each user has an optional inbox and outbox
+          preferredCoffeeType: {type: string}
+          preferredSugar: {type: number}
+          preferredMilk: {type: string}
+          displayName: {type: string}
+
+    coffeeData:
+      type: object
+      properties:
+        coffeeTypeList:
+          type: object
+          $coffeeType:
+            type: object
+            properties:
+              name: {type: string}
+              shortName: {type: string}
+        milkTypeList:
+          type: object
+          $milkType:
+            type: object
+            properties:
+              name: {type: string}
+              shortName: {type: string}
+        sugarTypeList:
+          type: object
+          $sugarType:
+            type: object
+            properties:
+              name: {type: string}
+              quantity: {type: number}
+
+    orderList:
+      type: object
+      properties:
+        pending:
+          type: object
+          indexOn: [uid, payerId]
+          $order: {$ref: "#/definitions/order"}
+        paid:
+          type: object
+          indexOn: timestamp
+          $order: {$ref: "#/definitions/order"}
+
+    receiptList:
+      type: object
+      properties:
+        current:
+          type: object
+          indexOn: timestamp
+          $receipt:
+            type: object
+            properties:
+              payerId: {type: string}
+              payerName: {type: string}
+              timestamp: {type: number}
+
+access:
+  - location: /
+    read:  true && isLoggedIn()
+    write: true && isLoggedIn()

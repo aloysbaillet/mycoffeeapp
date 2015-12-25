@@ -2,8 +2,9 @@ var React = require('react');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
 var Select = require('react-select');
+var C = require('./constants.js');
 
-module.exports = React.createClass({
+var CoffeeOrder = React.createClass({
 
   getInitialState: function() {
     return {
@@ -14,6 +15,20 @@ module.exports = React.createClass({
       milk:"",
       milkOptions: []
     };
+  },
+
+  componentWillMount: function() {
+    var coffeeDataRef = this.props.model.firebaseRef.child('coffeeData');
+    coffeeDataRef.child("coffeeTypeList").on("value", this.onCoffeeTypeListValue);
+    coffeeDataRef.child("sugarTypeList").on("value", this.onSugarListValue);
+    coffeeDataRef.child("milkTypeList").on("value", this.onMilkListValue);
+  },
+
+  componentWillUnMount: function() {
+    var coffeeDataRef = this.props.model.firebaseRef.child('coffeeData');
+    coffeeDataRef.child("coffeeTypeList").off("value");
+    coffeeDataRef.child("sugarTypeList").off("value");
+    coffeeDataRef.child("milkTypeList").off("value");
   },
 
   onCoffeeTypeListValue: function(snapshot) {
@@ -58,36 +73,33 @@ module.exports = React.createClass({
   },
 
   onMilkChange: function(value){
-    this.setState({milk: value.value})
+    if(value)
+      this.setState({milk: value.value});
+    else
+      this.setState({milk: ''});
   },
 
   handleSubmit: function(e) {
     e.preventDefault();
     if(this.state.coffeeType == "")
       return;
-    firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeOrderList/items/');
-
-    var item = {
-      coffeeType: this.state.coffeeType,
-      sugar: this.state.sugar,
-      milk: this.state.milk,
-      uid: firebaseRef.getAuth().uid,
-      displayName: firebaseRef.getAuth().facebook.displayName,
-      timestamp: Firebase.ServerValue.TIMESTAMP
-    }
-    firebaseRef.push(item);
-  },
-
-  componentWillMount: function() {
-    firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeData/');
-    firebaseRef.child("coffeeTypeList").on("value", this.onCoffeeTypeListValue);
-    firebaseRef.child("sugarTypeList").on("value", this.onSugarListValue);
-    firebaseRef.child("milkTypeList").on("value", this.onMilkListValue);
+    this.props.model.createOrder(this.state.coffeeType,
+                                 this.state.sugar,
+                                 this.state.milk,
+                                 this.props.model.uid,
+                                 this.props.model.userDisplayName);
   },
 
   render: function() {
     return (
       <form onSubmit={ this.handleSubmit }>
+        <Select
+            name="milkSelect"
+            value={this.state.milk}
+            options={this.state.milkOptions}
+            placeholder="Select Milk"
+            onChange={this.onMilkChange}
+        />
         <Select
             name="coffeeTypeSelect"
             value={this.state.coffeeType}
@@ -102,15 +114,10 @@ module.exports = React.createClass({
             placeholder="Select Sugar"
             onChange={this.onSugarChange}
         />
-        <Select
-            name="milkSelect"
-            value={this.state.milk}
-            options={this.state.milkOptions}
-            placeholder="Select Milk"
-            onChange={this.onMilkChange}
-        />
         <button>Order</button>
       </form>
     );
   }
 });
+
+module.exports = CoffeeOrder;

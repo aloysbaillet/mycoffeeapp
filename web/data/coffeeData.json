@@ -41,15 +41,15 @@
 [
   {
     "name": "full cream",
-    "displayName": ""
+    "shortName": ""
   },
   {
     "name": "skim",
-    "displayName": "skim"
+    "shortName": "skim"
   },
   {
     "name": "soy",
-    "displayName": "soy"
+    "shortName": "soy"
   }
 ]
 }

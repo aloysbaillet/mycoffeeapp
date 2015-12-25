@@ -3,10 +3,13 @@ var ReactDOM = require('react-dom');
 var Firebase = require('firebase');
 var ReactIntl = require('react-intl');
 
+var Model = require('./model.js');
 var FacebookLogin = require('./login.jsx');
-var NewCoffeeOrder = require('./coffeeorder.jsx');
+var CoffeeOrder = require('./coffeeorder.jsx');
 var PendingOrderList = require('./pendingorderlist.jsx');
 var PaidOrderList = require('./paidorderlist.jsx');
+
+var C = require('./constants.js');
 
 var MyCoffeeApp = React.createClass({
 
@@ -24,24 +27,31 @@ var MyCoffeeApp = React.createClass({
   },
 
   componentWillMount: function() {
-    this.firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/');
+    this.firebaseRef = new Firebase(C.BASE_FIREBASE_URL);
     if(this.firebaseRef.getAuth())
       this.setState({uid: this.firebaseRef.getAuth().uid});
+    this.model = Model;
+    this.model.init(this.firebaseRef,
+                    this.firebaseRef.getAuth().uid,
+                    this.firebaseRef.getAuth().facebook.displayName);
   },
 
   render: function() {
     var MainApp;
     if(this.state.uid)
       MainApp = <div>
-        <NewCoffeeOrder />
-        <PendingOrderList uid={ this.state.uid } />
-        <PaidOrderList/>
+        <h3>My Order</h3>
+        <CoffeeOrder model={this.model} />
+        <h3>Pending Orders</h3>
+        <PendingOrderList model={this.model} />
+        <h3>Paid Orders</h3>
+        <PaidOrderList model={this.model} />
       </div>;
     else
       MainApp = <p>Once logged in, you can start ordering coffees from your friends!</p>
     return (
       <div>
-        <FacebookLogin onLogin={this.onLogin} />
+        <FacebookLogin onLogin={this.onLogin} model={this.model} />
         {MainApp}
       </div>
     );

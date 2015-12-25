@@ -2,30 +2,30 @@ var React = require('react');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
+var C = require('./constants.js');
 
 var PaidOrderList = React.createClass({
   mixins: [ReactFireMixin],
 
   getInitialState: function() {
     return {
-      paidList: []
+      receiptList: []
     };
   },
 
   componentWillMount: function() {
-    this.paidListRef = new Firebase('https://mycoffeeapp.firebaseio.com/coffeeReceiptList/items/');
-    this.bindAsArray(this.paidListRef.orderByChild('timestamp').limitToLast(20), 'paidList');
+    this.bindAsArray(this.props.model.firebaseRef.child('receiptList').child('current').orderByChild('timestamp').limitToLast(20), 'receiptList');
   },
 
   render: function() {
     var _this = this;
     var createItem = function(item, index) {
       return (
-        <li key={index}>{item.orders.length} coffees paid by {item.displayName} on <ReactIntl.FormattedDate value={item.timestamp}/> at <ReactIntl.FormattedTime value={item.timestamp} hour="numeric" minute="numeric"/></li>
+        <li key={index}>{item.orderList.length} coffees paid by {item.payerName} on <ReactIntl.FormattedDate value={item.timestamp}/> at <ReactIntl.FormattedTime value={item.timestamp} hour="numeric" minute="numeric"/></li>
       );
     };
     return (
-      <ul>{ this.state.paidList.map(createItem) }</ul>
+      <ul>{ this.state.receiptList.map(createItem) }</ul>
     );
   }
 });

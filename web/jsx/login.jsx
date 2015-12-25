@@ -1,11 +1,11 @@
 var React = require('react');
 var Firebase = require('firebase');
+var C = require('./constants.js');
 
-module.exports = React.createClass({
+var FacebookLogin = React.createClass({
   componentWillMount: function() {
-    this.firebaseRef = new Firebase('https://mycoffeeapp.firebaseio.com/');
-    if(this.firebaseRef.getAuth())
-      this.setState( {login: this.firebaseRef.getAuth().facebook.displayName } );
+    if(this.props.model.firebaseRef.getAuth())
+      this.setState( {login: this.props.model.firebaseRef.getAuth().facebook.displayName } );
   },
 
   getInitialState: function() {
@@ -24,11 +24,11 @@ module.exports = React.createClass({
   },
 
   handleLogin: function(event) {
-    this.firebaseRef.authWithOAuthPopup("facebook", this.handleAuth)
+    this.props.model.firebaseRef.authWithOAuthPopup("facebook", this.handleAuth)
   },
 
   handleLogout: function(event) {
-    this.firebaseRef.unauth();
+    this.props.model.firebaseRef.unauth();
     this.setState( {login: null} );
     this.props.onLogin(false);
   },
@@ -46,3 +46,5 @@ module.exports = React.createClass({
       );
   }
 });
+
+module.exports = FacebookLogin;
