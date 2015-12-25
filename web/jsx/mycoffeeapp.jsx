@@ -31,9 +31,7 @@ var MyCoffeeApp = React.createClass({
     if(this.firebaseRef.getAuth())
       this.setState({uid: this.firebaseRef.getAuth().uid});
     this.model = Model;
-    this.model.init(this.firebaseRef,
-                    this.firebaseRef.getAuth().uid,
-                    this.firebaseRef.getAuth().facebook.displayName);
+    this.model.init(this.firebaseRef);
   },
 
   render: function() {

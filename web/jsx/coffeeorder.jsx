@@ -8,27 +8,32 @@ var CoffeeOrder = React.createClass({
 
   getInitialState: function() {
     return {
-      coffeeType:"",
+      coffeeType:'',
       coffeeTypeOptions: [],
-      sugar:"",
+      sugar:0,
       sugarOptions: [],
-      milk:"",
-      milkOptions: []
+      milk:'',
+      milkOptions: [],
+      uid:'',
+      userDisplayName:'',
+      userList:[]
     };
   },
 
   componentWillMount: function() {
     var coffeeDataRef = this.props.model.firebaseRef.child('coffeeData');
-    coffeeDataRef.child("coffeeTypeList").on("value", this.onCoffeeTypeListValue);
-    coffeeDataRef.child("sugarTypeList").on("value", this.onSugarListValue);
-    coffeeDataRef.child("milkTypeList").on("value", this.onMilkListValue);
+    coffeeDataRef.child('coffeeTypeList').on('value', this.onCoffeeTypeListValue);
+    coffeeDataRef.child('sugarTypeList').on('value', this.onSugarListValue);
+    coffeeDataRef.child('milkTypeList').on('value', this.onMilkListValue);
+    this.props.model.firebaseRef.child('users').on('value', this.onUserListValue);
   },
 
   componentWillUnMount: function() {
     var coffeeDataRef = this.props.model.firebaseRef.child('coffeeData');
-    coffeeDataRef.child("coffeeTypeList").off("value");
-    coffeeDataRef.child("sugarTypeList").off("value");
-    coffeeDataRef.child("milkTypeList").off("value");
+    coffeeDataRef.child('coffeeTypeList').off('value');
+    coffeeDataRef.child('sugarTypeList').off('value');
+    coffeeDataRef.child('milkTypeList').off('value');
+    this.props.model.firebaseRef.child('users').off();
   },
 
   onCoffeeTypeListValue: function(snapshot) {
@@ -79,20 +84,54 @@ var CoffeeOrder = React.createClass({
       this.setState({milk: ''});
   },
 
+  onUserListValue: function(snapshot) {
+    var users = [];
+    var userList = snapshot.val();
+    var options = [];
+    for(i in userList){
+      options.push({ label: userList[i].displayName,
+                     value: i });
+    }
+    this.setState({userList: options});
+  },
+
+  onUserChange: function(value){
+    if(value){
+      this.setState({uid: value.value,
+                     userDisplayName: value.label});
+    }
+    else
+      this.setState({uid: '',
+                     userDisplayName: ''});
+  },
+
   handleSubmit: function(e) {
     e.preventDefault();
-    if(this.state.coffeeType == "")
+    if(this.state.coffeeType == '')
       return;
+    var uid = this.state.uid;
+    var userDisplayName = this.state.userDisplayName;
+    if(!uid){
+      uid = this.props.model.uid;
+      userDisplayName = this.props.model.userDisplayName;
+    }
     this.props.model.createOrder(this.state.coffeeType,
                                  this.state.sugar,
                                  this.state.milk,
-                                 this.props.model.uid,
-                                 this.props.model.userDisplayName);
+                                 uid,
+                                 userDisplayName);
   },
 
   render: function() {
     return (
       <form onSubmit={ this.handleSubmit }>
+        <Select
+            name="userSelect"
+            value={this.state.uid}
+            options={this.state.userList}
+            placeholder="Select User - Defaults to Me"
+            onChange={this.onUserChange}
+        />
         <Select
             name="milkSelect"
             value={this.state.milk}

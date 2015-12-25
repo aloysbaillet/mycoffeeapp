@@ -1,13 +1,21 @@
 
 var Model = {
-  init: function(firebaseRef, uid, userDisplayName){
+  init: function(firebaseRef){
     this.firebaseRef = firebaseRef;
-    this.uid = uid;
-    this.userDisplayName = userDisplayName;
+    var auth = this.firebaseRef.getAuth();
+    if(auth){
+      this.uid = auth.uid;
+      this.userDisplayName = auth.facebook.displayName;
+      this.firebaseRef.child('users').child(this.uid).update({displayName: this.userDisplayName});
+    }
+    else{
+      this.uid = null;
+      this.userDisplayName = '';
+    }
   },
 
   createOrder: function(coffeeType, sugar, milk, uid, clientName){
-    var item = {
+    var data = {
       coffeeType: coffeeType,
       sugar: sugar,
       milk: milk,
@@ -17,7 +25,15 @@ var Model = {
       payerId: '',
       payerName: ''
     }
-    this.firebaseRef.child('orderList').child('pending').push(item);
+    console.log('createOrder: data=', JSON.stringify(data));
+    this.firebaseRef.child('orderList').child('pending').push(data, function(error){
+      if(error){
+        console.log('Order creation did not succeed!', error);
+      }
+      else{
+        console.log('Order creation complete!');
+      }
+    });
   },
 
   paySelectedOrders: function() {
