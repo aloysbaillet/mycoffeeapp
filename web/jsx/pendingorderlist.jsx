@@ -34,7 +34,6 @@ var PendingOrderList = React.createClass({
     var _this = this;
     var createItem = function(item, index) {
       var key = item['.key'];
-      console.log('Adding item', key, item);
       return (
         <OrderRow orderKey={key} key={key} model={_this.props.model}/>
       );

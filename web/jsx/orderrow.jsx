@@ -40,11 +40,7 @@ module.exports = React.createClass({
       payerId = this.props.model.uid;
       payerName = this.props.model.userDisplayName;
     }
-    var data = {};
-    data['/orderList/pending/' + this.props.orderKey + '/payerId'] = payerId;
-    data['/orderList/pending/' + this.props.orderKey + '/payerName'] = payerName;
-    this.props.model.firebaseRef.update(data);
-    console.log('selection:', data);
+    this.props.model.selectOrder(this.props.orderKey, payerId, payerName);
   },
 
   onDelete: function(){

@@ -53,7 +53,7 @@ var CoffeeOrder = React.createClass({
     if(value)
       coffeeType = value.value;
     this.setState({coffeeType: coffeeType})
-    this.props.model.firebaseRef.child('users').child(this.state.uid).update({preferredCoffeeType: coffeeType})
+    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredCoffeeType: coffeeType})
   },
 
   onSugarListValue: function(snapshot) {
@@ -72,7 +72,7 @@ var CoffeeOrder = React.createClass({
     if(value)
       sugar = value.value;
     this.setState({sugar: sugar})
-    this.props.model.firebaseRef.child('users').child(this.state.uid).update({preferredSugar: sugar})
+    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredSugar: sugar})
   },
 
   onMilkListValue: function(snapshot) {
@@ -91,7 +91,7 @@ var CoffeeOrder = React.createClass({
     if(value)
       milk = value.value;
     this.setState({milk: milk});
-    this.props.model.firebaseRef.child('users').child(this.state.uid).update({preferredMilk: milk})
+    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredMilk: milk})
   },
 
   onUserListValue: function(snapshot) {
@@ -109,8 +109,14 @@ var CoffeeOrder = React.createClass({
     this.setState({uid: uid,
                    userDisplayName: userDisplayName});
     var _this = this;
-    this.props.model.firebaseRef.child('users').child(uid).once('value', function(snapshot){
+    this.props.model.firebaseRef.child('userPreferences').child(uid).once('value', function(snapshot){
       var u = snapshot.val();
+      if(!u){
+        _this.setState({coffeeType: '',
+                        sugar: 0,
+                        milk: ''});
+        return;
+      }
       _this.setState({coffeeType: u.preferredCoffeeType ? u.preferredCoffeeType : '',
                       sugar: u.preferredSugar ? u.preferredSugar : 0,
                       milk: u.preferredMilk ? u.preferredMilk: ''});

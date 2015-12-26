@@ -8,6 +8,7 @@ var FacebookLogin = require('./login.jsx');
 var CoffeeOrder = require('./coffeeorder.jsx');
 var PendingOrderList = require('./pendingorderlist.jsx');
 var PaidOrderList = require('./paidorderlist.jsx');
+var CandidateList = require('./candidatelist.jsx');
 
 var C = require('./constants.js');
 
@@ -42,6 +43,8 @@ var MyCoffeeApp = React.createClass({
         <CoffeeOrder model={this.model} />
         <h3>Pending Orders</h3>
         <PendingOrderList model={this.model} />
+        <h3>Candidates</h3>
+        <CandidateList model={this.model} />
         <h3>Paid Orders</h3>
         <PaidOrderList model={this.model} />
       </div>;

@@ -6,7 +6,19 @@
       ".write":"false",
       ".read":"((auth.uid!==null))",
       "$uid": {
-        ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('preferredCoffeeType').exists()||newData.child('preferredCoffeeType').isString())&&(!newData.child('preferredSugar').exists()||newData.child('preferredSugar').isNumber())&&(!newData.child('preferredMilk').exists()||newData.child('preferredMilk').isString())&&(!newData.child('displayName').exists()||newData.child('displayName').isString())&&auth.uid!==null)))",
+        ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('displayName').exists()||newData.child('displayName').isString())&&auth.uid!==null)))",
+        ".read":"((auth.uid!==null))",
+        "displayName": {
+          ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+          ".read":"((auth.uid!==null))"
+        }
+      }
+    },
+    "userPreferences": {
+      ".write":"false",
+      ".read":"((auth.uid!==null))",
+      "$uid": {
+        ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('preferredCoffeeType').exists()||newData.child('preferredCoffeeType').isString())&&(!newData.child('preferredSugar').exists()||newData.child('preferredSugar').isNumber())&&(!newData.child('preferredMilk').exists()||newData.child('preferredMilk').isString())&&auth.uid!==null)))",
         ".read":"((auth.uid!==null))",
         "preferredCoffeeType": {
           ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
@@ -19,9 +31,21 @@
         "preferredMilk": {
           ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
           ".read":"((auth.uid!==null))"
+        }
+      }
+    },
+    "userPaymentCache": {
+      ".write":"false",
+      ".read":"((auth.uid!==null))",
+      "$uid": {
+        ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('credit').exists()||newData.child('credit').isNumber())&&(!newData.child('lastPayment').exists()||newData.child('lastPayment').isNumber())&&auth.uid!==null)))",
+        ".read":"((auth.uid!==null))",
+        "credit": {
+          ".write":"((((!newData.exists()||newData.isNumber())&&auth.uid!==null)))",
+          ".read":"((auth.uid!==null))"
         },
-        "displayName": {
-          ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+        "lastPayment": {
+          ".write":"((((!newData.exists()||newData.isNumber())&&auth.uid!==null)))",
           ".read":"((auth.uid!==null))"
         }
       }

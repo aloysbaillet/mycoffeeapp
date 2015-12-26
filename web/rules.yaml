@@ -17,15 +17,29 @@ schema:
 
   type: object
   properties:
-    users: # the users subtree is a collection of users
+    users:
       type: object
-      $uid: #wildchild expression of many children
+      $uid:
         type: object
-        properties: #each user has an optional inbox and outbox
+        properties:
+          displayName: {type: string}
+
+    userPreferences:
+      type: object
+      $uid:
+        type: object
+        properties:
           preferredCoffeeType: {type: string}
           preferredSugar: {type: number}
           preferredMilk: {type: string}
-          displayName: {type: string}
+
+    userPaymentCache:
+      type: object
+      $uid:
+        type: object
+        properties:
+          credit: {type: number}
+          lastPayment: {type: number}
 
     coffeeData:
       type: object
@@ -76,6 +90,9 @@ schema:
               payerId: {type: string}
               payerName: {type: string}
               timestamp: {type: number}
+              # orderList:
+              #   type: object
+              #   $orderId: {type: boolean}
 
 access:
   - location: /
