@@ -1,13 +1,11 @@
 var React = require('react');
 var Firebase = require('firebase');
-var ReactFireMixin = require('reactfire');
+require('firebase-util');
 var ReactIntl = require('react-intl');
 
-var C = require('./constants.js');
+var PayButton = require('./paybutton.jsx');
 
 var CandidateList = React.createClass({
-  // mixins: [ReactFireMixin],
-
   getInitialState: function() {
     return {
       pendingOrderCandidateMap: {},
@@ -18,72 +16,36 @@ var CandidateList = React.createClass({
 
   componentWillMount: function() {
     var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
-    orderListRef.on('value', this.onPendingOrders);
-    var userListRef = this.props.model.firebaseRef.child('userPaymentCache');
-    userListRef.on('value', this.onPaymentCacheUpdated);
+    var userPaymentCacheRef = this.props.model.firebaseRef.child('userPaymentCache');
+    var norm = new Firebase.util.NormalizedCollection([orderListRef, 'orders'],
+                                                      [userPaymentCacheRef, 'credits', 'orders.uid']);
+    norm = norm.select('orders.uid', 'orders.clientName', 'credits.credit', 'credits.lastPayment');
+    this.normRef = norm.ref();
+    this.normRef.on('value', this.onPendingOrderWithCredit);
   },
 
   componentWillUnmount: function() {
-    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
-    orderListRef.off('value');
-    var userListRef = this.props.model.firebaseRef.child('userPaymentCache');
-    userListRef.off('value');
+    this.normRef.off('value');
   },
 
-  rebuildCandidateList: function() {
+  onPendingOrderWithCredit: function(snapshot) {
+    var candidateMap = snapshot.val();
+    console.log('candidateList:', candidateMap);
     var candidateList = [];
-    var creditList = [];
-    var done = {};
-    console.log('rebuildCandidateList: pendingOrderCandidateMap=', this.state.pendingOrderCandidateMap)
-    console.log('rebuildCandidateList: candidateCreditMap=', this.state.candidateCreditMap)
-    for(uid in this.state.pendingOrderCandidateMap){
-      if(uid in this.state.candidateCreditMap){
-        creditList.push({uid: uid,
-                         credit: this.state.candidateCreditMap[uid].credit,
-                         lastPayment: this.state.candidateCreditMap[uid].lastPayment});
-      }
-      else{
-        creditList.push({uid: uid,
-                         credit: 0,
-                         lastPayment: 0});
-      }
+    for(i in candidateMap){
+      var candidate = candidateMap[i];
+      if(!(candidate.credit)) candidate.credit = 0;
+      if(!(candidate.lastPayment)) candidate.lastPayment = 0;
+      candidateList.push(candidate);
     }
-    console.log('rebuildCandidateList: creditList=', creditList)
-    creditList.sort(function(a, b) {
+    candidateList.sort(function(a, b) {
       if(a.credit == b.credit){
         return a.lastPayment < b.lastPayment ? -1 : (a.lastPayment > b.lastPayment ? 1 : 0)
       }
       return a.credit < b.credit ? -1 : 1;
     });
-    console.log('rebuildCandidateList: sorted creditList=', creditList)
-    for(i in creditList){
-      candidateList.push({credit: creditList[i].credit,
-                          name:this.state.pendingOrderCandidateMap[creditList[i].uid],
-                          lastPayment: creditList[i].lastPayment});
-    }
+    console.log('rebuildCandidateList: sorted candidateList=', candidateList)
     this.setState({candidateList: candidateList});
-  },
-
-  onPendingOrders: function(snapshot) {
-    var pendingOrderCandidateMap = {};
-    pendingOrderList = snapshot.val();
-    for(key in pendingOrderList){
-      var order = pendingOrderList[key];
-      pendingOrderCandidateMap[order.uid] = order.clientName;
-    }
-    this.setState({pendingOrderCandidateMap: pendingOrderCandidateMap});
-    this.rebuildCandidateList();
-  },
-
-  onPaymentCacheUpdated: function(snapshot) {
-    var candidateCreditMap = {};
-    paymentCacheList = snapshot.val();
-    for(uid in paymentCacheList){
-      candidateCreditMap[uid] = {credit: paymentCacheList[uid].credit,
-                                 lastPayment: paymentCacheList[uid].lastPayment};
-    }
-    this.setState({candidateCreditMap: candidateCreditMap});
-    this.rebuildCandidateList();
   },
 
   render: function() {
@@ -95,7 +57,7 @@ var CandidateList = React.createClass({
       else
         payment = <span>last payment: <ReactIntl.FormattedDate value={item.lastPayment}/></span>;
       return (
-        <li key={index}>{item.name} ( credit: {item.credit}, {payment} )</li>
+        <li key={index}>{item.clientName} ( credit: {item.credit}, {payment} ) <PayButton model={_this.props.model} payerId={item.uid}/></li>
       );
     };
     return (
