@@ -146,6 +146,31 @@
           }
         }
       },
+      "pendingSelection": {
+        ".indexOn": ["selectedByUid"],
+        ".write":"false",
+        ".read":"((auth.uid!==null))",
+        "$selected": {
+          ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('selected').exists()||newData.child('selected').isBoolean())&&(!newData.child('selectedTimestamp').exists()||newData.child('selectedTimestamp').isNumber())&&(!newData.child('selectedByUid').exists()||newData.child('selectedByUid').isString())&&(!newData.child('selectedByUserDisplayName').exists()||newData.child('selectedByUserDisplayName').isString())&&auth.uid!==null)))",
+          ".read":"((auth.uid!==null))",
+          "selected": {
+            ".write":"((((!newData.exists()||newData.isBoolean())&&auth.uid!==null)))",
+            ".read":"((auth.uid!==null))"
+          },
+          "selectedTimestamp": {
+            ".write":"((((!newData.exists()||newData.isNumber())&&auth.uid!==null)))",
+            ".read":"((auth.uid!==null))"
+          },
+          "selectedByUid": {
+            ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+            ".read":"((auth.uid!==null))"
+          },
+          "selectedByUserDisplayName": {
+            ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+            ".read":"((auth.uid!==null))"
+          }
+        }
+      },
       "paid": {
         ".indexOn": ["timestamp"],
         ".write":"false",

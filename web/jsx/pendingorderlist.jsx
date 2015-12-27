@@ -18,7 +18,22 @@ var PendingOrderList = React.createClass({
 
   componentWillMount: function() {
     var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
-    this.bindAsArray(orderListRef.orderByChild('uid'), 'pengingOrderList');
+    var orderSelectionRef = this.props.model.firebaseRef.child('orderList').child('pendingSelection');
+    this.orderListRef = new Firebase.util.NormalizedCollection(
+      [orderListRef, 'orders'],
+      [orderSelectionRef, 'selection'])
+      .select('orders.coffeeType',
+              'orders.sugar',
+              'orders.milk',
+              'orders.uid',
+              'orders.timestamp',
+              'orders.clientName',
+              'selection.selected',
+              'selection.selectedTimestamp',
+              'selection.selectedByUid',
+              'selection.selectedByUserDisplayName')
+      .ref();
+    this.bindAsArray(this.orderListRef, 'pengingOrderList');
   },
 
   handleSubmit: function(e) {
@@ -31,13 +46,13 @@ var PendingOrderList = React.createClass({
     var createItem = function(item, index) {
       var key = item['.key'];
       return (
-        <OrderRow orderKey={key} key={key} model={_this.props.model}/>
+        <OrderRow key={key} orderRef={_this.orderListRef.child(key)} model={_this.props.model}/>
       );
     };
     return (
       <form name="takeOrderForm" onSubmit={ this.handleSubmit }>
         <ul>{ this.state.pengingOrderList.map(createItem) }</ul>
-        <PayButton model={this.props.model} />
+        <PayButton model={this.props.model} payerId={this.props.model.uid} payerDisplayName={this.props.model.userDisplayName}/>
       </form>
     );
   }

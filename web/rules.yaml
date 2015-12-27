@@ -73,6 +73,16 @@ schema:
           type: object
           indexOn: [uid, payerId]
           $order: {$ref: "#/definitions/order"}
+        pendingSelection:
+          type: object
+          indexOn: selectedByUid
+          $selected:
+            type: object
+            properties:
+              selected: {type: boolean}
+              selectedTimestamp: {type: number}
+              selectedByUid: {type: string}
+              selectedByUserDisplayName: {type: string}
         paid:
           type: object
           indexOn: timestamp

@@ -1,3 +1,5 @@
+require('firebase-util');
+var C = require('./constants.js')
 
 var Model = {
   init: function(firebaseRef){
@@ -36,12 +38,41 @@ var Model = {
     });
   },
 
-  selectOrder: function(orderId, payerId, payerName) {
-    var data = {};
-    data['/orderList/pending/' + orderId + '/payerId'] = payerId;
-    data['/orderList/pending/' + orderId + '/payerName'] = payerName;
-    this.firebaseRef.update(data);
-    console.log('selectOrder: data=', data);
+  selectOrder: function(orderId, selected) {
+    var selData = {
+      selected: selected,
+      selectedTimestamp: Firebase.ServerValue.TIMESTAMP,
+      selectedByUid: this.uid,
+      selectedByUserDisplayName: this.userDisplayName
+    };
+    console.log('selectOrder: data=', selData);
+    this.firebaseRef
+      .child('orderList')
+      .child('pendingSelection')
+      .child(orderId)
+      .transaction(function(currentData) {
+      if (currentData === null) {
+        return selData;
+      } else {
+        console.log('selectedByUid=', currentData.selectedByUid, ' uid=', selData.selectedByUid)
+        if(currentData.selectedByUid == selData.selectedByUid){
+          return selData;
+        }
+        else{
+          console.log('Order already selected by: ', currentData.selectedByUserDisplayName, currentData);
+          return; // Abort the transaction.
+        }
+      }
+    }, function(error, committed, snapshot) {
+      if (error) {
+        console.log('Transaction failed abnormally!', error);
+      } else if (!committed) {
+        console.log('We aborted the transaction.');
+      } else {
+        console.log('Order Selected!');
+      }
+      console.log('Order selection: ', snapshot.val());
+    });
   },
 
   updateUserPaymentDataFromReceipts: function() {
@@ -60,28 +91,14 @@ var Model = {
           userRef.update({lastPayment: receipt.timestamp});
         }
       });
-    /*
-      var credit = 0;
-      var lastPayment = 0;
-      if(receipt.payerId in userData){
-        credit = userData[receipt.payerId].credit;
-        lastPayment = userData[receipt.payerId].lastPayment;
-      }
-      credit = credit + receipt.orderList.length;
-      lastPayment = Math.max(lastPayment, receipt.timestamp);
-      userData[receipt.payerId] = {credit: credit,
-                                   lastPayment: lastPayment};
-      */
     });
 
   },
 
-  paySelectedOrders: function() {
+  paySelectedOrders: function(payerId, payerDisplayName) {
     var _this = this;
-    this.firebaseRef
-      .child('orderList')
-      .child('pending')
-      .orderByChild('payerId')
+    var orderListRef = this.firebaseRef.child('orderList').child('pendingSelection');
+    orderListRef.orderByChild('selectedByUid')
       .equalTo(this.uid)
       .once('value', function(selectedSnapshot){
         var selected = selectedSnapshot.val();
@@ -91,18 +108,20 @@ var Model = {
         var orderIdList = {};
         for(key in selected){
           data['/orderList/pending/' + key] = null;
+          data['/orderList/pendingSelection/' + key] = null;
           data['/orderList/paid/' + key] = selected[key];
           orderIdList[key] = true;
         }
         var receiptId = _this.firebaseRef.child('receiptList').child('current').push().key();
-        var receipt = {payerId: _this.uid,
-                       payerName: _this.userDisplayName,
+        var receipt = {payerId: payerId,
+                       payerName: payerDisplayName,
                        timestamp: Firebase.ServerValue.TIMESTAMP,
                        orderList: orderIdList
                        };
         data['/receiptList/current/' + receiptId] = receipt;
         console.log('paySelectedOrders: data=', data, 'json=', JSON.stringify(data));
-        _this.firebaseRef.update(data, function(error){
+        var firebaseRef = new Firebase(C.BASE_FIREBASE_URL);
+        firebaseRef.update(data, function(error){
           if(error){
             console.log('Payment did not succeed!', error);
           }

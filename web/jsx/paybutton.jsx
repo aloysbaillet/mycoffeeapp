@@ -11,28 +11,46 @@ var PayButton = React.createClass({
   },
 
   componentWillMount: function() {
-    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
-    orderListRef.orderByChild('payerId').equalTo(this.props.model.uid).on('value', this.onSelected);
+    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pendingSelection');
+    orderListRef.orderByChild('selectedByUid').equalTo(this.props.model.uid).on('value', this.onSelected);
   },
 
-  onSelected: function(querySnapshot) {
-    var numSelected = querySnapshot.numChildren();
+  componentWillUnmount: function() {
+    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pendingSelection');
+    orderListRef.off('value');
+  },
+
+  onSelected: function(snapshot) {
+    var numSelected = 0;
+    var myPendingSelection = snapshot.val();
+    for(i in myPendingSelection){
+      if(myPendingSelection[i].selected)
+        numSelected += 1;
+    }
     this.setState({numSelected: numSelected});
   },
 
   onClick: function() {
-    this.props.model.paySelectedOrders();
+    this.props.model.paySelectedOrders(this.props.payerId, this.props.payerDisplayName);
   },
 
   render: function() {
-    if(this.state.numSelected)
+    var isMePaying = this.props.payerId == this.props.model.uid;
+    if(this.state.numSelected){
+      var payMsg = isMePaying ? "Pay " : "Make " + this.props.payerDisplayName + " pay ";
       return (
-        <a href="#" onClick={this.onClick}>Pay for { this.state.numSelected } coffees</a>
+        <a href="#" onClick={this.onClick}>{payMsg} for { this.state.numSelected } coffees</a>
       );
-    else
-      return (
-        <span>Select an order to pay</span>
-      );
+    }
+    else{
+      if(isMePaying)
+        return (
+          <span>Select an order to pay</span>
+        );
+      else {
+        return null;
+      }
+    }
   }
 });
 module.exports = PayButton;

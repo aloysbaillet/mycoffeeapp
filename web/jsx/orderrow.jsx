@@ -4,7 +4,7 @@ var ReactIntl = require('react-intl');
 var ReactFireMixin = require('reactfire');
 var C = require('./constants.js');
 
-module.exports = React.createClass({
+var OrderRow = React.createClass({
   mixins: [ReactFireMixin],
 
   getInitialState: function() {
@@ -14,8 +14,7 @@ module.exports = React.createClass({
   },
 
   componentWillMount: function() {
-    this.orderRef = this.props.model.firebaseRef.child('orderList').child('pending').child(this.props.orderKey);
-    this.bindAsObject(this.orderRef, 'order');
+    this.bindAsObject(this.props.orderRef, 'order');
   },
 
   formatOrder: function(order){
@@ -33,14 +32,12 @@ module.exports = React.createClass({
     return milk + order.coffeeType + sug;
   },
 
-  onSelectionChange: function(e){
-    var payerId = '';
-    var payerName = '';
-    if(e.target.checked){
-      payerId = this.props.model.uid;
-      payerName = this.props.model.userDisplayName;
-    }
-    this.props.model.selectOrder(this.props.orderKey, payerId, payerName);
+  onSelectClick: function(e){
+    this.props.model.selectOrder(this.props.orderRef.key(), true);
+  },
+
+  onDeselectClick: function(e){
+    this.props.model.selectOrder(this.props.orderRef.key(), false);
   },
 
   onDelete: function(){
@@ -48,10 +45,19 @@ module.exports = React.createClass({
   },
 
   render: function() {
+    var sel;
+    if(!this.state.order.selected){
+      sel = <span>[<a href="#" onClick={this.onSelectClick}>Select</a>]</span>;
+    }
+    else{
+      if(this.state.order.selectedByUid == this.props.model.uid)
+        sel = <span>[<a href="#" onClick={this.onDeselectClick}>Deselect</a>]</span>;
+      else
+        sel = <span>[Selected by {this.state.order.selectedByUserDisplayName}]</span>;
+    }
     return (
       <li>
-        <input type="checkbox" checked={ this.state.order.payerId == this.props.model.uid } onChange={ this.onSelectionChange }/>
-        { this.formatOrder(this.state.order) } ( { this.state.order.clientName } <ReactIntl.FormattedRelative value={this.state.order.timestamp} /> )
+        { sel } { this.formatOrder(this.state.order) } ( { this.state.order.clientName } <ReactIntl.FormattedRelative value={this.state.order.timestamp} /> )
         <span onClick={ this.onDelete }
               style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
           X
@@ -60,3 +66,4 @@ module.exports = React.createClass({
     );
   }
 });
+module.exports = OrderRow;

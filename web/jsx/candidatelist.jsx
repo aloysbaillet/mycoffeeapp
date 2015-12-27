@@ -32,11 +32,15 @@ var CandidateList = React.createClass({
     var candidateMap = snapshot.val();
     console.log('candidateList:', candidateMap);
     var candidateList = [];
+    var done = {};
     for(i in candidateMap){
       var candidate = candidateMap[i];
       if(!(candidate.credit)) candidate.credit = 0;
       if(!(candidate.lastPayment)) candidate.lastPayment = 0;
-      candidateList.push(candidate);
+      if(!(candidate.uid in done)){
+        candidateList.push(candidate);
+        done[candidate.uid] = true;
+      }
     }
     candidateList.sort(function(a, b) {
       if(a.credit == b.credit){
@@ -57,7 +61,7 @@ var CandidateList = React.createClass({
       else
         payment = <span>last payment: <ReactIntl.FormattedDate value={item.lastPayment}/></span>;
       return (
-        <li key={index}>{item.clientName} ( credit: {item.credit}, {payment} ) <PayButton model={_this.props.model} payerId={item.uid}/></li>
+        <li key={index}>{item.clientName} ( credit: {item.credit}, {payment} ) <PayButton model={_this.props.model} payerId={item.uid} payerDisplayName={item.clientName}/></li>
       );
     };
     return (
