@@ -1,8 +1,10 @@
 var React = require('react');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
+
 var C = require('./constants.js');
 var OrderRow = require('./orderrow.jsx');
+var PayButton = require('./paybutton.jsx');
 
 var PendingOrderList = React.createClass({
   mixins: [ReactFireMixin],
@@ -17,12 +19,6 @@ var PendingOrderList = React.createClass({
   componentWillMount: function() {
     var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
     this.bindAsArray(orderListRef.orderByChild('uid'), 'pengingOrderList');
-    orderListRef.orderByChild('payerId').equalTo(this.props.model.uid).on('value', this.onSelected);
-  },
-
-  onSelected: function(querySnapshot) {
-    var numSelected = querySnapshot.numChildren();
-    this.setState({numSelected: numSelected});
   },
 
   handleSubmit: function(e) {
@@ -38,13 +34,10 @@ var PendingOrderList = React.createClass({
         <OrderRow orderKey={key} key={key} model={_this.props.model}/>
       );
     };
-    var PayButton;
-    if(this.state.numSelected > 0)
-      PayButton = <button>Pay for { this.state.numSelected } coffees!</button>;
     return (
       <form name="takeOrderForm" onSubmit={ this.handleSubmit }>
         <ul>{ this.state.pengingOrderList.map(createItem) }</ul>
-        {PayButton}
+        <PayButton model={this.props.model} />
       </form>
     );
   }

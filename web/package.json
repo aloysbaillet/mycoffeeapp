@@ -5,7 +5,7 @@
   "author": "Aloys Baillet <aloys.baillet@gmail.com>",
   "style": "public/bundle.css",
   "scripts": {
-    "build": "browserify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js && npm-css css/entry.css > public/bundle.css",
+    "build": "browserify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js",
     "watch": "watchify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js --debug --verbose",
     "test": "jest",
     "rules": "blaze rules.yaml && firebase deploy:rules",
@@ -27,6 +27,7 @@
     "mockfirebase": "^0.12.0",
     "proxyquire": "^1.7.3",
     "react-addons-test-utils": "^0.14.3",
+    "react-sanfona": "0.0.8",
     "reactify": "^1.1.1",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.6.1"

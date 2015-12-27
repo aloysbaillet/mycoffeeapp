@@ -10,7 +10,7 @@ var CandidateList = React.createClass({
 
   getInitialState: function() {
     return {
-      candidateNameMap: {},
+      pendingOrderCandidateMap: {},
       candidateCreditMap: {},
       candidateList: []
     };
@@ -34,41 +34,44 @@ var CandidateList = React.createClass({
     var candidateList = [];
     var creditList = [];
     var done = {};
-    for(uid in this.state.candidateCreditMap){
-      creditList.push({uid: uid,
-                       credit: this.state.candidateCreditMap[uid].credit,
-                       lastPayment: this.state.candidateCreditMap[uid].lastPayment});
-      done[uid] = true;
-    }
-    for(uid in this.state.candidateNameMap){
-      if(!(uid in done)){
+    console.log('rebuildCandidateList: pendingOrderCandidateMap=', this.state.pendingOrderCandidateMap)
+    console.log('rebuildCandidateList: candidateCreditMap=', this.state.candidateCreditMap)
+    for(uid in this.state.pendingOrderCandidateMap){
+      if(uid in this.state.candidateCreditMap){
+        creditList.push({uid: uid,
+                         credit: this.state.candidateCreditMap[uid].credit,
+                         lastPayment: this.state.candidateCreditMap[uid].lastPayment});
+      }
+      else{
         creditList.push({uid: uid,
                          credit: 0,
                          lastPayment: 0});
       }
     }
+    console.log('rebuildCandidateList: creditList=', creditList)
     creditList.sort(function(a, b) {
       if(a.credit == b.credit){
         return a.lastPayment < b.lastPayment ? -1 : (a.lastPayment > b.lastPayment ? 1 : 0)
       }
       return a.credit < b.credit ? -1 : 1;
     });
+    console.log('rebuildCandidateList: sorted creditList=', creditList)
     for(i in creditList){
       candidateList.push({credit: creditList[i].credit,
-                          name:this.state.candidateNameMap[creditList[i].uid],
+                          name:this.state.pendingOrderCandidateMap[creditList[i].uid],
                           lastPayment: creditList[i].lastPayment});
     }
     this.setState({candidateList: candidateList});
   },
 
   onPendingOrders: function(snapshot) {
-    var candidateNameMap = {};
+    var pendingOrderCandidateMap = {};
     pendingOrderList = snapshot.val();
     for(key in pendingOrderList){
       var order = pendingOrderList[key];
-      candidateNameMap[order.uid] = order.clientName;
+      pendingOrderCandidateMap[order.uid] = order.clientName;
     }
-    this.setState({candidateNameMap: candidateNameMap});
+    this.setState({pendingOrderCandidateMap: pendingOrderCandidateMap});
     this.rebuildCandidateList();
   },
 
