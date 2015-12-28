@@ -29,7 +29,7 @@ var CoffeeOrder = React.createClass({
     this.setUser(this.props.model.uid, this.props.model.userDisplayName);
   },
 
-  componentWillUnMount: function() {
+  componentWillUnmount: function() {
     var coffeeDataRef = this.props.model.firebaseRef.child('coffeeData');
     coffeeDataRef.child('coffeeTypeList').off('value', this.onCoffeeTypeListValue);
     coffeeDataRef.child('sugarTypeList').off('value', this.onSugarListValue);
@@ -108,28 +108,29 @@ var CoffeeOrder = React.createClass({
   setUser: function(uid, userDisplayName){
     this.setState({uid: uid,
                    userDisplayName: userDisplayName});
-    var _this = this;
+    if(!uid){
+      console.log('setUser received uid=', uid);
+      return;
+    }
     this.props.model.firebaseRef.child('userPreferences').child(uid).once('value', function(snapshot){
       var u = snapshot.val();
       if(!u){
-        _this.setState({coffeeType: '',
-                        sugar: 0,
-                        milk: ''});
+        this.setState({coffeeType: '',
+                       sugar: 0,
+                       milk: ''});
         return;
       }
-      _this.setState({coffeeType: u.preferredCoffeeType ? u.preferredCoffeeType : '',
+      this.setState({coffeeType: u.preferredCoffeeType ? u.preferredCoffeeType : '',
                       sugar: u.preferredSugar ? u.preferredSugar : 0,
                       milk: u.preferredMilk ? u.preferredMilk: ''});
-    });
+    }, this);
   },
 
   onUserChange: function(value){
-    if(value){
+    if(value)
       this.setUser(value.value, value.label);
-    }
     else
-      this.setState({uid: '',
-                     userDisplayName: ''});
+      this.setUser(this.props.model.uid, this.props.model.userDisplayName);
   },
 
   handleSubmit: function(e) {
