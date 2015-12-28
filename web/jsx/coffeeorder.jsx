@@ -31,10 +31,10 @@ var CoffeeOrder = React.createClass({
 
   componentWillUnMount: function() {
     var coffeeDataRef = this.props.model.firebaseRef.child('coffeeData');
-    coffeeDataRef.child('coffeeTypeList').off('value');
-    coffeeDataRef.child('sugarTypeList').off('value');
-    coffeeDataRef.child('milkTypeList').off('value');
-    this.props.model.firebaseRef.child('users').off();
+    coffeeDataRef.child('coffeeTypeList').off('value', this.onCoffeeTypeListValue);
+    coffeeDataRef.child('sugarTypeList').off('value', this.onSugarListValue);
+    coffeeDataRef.child('milkTypeList').off('value', this.onMilkListValue);
+    this.props.model.firebaseRef.child('users').off('value', this.onUserListValue);
   },
 
   onCoffeeTypeListValue: function(snapshot) {

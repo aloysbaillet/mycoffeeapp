@@ -9,54 +9,54 @@ var PayButton = require('./paybutton.jsx');
 var CandidateList = React.createClass({
   getInitialState: function() {
     return {
-      candidateMap: {},
-      candidateList: []
+      candidateMap: {}
     };
   },
 
   componentWillMount: function() {
-    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
-    var userPaymentCacheRef = this.props.model.firebaseRef.child('userPaymentCache');
-    var _this = this;
-    orderListRef.on('child_added', function(snapshot){
-      var order = snapshot.val();
-      var newMap = _.extend({}, _this.state.candidateMap);
-      newMap[order.uid] = order;
-      _this.setState({candidateMap: newMap});
-      _this.rebuildCandidateList(newMap);
-      console.log('onPendingOrder: order=', order);
-      userPaymentCacheRef
-        .orderByKey()
-        .equalTo(order.uid)
-        .on('child_added', function(snapshot) {
-          var credit = snapshot.val();
-          order.credit = credit.credit;
-          order.lastPayment = credit.lastPayment;
-          var newMap = _.extend({}, _this.state.candidateMap);
-          newMap[order.uid] = order;
-          _this.setState({candidateMap: newMap});
-          console.log('onPaymentCache: order=', order, 'credit=', credit);
-          _this.rebuildCandidateList(newMap);
-      });
-    });
-    // var userPaymentCacheRef = this.props.model.firebaseRef.child('userPaymentCache');
-    // var norm = new FirebaseUtil.NormalizedCollection([orderListRef, 'orders'],
-    //                                                   [userPaymentCacheRef, 'credits', 'orders.uid']);
-    // norm = norm.select('orders.uid', 'orders.clientName', 'credits.credit', 'credits.lastPayment');
-    // this.normRef = norm.ref();
-    // this.normRef.on('value', this.onPendingOrderWithCredit);
+    this.realCandidateList = {};
+    this.orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
+    this.orderListRef.on('child_added', this.onPendingOrderAddedOrChanged);
+    this.orderListRef.on('child_changed', this.onPendingOrderAddedOrChanged);
+    this.orderListRef.on('child_removed', this.onPendingOrderRemoved);
   },
 
   componentWillUnmount: function() {
-    // this.normRef.off('value');
+    this.orderListRef.off('child_added', this.onPendingOrderAddedOrChanged);
+    this.orderListRef.off('child_changed', this.onPendingOrderAddedOrChanged);
+    this.orderListRef.off('child_removed', this.onPendingOrderRemoved);
   },
 
-  rebuildCandidateList: function(candidateMap) {
-    console.log('candidateMap:', candidateMap);
+  onPaymentCacheAddedOrChanged: function(order, snapshot) {
+    var credit = snapshot.val();
+    order.credit = credit.credit;
+    order.lastPayment = credit.lastPayment;
+    this.realCandidateList[order.uid] = order;
+    this.setState({candidateMap: this.realCandidateList});
+  },
+
+  onPendingOrderAddedOrChanged: function(snapshot){
+    var order = snapshot.val();
+    this.realCandidateList[order.uid] = order;
+    this.setState({candidateMap: this.realCandidateList});
+    this.props.model.firebaseRef
+      .child('userPaymentCache')
+      .orderByKey()
+      .equalTo(order.uid)
+      .once('child_added', this.onPaymentCacheAddedOrChanged.bind(null, order));
+  },
+
+  onPendingOrderRemoved: function(snapshot) {
+    var order = snapshot.val();
+    delete this.realCandidateList[order.uid];
+    this.setState({candidateMap: this.realCandidateList});
+  },
+
+  getCandidateList: function() {
     var candidateList = [];
     var done = {};
-    for(i in candidateMap){
-      var candidate = candidateMap[i];
+    for(i in this.state.candidateMap){
+      var candidate = this.state.candidateMap[i];
       if(!(candidate.credit)) candidate.credit = 0;
       if(!(candidate.lastPayment)) candidate.lastPayment = 0;
       if(!(candidate.uid in done)){
@@ -70,8 +70,7 @@ var CandidateList = React.createClass({
       }
       return a.credit < b.credit ? -1 : 1;
     });
-    console.log('rebuildCandidateList: sorted candidateList=', candidateList)
-    this.setState({candidateList: candidateList});
+    return candidateList;
   },
 
   render: function() {
@@ -87,7 +86,7 @@ var CandidateList = React.createClass({
       );
     };
     return (
-      <ul>{ this.state.candidateList.map(createItem) }</ul>
+      <ul>{ this.getCandidateList().map(createItem) }</ul>
     );
   }
 });
