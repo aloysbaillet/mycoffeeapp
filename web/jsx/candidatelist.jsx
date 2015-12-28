@@ -1,15 +1,15 @@
 var React = require('react');
 var Firebase = require('firebase');
-require('firebase-util');
+var FirebaseUtil = require('firebase-util');
 var ReactIntl = require('react-intl');
+var _ = require('underscore');
 
 var PayButton = require('./paybutton.jsx');
 
 var CandidateList = React.createClass({
   getInitialState: function() {
     return {
-      pendingOrderCandidateMap: {},
-      candidateCreditMap: {},
+      candidateMap: {},
       candidateList: []
     };
   },
@@ -17,20 +17,42 @@ var CandidateList = React.createClass({
   componentWillMount: function() {
     var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
     var userPaymentCacheRef = this.props.model.firebaseRef.child('userPaymentCache');
-    var norm = new Firebase.util.NormalizedCollection([orderListRef, 'orders'],
-                                                      [userPaymentCacheRef, 'credits', 'orders.uid']);
-    norm = norm.select('orders.uid', 'orders.clientName', 'credits.credit', 'credits.lastPayment');
-    this.normRef = norm.ref();
-    this.normRef.on('value', this.onPendingOrderWithCredit);
+    var _this = this;
+    orderListRef.on('child_added', function(snapshot){
+      var order = snapshot.val();
+      var newMap = _.extend({}, _this.state.candidateMap);
+      newMap[order.uid] = order;
+      _this.setState({candidateMap: newMap});
+      _this.rebuildCandidateList(newMap);
+      console.log('onPendingOrder: order=', order);
+      userPaymentCacheRef
+        .orderByKey()
+        .equalTo(order.uid)
+        .on('child_added', function(snapshot) {
+          var credit = snapshot.val();
+          order.credit = credit.credit;
+          order.lastPayment = credit.lastPayment;
+          var newMap = _.extend({}, _this.state.candidateMap);
+          newMap[order.uid] = order;
+          _this.setState({candidateMap: newMap});
+          console.log('onPaymentCache: order=', order, 'credit=', credit);
+          _this.rebuildCandidateList(newMap);
+      });
+    });
+    // var userPaymentCacheRef = this.props.model.firebaseRef.child('userPaymentCache');
+    // var norm = new FirebaseUtil.NormalizedCollection([orderListRef, 'orders'],
+    //                                                   [userPaymentCacheRef, 'credits', 'orders.uid']);
+    // norm = norm.select('orders.uid', 'orders.clientName', 'credits.credit', 'credits.lastPayment');
+    // this.normRef = norm.ref();
+    // this.normRef.on('value', this.onPendingOrderWithCredit);
   },
 
   componentWillUnmount: function() {
-    this.normRef.off('value');
+    // this.normRef.off('value');
   },
 
-  onPendingOrderWithCredit: function(snapshot) {
-    var candidateMap = snapshot.val();
-    console.log('candidateList:', candidateMap);
+  rebuildCandidateList: function(candidateMap) {
+    console.log('candidateMap:', candidateMap);
     var candidateList = [];
     var done = {};
     for(i in candidateMap){

@@ -5,11 +5,10 @@
   "author": "Aloys Baillet <aloys.baillet@gmail.com>",
   "style": "public/bundle.css",
   "scripts": {
-    "build": "browserify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js",
-    "watch": "watchify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js --debug --verbose",
+    "build": "NODE_ENV=production browserify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js",
     "test": "jest",
     "rules": "blaze rules.yaml && firebase deploy:rules",
-    "deploy": "NODE_ENV=production npm run build && firebase deploy",
+    "deploy": "npm run build && firebase deploy",
     "upload-data": "node data/upload.js"
   },
   "devDependencies": {
@@ -40,7 +39,8 @@
     "react-dom": "^0.14.3",
     "react-intl": "^2.0.0-beta-2",
     "react-select": "^1.0.0-beta8",
-    "reactfire": "^0.5.1"
+    "reactfire": "^0.5.1",
+    "underscore": "^1.8.3"
   },
   "jest": {
     "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2",

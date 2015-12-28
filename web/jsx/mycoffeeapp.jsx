@@ -1,6 +1,8 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Firebase = require('firebase');
+// var Firebase = require('./firebase-debug.js');
+var FirebaseUtil = require('firebase-util');
 var ReactIntl = require('react-intl');
 
 var Model = require('./model.js');
@@ -11,6 +13,9 @@ var PaidOrderList = require('./paidorderlist.jsx');
 var CandidateList = require('./candidatelist.jsx');
 
 var C = require('./constants.js');
+
+// FirebaseUtil.log('MyCoffeeApp starting!');
+// FirebaseUtil.logLevel(true);
 
 var MyCoffeeApp = React.createClass({
 
