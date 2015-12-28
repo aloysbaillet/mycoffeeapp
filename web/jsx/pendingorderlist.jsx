@@ -5,13 +5,14 @@ var ReactFireMixin = require('reactfire');
 var C = require('./constants.js');
 var OrderRow = require('./orderrow.jsx');
 var PayButton = require('./paybutton.jsx');
+var Checkbox = require('./check.jsx');
 
 var PendingOrderList = React.createClass({
   mixins: [ReactFireMixin],
 
   getInitialState: function() {
     return {
-      pengingOrderList: {}
+      pendingOrderList: {}
     };
   },
 
@@ -37,23 +38,14 @@ var PendingOrderList = React.createClass({
     order.selectedByUserDisplayName = sel.selectedByUserDisplayName;
     order.selectedByUid = sel.selectedByUid;
     this.realOrderList[order.key] = order;
-    this.setState({pengingOrderList: this.realOrderList});
+    this.setState({pendingOrderList: this.realOrderList});
   },
-
-  // onSelectionRemoved: function(order, snapshot) {
-  //   var sel = snapshot.val();
-  //   order.selected = false;
-  //   order.selectedTimestamp = 0;
-  //   order.selectedByUserDisplayName = '';
-  //   this.realOrderList[order.key] = order;
-  //   this.setState({pengingOrderList: this.realOrderList});
-  // },
 
   onPendingOrderAddedOrChanged: function(snapshot){
     var order = snapshot.val();
     order.key = snapshot.key();
     this.realOrderList[order.key] = order;
-    this.setState({pengingOrderList: this.realOrderList});
+    this.setState({pendingOrderList: this.realOrderList});
 
     ref = this.props.model.firebaseRef
       .child('orderList')
@@ -63,18 +55,16 @@ var PendingOrderList = React.createClass({
     this.selRefs[snapshot.key()] = ref;
     ref.on('child_added', this.onSelectionAddedOrChanged.bind(null, order));
     ref.on('child_changed', this.onSelectionAddedOrChanged.bind(null, order));
-    // ref.on('child_removed', this.onSelectionRemoved.bind(null, order));
   },
 
   onPendingOrderRemoved: function(snapshot) {
     delete this.realOrderList[snapshot.key()];
-    this.setState({pengingOrderList: this.realOrderList});
+    this.setState({pendingOrderList: this.realOrderList});
 
     var order = snapshot.val();
     var ref = this.selRefs[snapshot.key()];
     ref.off('child_added', this.onSelectionAddedOrChanged.bind(null, order));
     ref.off('child_changed', this.onSelectionAddedOrChanged.bind(null, order));
-    // ref.off('child_removed', this.onSelectionRemoved.bind(null, order));
   },
 
   handleSubmit: function(e) {
@@ -84,10 +74,28 @@ var PendingOrderList = React.createClass({
 
   getPendingOrderList: function() {
     var orderList = [];
-    for(i in this.state.pengingOrderList){
-      orderList.push(this.state.pengingOrderList[i]);
+    var numSelected = 0;
+    for(i in this.state.pendingOrderList){
+      order = this.state.pendingOrderList[i];
+      orderList.push(order);
+      if(order.selected && order.selectedByUid == this.props.model.uid)
+        numSelected += 1;
     }
-    return orderList;
+    return {
+      orderList: orderList,
+      numSelected: numSelected
+    };
+  },
+
+  onSelectAll: function(value, e) {
+    this.props.model.selectAllPendingOrders(value);
+  },
+
+  onNextValue: function(oldValue, props){
+    if(oldValue == null){
+      return true;
+    }
+    return !oldValue;
   },
 
   render: function() {
@@ -97,10 +105,19 @@ var PendingOrderList = React.createClass({
         <OrderRow key={item.key} order={item} model={_this.props.model} />
       );
     };
+    var o = this.getPendingOrderList();
+    var sel = null;
+    if(o.numSelected == 0)
+      sel = false;
+    else if (o.numSelected == o.orderList.length)
+      sel = true;
+    var selAll;
+    if(o.orderList.length>0)
+      selAll = <Checkbox checked={sel} onChange={this.onSelectAll} nextValue={this.onNextValue}>Select All</Checkbox>;
     return (
       <form name="takeOrderForm" onSubmit={ this.handleSubmit }>
-        <ul>{ this.getPendingOrderList().map(createItem) }</ul>
-        <PayButton model={this.props.model} payerId={this.props.model.uid} payerDisplayName={this.props.model.userDisplayName}/>
+        {selAll} <PayButton model={this.props.model} payerId={this.props.model.uid} payerDisplayName={this.props.model.userDisplayName}/>
+        <ul>{ o.orderList.map(createItem) }</ul>
       </form>
     );
   }

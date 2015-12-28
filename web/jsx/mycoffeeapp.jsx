@@ -39,6 +39,10 @@ var MyCoffeeApp = React.createClass({
     this.model.init(this.firebaseRef);
   },
 
+  updateUserPaymentCacheFromReceipts: function() {
+    this.model.updateUserPaymentCacheFromReceipts();
+  },
+
   render: function() {
     var MainApp;
     if(this.state.uid)
@@ -51,6 +55,7 @@ var MyCoffeeApp = React.createClass({
         <CandidateList model={this.model} />
         <h3>Paid Orders</h3>
         <PaidOrderList model={this.model} />
+        <a href="#" onClick={this.updateUserPaymentCacheFromReceipts}>Rebuild User Payment Cache</a>
       </div>;
     else
       MainApp = <p>Once logged in, you can start ordering coffees from your friends!</p>
@@ -64,7 +69,7 @@ var MyCoffeeApp = React.createClass({
 });
 
 ReactDOM.render(
-    <ReactIntl.IntlProvider locale="en">
+    <ReactIntl.IntlProvider locales={['en-AU', 'en-US']}>
         <MyCoffeeApp />
     </ReactIntl.IntlProvider>,
     document.getElementById('MyCoffeeApp')

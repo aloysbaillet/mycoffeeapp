@@ -2,7 +2,8 @@ var React = require('react');
 var Firebase = require('firebase');
 var ReactIntl = require('react-intl');
 var ReactFireMixin = require('reactfire');
-var C = require('./constants.js');
+
+var Checkbox = require('./check.jsx');
 
 var OrderRow = React.createClass({
   formatOrder: function(order){
@@ -20,32 +21,41 @@ var OrderRow = React.createClass({
     return milk + order.coffeeType + sug;
   },
 
-  onSelectClick: function(e){
-    this.props.model.selectOrder(this.props.order.key, true);
-  },
-
-  onDeselectClick: function(e){
-    this.props.model.selectOrder(this.props.order.key, false);
+  onSelectChange: function(sel, e){
+    this.props.model.selectOrder(this.props.order.key, sel);
   },
 
   onDelete: function(){
     this.props.model.deleteOrder(this.props.order.key);
   },
 
+  onNextValue: function(oldValue, props){
+    if(oldValue == null){
+      return true;
+    }
+    return !oldValue;
+  },
+
   render: function() {
     var sel;
+    var msg = '';
     if(!this.props.order.selected){
-      sel = <span>[<a href="#" onClick={this.onSelectClick}>Select</a>]</span>;
+      sel = false;
     }
     else{
       if(this.props.order.selectedByUid == this.props.model.uid)
-        sel = <span>[<a href="#" onClick={this.onDeselectClick}>Deselect</a>]</span>;
-      else
-        sel = <span>[Selected by {this.props.order.selectedByUserDisplayName}]</span>;
+        sel = true;
+      else{
+        sel = null;
+        msg = '[selected by ' + this.props.order.selectedByUserDisplayName + ']';
+      }
     }
     return (
       <li>
-        { sel } { this.formatOrder(this.props.order) } ( { this.props.order.clientName } <ReactIntl.FormattedRelative value={this.props.order.timestamp} /> )
+        <Checkbox checked={sel} onChange={this.onSelectChange} nextValue={this.onNextValue}>
+          {msg}
+          { this.formatOrder(this.props.order) } ( { this.props.order.clientName } <ReactIntl.FormattedRelative value={this.props.order.timestamp} /> )
+        </Checkbox>
         <span onClick={ this.onDelete }
               style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
           X

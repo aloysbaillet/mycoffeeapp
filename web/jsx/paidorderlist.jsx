@@ -19,14 +19,18 @@ var PaidOrderList = React.createClass({
   },
 
   render: function() {
-    var _this = this;
     var createItem = function(item, index) {
       return (
-        <li key={index}>{item.orderList.length} coffees paid by {item.payerName} on <ReactIntl.FormattedDate value={item.timestamp}/> at <ReactIntl.FormattedTime value={item.timestamp} hour="numeric" minute="numeric"/></li>
+        <li key={index}>{item.cost} <ReactIntl.FormattedPlural value={item.cost}
+                    one="coffee"
+                    other="coffees"
+                /> paid by {item.payerName} on <ReactIntl.FormattedDate value={item.timestamp}/> at <ReactIntl.FormattedTime value={item.timestamp} hour="numeric" minute="numeric"/></li>
       );
     };
+    var revOrderList = this.state.receiptList.slice();
+    revOrderList.reverse();
     return (
-      <ul>{ this.state.receiptList.map(createItem) }</ul>
+      <ul>{ revOrderList.map(createItem) }</ul>
     );
   }
 });

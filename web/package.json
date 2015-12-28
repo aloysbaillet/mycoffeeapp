@@ -36,6 +36,7 @@
     "firebase-util": "^0.2.5",
     "gulp-notify": "^2.2.0",
     "react": "^0.14.3",
+    "react-check3": "^0.1.1",
     "react-dom": "^0.14.3",
     "react-intl": "^2.0.0-beta-2",
     "react-select": "^1.0.0-beta8",
