@@ -38,6 +38,11 @@ var Model = {
     });
   },
 
+  deleteOrder: function(orderId) {
+    this.firebaseRef.child('orderList').child('pending').child(orderId).remove();
+    this.firebaseRef.child('orderList').child('pendingSelection').child(orderId).remove();
+  },
+
   selectOrder: function(orderId, selected) {
     var selData = {
       selected: selected,

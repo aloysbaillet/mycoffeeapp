@@ -5,18 +5,6 @@ var ReactFireMixin = require('reactfire');
 var C = require('./constants.js');
 
 var OrderRow = React.createClass({
-  mixins: [ReactFireMixin],
-
-  getInitialState: function() {
-    return {
-      order: {}
-    };
-  },
-
-  componentWillMount: function() {
-    this.bindAsObject(this.props.orderRef, 'order');
-  },
-
   formatOrder: function(order){
     var milk = "";
     if(order.milk)
@@ -33,31 +21,31 @@ var OrderRow = React.createClass({
   },
 
   onSelectClick: function(e){
-    this.props.model.selectOrder(this.props.orderRef.key(), true);
+    this.props.model.selectOrder(this.props.order.key, true);
   },
 
   onDeselectClick: function(e){
-    this.props.model.selectOrder(this.props.orderRef.key(), false);
+    this.props.model.selectOrder(this.props.order.key, false);
   },
 
   onDelete: function(){
-    this.orderRef.set(null);
+    this.props.model.deleteOrder(this.props.order.key);
   },
 
   render: function() {
     var sel;
-    if(!this.state.order.selected){
+    if(!this.props.order.selected){
       sel = <span>[<a href="#" onClick={this.onSelectClick}>Select</a>]</span>;
     }
     else{
-      if(this.state.order.selectedByUid == this.props.model.uid)
+      if(this.props.order.selectedByUid == this.props.model.uid)
         sel = <span>[<a href="#" onClick={this.onDeselectClick}>Deselect</a>]</span>;
       else
-        sel = <span>[Selected by {this.state.order.selectedByUserDisplayName}]</span>;
+        sel = <span>[Selected by {this.props.order.selectedByUserDisplayName}]</span>;
     }
     return (
       <li>
-        { sel } { this.formatOrder(this.state.order) } ( { this.state.order.clientName } <ReactIntl.FormattedRelative value={this.state.order.timestamp} /> )
+        { sel } { this.formatOrder(this.props.order) } ( { this.props.order.clientName } <ReactIntl.FormattedRelative value={this.props.order.timestamp} /> )
         <span onClick={ this.onDelete }
               style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
           X

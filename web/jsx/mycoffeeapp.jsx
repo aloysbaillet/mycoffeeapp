@@ -26,9 +26,6 @@ var MyCoffeeApp = React.createClass({
   },
 
   onLogin: function(uid){
-    this.setState({
-      uid: uid
-    });
     this.componentWillMount();
   },
 
@@ -36,6 +33,8 @@ var MyCoffeeApp = React.createClass({
     this.firebaseRef = new Firebase(C.BASE_FIREBASE_URL);
     if(this.firebaseRef.getAuth())
       this.setState({uid: this.firebaseRef.getAuth().uid});
+    else
+      this.setState({uid: null});
     this.model = Model;
     this.model.init(this.firebaseRef);
   },
