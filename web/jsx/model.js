@@ -81,7 +81,10 @@ var Model = {
   },
 
   selectAllPendingOrders: function(selected) {
-    this.firebaseRef.child('orderList').child('pending').once('value', function(snapshot){
+    this.firebaseRef
+    .child('orderList')
+    .child('pending')
+    .once('value', function(snapshot){
       for(var key in snapshot.val())
         this.selectOrder(key, selected);
     }, this);
@@ -113,7 +116,14 @@ var Model = {
         cache.lastPayment = receipt.timestamp;
         data[key] = cache;
       }
-      this.firebaseRef.update(data);
+      this.firebaseRef.update(data, function(error){
+        if(error){
+          console.log('updateUserPaymentCacheFromReceipts did not succeed!', error);
+        }
+        else{
+          console.log('updateUserPaymentCacheFromReceipts complete!');
+        }
+      });
     }, this);
   },
 
