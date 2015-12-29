@@ -75,7 +75,7 @@ var PendingOrderList = React.createClass({
   getPendingOrderList: function() {
     var orderList = [];
     var numSelected = 0;
-    for(i in this.state.pendingOrderList){
+    for(var i in this.state.pendingOrderList){
       order = this.state.pendingOrderList[i];
       orderList.push(order);
       if(order.selected && order.selectedByUid == this.props.model.uid)

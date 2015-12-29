@@ -24,7 +24,7 @@ var PayButton = React.createClass({
   onSelected: function(snapshot) {
     var numSelected = 0;
     var myPendingSelection = snapshot.val();
-    for(i in myPendingSelection){
+    for(var i in myPendingSelection){
       if(myPendingSelection[i].selected)
         numSelected += 1;
     }

@@ -55,7 +55,7 @@ var CandidateList = React.createClass({
   getCandidateList: function() {
     var candidateList = [];
     var done = {};
-    for(i in this.state.candidateMap){
+    for(var i in this.state.candidateMap){
       var candidate = this.state.candidateMap[i];
       if(!(candidate.credit)) candidate.credit = 0;
       if(!(candidate.lastPayment)) candidate.lastPayment = 0;

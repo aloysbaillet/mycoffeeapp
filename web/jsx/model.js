@@ -82,7 +82,7 @@ var Model = {
 
   selectAllPendingOrders: function(selected) {
     this.firebaseRef.child('orderList').child('pending').once('value', function(snapshot){
-      for(key in snapshot.val())
+      for(var key in snapshot.val())
         this.selectOrder(key, selected);
     }, this);
   },
@@ -102,7 +102,7 @@ var Model = {
     .once('value', function(snapshot){
       var receipts = snapshot.val();
       var data = {};
-      for(i in receipts){
+      for(var i in receipts){
         var receipt = receipts[i];
         var key = '/userPaymentCache/' + receipt.payerId;
         var cache = data[key];
@@ -131,7 +131,7 @@ var Model = {
       var data = {};
       var orderIdList = {};
       var cost = 0;
-      for(key in selected){
+      for(var key in selected){
         data['/orderList/pending/' + key] = null;
         data['/orderList/pendingSelection/' + key] = null;
         data['/orderList/paid/' + key] = selected[key];
@@ -150,7 +150,7 @@ var Model = {
       .child('userPaymentCache')
       .child(payerId)
       .once('value', function(snapshot){
-        data['/users/userPaymentCache/' + payerId + '/credit'] = snapshot.val().credit + cost;
+        data['/userPaymentCache/' + payerId + '/credit'] = snapshot.val().credit + cost;
         console.log('paySelectedOrders: data=', data);
         _this.firebaseRef.update(data, function(error){
           if(error){

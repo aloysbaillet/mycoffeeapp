@@ -40,7 +40,7 @@ var CoffeeOrder = React.createClass({
   onCoffeeTypeListValue: function(snapshot) {
     var options = [];
     var value = snapshot.val();
-    for(i in value){
+    for(var i in value){
       var coffeeType = value[i];
       options.push({ label: coffeeType.name,
                      value: coffeeType.shortName });
@@ -59,7 +59,7 @@ var CoffeeOrder = React.createClass({
   onSugarListValue: function(snapshot) {
     var options = [];
     var value = snapshot.val();
-    for(i in value){
+    for(var i in value){
       var sugar = value[i];
       options.push({ label: sugar.name,
                      value: sugar.quantity });
@@ -78,7 +78,7 @@ var CoffeeOrder = React.createClass({
   onMilkListValue: function(snapshot) {
     var options = [];
     var value = snapshot.val();
-    for(i in value){
+    for(var i in value){
       var milk = value[i];
       options.push({ label: milk.name,
                      value: milk.name });
@@ -98,7 +98,7 @@ var CoffeeOrder = React.createClass({
     var users = [];
     var userList = snapshot.val();
     var options = [];
-    for(i in userList){
+    for(var i in userList){
       options.push({ label: userList[i].displayName,
                      value: i });
     }
