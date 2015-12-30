@@ -39,7 +39,7 @@ var CandidateList = React.createClass({
     var order = snapshot.val();
     this.realCandidateList[order.uid] = order;
     this.setState({candidateMap: this.realCandidateList});
-    this.props.model.firebaseRef
+    this.props.model.groupRef
       .child('userPaymentCache')
       .child(order.uid)
       .once('value', this.onPaymentCacheAddedOrChanged.bind(null, order));
