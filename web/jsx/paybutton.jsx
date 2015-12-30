@@ -17,7 +17,6 @@ var PayButton = React.createClass({
   },
 
   componentWillUnmount: function() {
-    var orderListRef = this.props.model.groupRef.child('orderList').child('pending');
     this.ref.off('value', this.onSelected);
   },
 
