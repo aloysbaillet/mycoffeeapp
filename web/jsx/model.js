@@ -65,7 +65,7 @@ var Model = {
       .child('pending')
       .child(orderId)
       .transaction(function(currentData) {
-      for(i in currentData){
+      for(var i in currentData){
         if(!(i in selData)) selData[i] = currentData[i];
       }
       if (currentData === null || currentData.selectedByUid == undefined) {
