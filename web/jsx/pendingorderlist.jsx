@@ -43,7 +43,7 @@ var PendingOrderList = React.createClass({
   getNumSelected: function() {
     var numSelected = 0;
     for(var i in this.state.pendingOrderList){
-      order = this.state.pendingOrderList[i];
+      var order = this.state.pendingOrderList[i];
       if(order.selected && order.selectedByUid == this.props.model.uid)
         numSelected += 1;
     }
