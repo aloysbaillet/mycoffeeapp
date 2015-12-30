@@ -20,7 +20,7 @@ var PendingOrderList = React.createClass({
     this.bindAsArray(this.props.model.firebaseRef
       .child('orderList')
       .child('pending')
-      .orderByChild('uid')
+      .orderByChild('timestamp')
       , 'pendingOrderList');
   },
 
@@ -66,10 +66,12 @@ var PendingOrderList = React.createClass({
     var selAll;
     if(this.state.pendingOrderList.length>0)
       selAll = <Checkbox checked={sel} onChange={this.onSelectAll} nextValue={this.onNextValue}>Select All</Checkbox>;
+    var reversed = this.state.pendingOrderList.slice();
+    reversed.reverse();
     return (
       <form name="takeOrderForm" onSubmit={ this.handleSubmit }>
         {selAll} <PayButton model={this.props.model} payerId={this.props.model.uid} payerDisplayName={this.props.model.userDisplayName}/>
-        <ul>{ this.state.pendingOrderList.map(createItem) }</ul>
+        <ul>{ reversed.map(createItem) }</ul>
       </form>
     );
   }
