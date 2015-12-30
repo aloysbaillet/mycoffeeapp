@@ -1,4 +1,4 @@
-# README #
+# MyCoffeeApp #
 
 To see in action: https://mycoffeeapp.firebaseapp.com
 
@@ -9,8 +9,17 @@ To see in action: https://mycoffeeapp.firebaseapp.com
 
 ### To develop: ###
 
-* npm install
-* firebase serve
-* gulp
+* Install node.js
+```cd web
+npm install
+firebase serve& # starts the firebase server locally
+gulp& # watches for js changes and recompiles on the fly, notifies of errors as well!
+```
 * visit http://localhost:5000/
 
+### To Deploy: ###
+```npm run deploy```
+
+### To change the schema: ###
+* Edit the rules.yaml file (it's using the blaze format)
+* To rebuild the rules.json and upload it: ```npm run rules```
