@@ -17,7 +17,7 @@ var UserList = React.createClass({
   onExpand: function() {
     var ol = []
     for(var orderId in this.props.receipt.orderList){
-      this.props.model.firebaseRef
+      this.props.model.groupRef
       .child('orderList')
       .child('paid')
       .child(orderId)

@@ -13,7 +13,7 @@ var CandidateList = React.createClass({
 
   componentWillMount: function() {
     this.realCandidateList = {};
-    this.orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
+    this.orderListRef = this.props.model.groupRef.child('orderList').child('pending');
     this.orderListRef.on('child_added', this.onPendingOrderAddedOrChanged);
     this.orderListRef.on('child_changed', this.onPendingOrderAddedOrChanged);
     this.orderListRef.on('child_removed', this.onPendingOrderRemoved);

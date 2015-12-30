@@ -17,7 +17,7 @@ var PendingOrderList = React.createClass({
   },
 
   componentWillMount: function() {
-    this.bindAsArray(this.props.model.firebaseRef
+    this.bindAsArray(this.props.model.groupRef
       .child('orderList')
       .child('pending')
       .orderByChild('timestamp')

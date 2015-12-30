@@ -4,6 +4,8 @@ var C = require('./constants.js')
 var Model = {
   init: function(firebaseRef){
     this.firebaseRef = firebaseRef;
+    this.groupId = null; // will be set by mycoffeeapp
+    this.groupRef = null;
     var auth = this.firebaseRef.getAuth();
     if(auth){
       this.uid = auth.uid;
@@ -14,6 +16,14 @@ var Model = {
       this.uid = null;
       this.userDisplayName = '';
     }
+  },
+
+  setGroupId: function(groupId){
+    this.groupId = groupId;
+    if(groupId)
+      this.groupRef = this.firebaseRef.child('groupData').child(this.groupId);
+    else
+      this.groupRef = null;
   },
 
   formatOrder: function(order){
@@ -38,7 +48,10 @@ var Model = {
       payerName: ''
     }
     console.log('createOrder: data=', JSON.stringify(data));
-    this.firebaseRef.child('orderList').child('pending').push(data, function(error){
+    this.groupRef
+    .child('orderList')
+    .child('pending')
+    .push(data, function(error){
       if(error){
         console.log('Order creation did not succeed!', error);
       }
@@ -49,7 +62,11 @@ var Model = {
   },
 
   deleteOrder: function(orderId) {
-    this.firebaseRef.child('orderList').child('pending').child(orderId).remove();
+    this.groupRef
+    .child('orderList')
+    .child('pending')
+    .child(orderId)
+    .remove();
   },
 
   selectOrder: function(orderId, selected) {
@@ -60,7 +77,7 @@ var Model = {
       selectedByUserDisplayName: this.userDisplayName
     };
     console.log('selectOrder: data=', selData);
-    this.firebaseRef
+    this.groupRef
       .child('orderList')
       .child('pending')
       .child(orderId)
@@ -93,7 +110,7 @@ var Model = {
   },
 
   selectAllPendingOrders: function(selected) {
-    this.firebaseRef
+    this.groupRef
     .child('orderList')
     .child('pending')
     .once('value', function(snapshot){
@@ -104,7 +121,7 @@ var Model = {
 
   paySelectedOrders: function(payerId, payerDisplayName) {
     var _this = this;
-    this.firebaseRef
+    this.groupRef
     .child('orderList')
     .child('pending')
     .orderByChild('selectedByUid')
@@ -115,19 +132,22 @@ var Model = {
       var orderIdList = {};
       var cost = 0;
       for(var key in selected){
-        data['/orderList/pending/' + key] = null;
-        data['/orderList/paid/' + key] = selected[key];
+        data['/groupData/' + this.groupId + '/orderList/pending/' + key] = null;
+        data['/groupData/' + this.groupId + '/orderList/paid/' + key] = selected[key];
         orderIdList[key] = selected[key].uid;
         cost += 1;
       }
-      var receiptId = this.firebaseRef.child('receiptList').child('current').push().key();
+      var receiptId = this.groupRef
+      .child('receiptList')
+      .child('current')
+      .push().key();
       var receipt = {payerId: payerId,
                      payerName: payerDisplayName,
                      timestamp: Firebase.ServerValue.TIMESTAMP,
                      orderList: orderIdList,
                      cost: cost
                      };
-      data['/receiptList/current/' + receiptId] = receipt;
+      data['/groupData/' + this.groupId + '/receiptList/current/' + receiptId] = receipt;
       this.firebaseRef.update(data, function(error){
         if(error){
           console.log('Payment did not succeed!', error);
@@ -141,14 +161,14 @@ var Model = {
   },
 
   updateUserPaymentCacheFromReceipts: function() {
-    this.firebaseRef
+    this.groupRef
     .child('userPaymentCache')
     .once('value', function(snapshot){
       snapshot.forEach(function(childSnapshot) {
         childSnapshot.ref().remove();
       });
     });
-    this.firebaseRef
+    this.groupRef
     .child('receiptList')
     .child('current')
     .orderByChild('timestamp')
@@ -157,7 +177,7 @@ var Model = {
       var data = {};
       for(var i in receipts){
         var receipt = receipts[i];
-        var key = '/userPaymentCache/' + receipt.payerId;
+        var key = '/groupData/' + this.groupId + '/userPaymentCache/' + receipt.payerId;
         var cache = data[key] || {credit: 0, lastPayment: 0};
         cache.credit += receipt.cost;
         cache.lastPayment = receipt.timestamp;
@@ -165,7 +185,7 @@ var Model = {
         console.log('updateUserPaymentCacheFromReceipts payer uid=', receipt.payerId, ' cache=', cache);
         for(var orderId in receipt.orderList){
           clientId = receipt.orderList[orderId];
-          var clientKey = '/userPaymentCache/' + clientId;
+          var clientKey = '/groupData/' + this.groupId + '/userPaymentCache/' + clientId;
           clientCache = data[clientKey] || {credit: 0, lastPayment: 0};
           clientCache.credit -= 1;
           data[clientKey] = clientCache;

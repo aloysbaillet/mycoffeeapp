@@ -40,6 +40,7 @@
     "react-dom": "^0.14.3",
     "react-intl": "^2.0.0-beta-2",
     "react-select": "^1.0.0-beta8",
+    "react-timeago": "^2.2.1",
     "reactfire": "^0.5.1",
     "underscore": "^1.8.3"
   },

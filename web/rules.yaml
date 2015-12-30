@@ -23,6 +23,18 @@ schema:
         type: object
         properties:
           displayName: {type: string}
+          groupId: {type: string}
+
+    userGroups:
+      type: object
+      indexOn: name
+      $group:
+        type: object
+        properties:
+          name: {type: string}
+          # users:
+          #   type: object
+          #   $userId: {type: boolean} #value is meaningless
 
     userPreferences:
       type: object
@@ -32,14 +44,6 @@ schema:
           preferredCoffeeType: {type: string}
           preferredSugar: {type: number}
           preferredMilk: {type: string}
-
-    userPaymentCache:
-      type: object
-      $uid:
-        type: object
-        properties:
-          credit: {type: number}
-          lastPayment: {type: number}
 
     coffeeData:
       type: object
@@ -66,39 +70,52 @@ schema:
               name: {type: string}
               quantity: {type: number}
 
-    orderList:
+    groupData:
       type: object
-      properties:
-        pending:
-          type: object
-          indexOn: [uid, payerId, selectedByUid]
-          $order: {$ref: "#/definitions/order"}
-          properties:
-            selected: {type: boolean}
-            selectedTimestamp: {type: number}
-            selectedByUid: {type: string}
-            selectedByUserDisplayName: {type: string}
-        paid:
-          type: object
-          indexOn: timestamp
-          $order: {$ref: "#/definitions/order"}
+      $groupId:
+        type: object
+        properties:
+          userPaymentCache:
+            type: object
+            $uid:
+              type: object
+              properties:
+                credit: {type: number}
+                lastPayment: {type: number}
 
-    receiptList:
-      type: object
-      properties:
-        current:
-          type: object
-          indexOn: timestamp
-          $receipt:
+          orderList:
             type: object
             properties:
-              payerId: {type: string}
-              payerName: {type: string}
-              timestamp: {type: number}
-              cost: {type: number}
-              # orderList:
-              #   type: object
-              #   $orderId: {type: boolean}
+              pending:
+                type: object
+                indexOn: [uid, payerId, selectedByUid]
+                $order: {$ref: "#/definitions/order"}
+                properties:
+                  selected: {type: boolean}
+                  selectedTimestamp: {type: number}
+                  selectedByUid: {type: string}
+                  selectedByUserDisplayName: {type: string}
+              paid:
+                type: object
+                indexOn: timestamp
+                $order: {$ref: "#/definitions/order"}
+
+          receiptList:
+            type: object
+            properties:
+              current:
+                type: object
+                indexOn: timestamp
+                $receipt:
+                  type: object
+                  properties:
+                    payerId: {type: string}
+                    payerName: {type: string}
+                    timestamp: {type: number}
+                    cost: {type: number}
+                    # orderList:
+                    #   type: object
+                    #   $orderId: {type: string} # value is userId
 
 access:
   - location: /
