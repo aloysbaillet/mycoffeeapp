@@ -3,7 +3,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Firebase = require('firebase');
-// var Firebase = require('./firebase-debug.js');
 var FirebaseUtil = require('firebase-util');
 var ReactIntl = require('react-intl');
 
@@ -13,11 +12,12 @@ var CoffeeOrder = require('./coffeeorder.jsx');
 var PendingOrderList = require('./pendingorderlist.jsx');
 var PaidOrderList = require('./paidorderlist.jsx');
 var CandidateList = require('./candidatelist.jsx');
+var UserList = require('./userlist.jsx');
 
 var C = require('./constants.js');
 
-// FirebaseUtil.log('MyCoffeeApp starting!');
-// FirebaseUtil.logLevel(true);
+Firebase.util.log('MyCoffeeApp starting!');
+Firebase.util.logLevel(true);
 
 var MyCoffeeApp = React.createClass({
 
@@ -55,6 +55,8 @@ var MyCoffeeApp = React.createClass({
         <PendingOrderList model={this.model} />
         <h3>Candidates</h3>
         <CandidateList model={this.model} />
+        <h3>Users</h3>
+        <UserList model={this.model} />
         <h3>Paid Orders</h3>
         <PaidOrderList model={this.model} />
         <a href="#" onClick={this.updateUserPaymentCacheFromReceipts}>Rebuild User Payment Cache</a>

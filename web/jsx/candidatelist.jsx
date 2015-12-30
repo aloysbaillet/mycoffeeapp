@@ -1,8 +1,6 @@
 var React = require('react');
 var Firebase = require('firebase');
-var FirebaseUtil = require('firebase-util');
 var ReactIntl = require('react-intl');
-var _ = require('underscore');
 
 var PayButton = require('./paybutton.jsx');
 
