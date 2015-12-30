@@ -16,6 +16,16 @@ var Model = {
     }
   },
 
+  formatOrder: function(order){
+    var milk = "";
+    if(order.milk)
+      milk = order.milk + " ";
+    var sug = "";
+    if(order.sugar)
+      sug = " with " + order.sugar;
+    return milk + order.coffeeType + sug;
+  },
+
   createOrder: function(coffeeType, sugar, milk, uid, clientName){
     var data = {
       coffeeType: coffeeType,

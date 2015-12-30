@@ -3,7 +3,7 @@ var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
 
-var C = require('./constants.js');
+var PaidOrder = require('./paidorder.jsx');
 
 var PaidOrderList = React.createClass({
   mixins: [ReactFireMixin],
@@ -19,12 +19,10 @@ var PaidOrderList = React.createClass({
   },
 
   render: function() {
+    var _this = this;
     var createItem = function(item, index) {
       return (
-        <li key={index}>{item.cost} <ReactIntl.FormattedPlural value={item.cost}
-                    one="coffee"
-                    other="coffees"
-                /> paid by {item.payerName} on <ReactIntl.FormattedDate value={item.timestamp}/> at <ReactIntl.FormattedTime value={item.timestamp} hour="numeric" minute="numeric"/></li>
+        <li key={item['.key']}><PaidOrder model={_this.props.model} receipt={item} /></li>
       );
     };
     var revOrderList = this.state.receiptList.slice();

@@ -27,6 +27,8 @@ var CandidateList = React.createClass({
 
   onPaymentCacheAddedOrChanged: function(order, snapshot) {
     var credit = snapshot.val();
+    if(!credit)
+      return;
     order.credit = credit.credit;
     order.lastPayment = credit.lastPayment;
     this.realCandidateList[order.uid] = order;
