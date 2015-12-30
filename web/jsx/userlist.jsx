@@ -17,7 +17,7 @@ var UserList = React.createClass({
 
   componentWillMount: function() {
     this.bindAsArray(this.props.model.firebaseRef.child('users'), 'users');
-    this.bindAsArray(this.props.model.firebaseRef.child('userPaymentCache'), 'userPaymentCache');
+    this.bindAsArray(this.props.model.groupRef.child('userPaymentCache'), 'userPaymentCache');
   },
 
   getUserList: function() {

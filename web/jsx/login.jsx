@@ -25,11 +25,11 @@ var FacebookLogin = React.createClass({
     } else {
       if(authData){
         this.setState( {login: authData.facebook.displayName} );
-        this.props.onLogin(authData.uid);
+        this.props.onLogin();
       }
       else{
         this.setState( {login: null} );
-        this.props.onLogin(null);
+        this.props.onLogin();
       }
     }
   },

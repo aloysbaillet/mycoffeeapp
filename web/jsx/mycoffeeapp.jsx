@@ -32,12 +32,7 @@ var MyCoffeeApp = React.createClass({
     };
   },
 
-  onLogin: function(uid){
-    this.componentWillMount();
-  },
-
-  componentWillMount: function() {
-    this.firebaseRef = new Firebase(C.BASE_FIREBASE_URL);
+  onLogin: function(){
     this.model = Model;
     this.model.init(this.firebaseRef);
     if(this.firebaseRef.getAuth()){
@@ -54,7 +49,12 @@ var MyCoffeeApp = React.createClass({
       this.model.setGroupId(null);
       this.setState({uid: null, groupId: null});
     }
+  },
+
+  componentWillMount: function() {
+    this.firebaseRef = new Firebase(C.BASE_FIREBASE_URL);
     this.bindAsArray(this.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
+    this.onLogin();
   },
 
   updateUserPaymentCacheFromReceipts: function() {
@@ -93,6 +93,16 @@ var MyCoffeeApp = React.createClass({
 
   render: function() {
     var _this = this;
+    function createGroupItem(item, index){
+      return <li key={index} onClick={_this.onGroupSelect.bind(null, item['.key'])}><a href="#">{item.name}</a></li>
+    }
+    var GroupSelector = <div>
+      Choose a Group:<ul>{this.state.groupList.map(createGroupItem)}</ul><br/>
+      Add a group:
+      <input name="groupName" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
+      <button type="button" disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</button>
+    </div>;
+
     var MainApp;
     if(this.state.uid && this.state.groupId)
       MainApp = <div>
@@ -107,21 +117,15 @@ var MyCoffeeApp = React.createClass({
         <h3>Paid Orders</h3>
         <PaidOrderList model={this.model} />
         <a href="#" onClick={this.updateUserPaymentCacheFromReceipts}>Rebuild User Payment Cache</a>
+        <h3>Groups</h3>
+        {GroupSelector}
       </div>;
     else{
       if(!this.state.uid){
-        MainApp = <p>Once logged in, you can start ordering coffees from your friends!</p>
+        MainApp = <p>Once logged in, you can start ordering coffees from your friends!</p>;
       }
       else if(!this.state.groupId){
-        function createItem(item, index){
-          return <li key={index} onClick={_this.onGroupSelect.bind(null, item['.key'])}><a href="#">{item.name}</a></li>
-        }
-        MainApp = <div>
-          Choose a Group:<ul>{this.state.groupList.map(createItem)}</ul><br/>
-          Add a group:
-          <input name="groupName" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
-          <button type="button" disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</button>
-        </div>;
+        MainApp = GroupSelector;
       }
     }
     return (
