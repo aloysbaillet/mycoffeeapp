@@ -10,10 +10,15 @@ To see in action: https://mycoffeeapp.firebaseapp.com
 ### To develop: ###
 
 * Install node.js
-```cd web
+* Run this:
+```
+#!shell
+
+cd web
 npm install
 firebase serve& # starts the firebase server locally
 gulp& # watches for js changes and recompiles on the fly, notifies of errors as well!
+
 ```
 * visit http://localhost:5000/
 
