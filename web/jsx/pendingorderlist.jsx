@@ -17,8 +17,11 @@ var PendingOrderList = React.createClass({
   },
 
   componentWillMount: function() {
-    this.orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
-    this.bindAsArray(this.orderListRef, 'pendingOrderList');
+    this.bindAsArray(this.props.model.firebaseRef
+      .child('orderList')
+      .child('pending')
+      .orderByChild('uid')
+      , 'pendingOrderList');
   },
 
   handleSubmit: function(e) {

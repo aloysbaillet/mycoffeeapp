@@ -15,7 +15,7 @@ var PaidOrderList = React.createClass({
   },
 
   componentWillMount: function() {
-    this.bindAsArray(this.props.model.firebaseRef.child('receiptList').child('current').orderByChild('timestamp').limitToLast(20), 'receiptList');
+    this.bindAsArray(this.props.model.firebaseRef.child('receiptList').child('current').orderByChild('timestamp').limitToLast(50), 'receiptList');
   },
 
   render: function() {
