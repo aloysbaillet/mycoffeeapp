@@ -11,13 +11,13 @@ var PayButton = React.createClass({
   },
 
   componentWillMount: function() {
-    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pendingSelection');
+    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
     this.ref = orderListRef.orderByChild('selectedByUid').equalTo(this.props.model.uid);
     this.ref.on('value', this.onSelected);
   },
 
   componentWillUnmount: function() {
-    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pendingSelection');
+    var orderListRef = this.props.model.firebaseRef.child('orderList').child('pending');
     this.ref.off('value', this.onSelected);
   },
 

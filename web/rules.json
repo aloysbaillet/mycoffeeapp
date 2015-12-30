@@ -106,9 +106,25 @@
       ".write":"false",
       ".read":"((auth.uid!==null))",
       "pending": {
-        ".indexOn": ["uid", "payerId"],
+        ".indexOn": ["uid", "payerId", "selectedByUid"],
         ".write":"false",
         ".read":"((auth.uid!==null))",
+        "selected": {
+          ".write":"((((!newData.exists()||newData.isBoolean())&&auth.uid!==null)))",
+          ".read":"((auth.uid!==null))"
+        },
+        "selectedTimestamp": {
+          ".write":"((((!newData.exists()||newData.isNumber())&&auth.uid!==null)))",
+          ".read":"((auth.uid!==null))"
+        },
+        "selectedByUid": {
+          ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+          ".read":"((auth.uid!==null))"
+        },
+        "selectedByUserDisplayName": {
+          ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+          ".read":"((auth.uid!==null))"
+        },
         "$order": {
           ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('coffeeType').exists()||newData.child('coffeeType').isString())&&(!newData.child('sugar').exists()||newData.child('sugar').isNumber())&&(!newData.child('milk').exists()||newData.child('milk').isString())&&(!newData.child('uid').exists()||newData.child('uid').isString())&&(!newData.child('timestamp').exists()||newData.child('timestamp').isNumber())&&(!newData.child('clientName').exists()||newData.child('clientName').isString())&&(!newData.child('payerId').exists()||newData.child('payerId').isString())&&(!newData.child('payerName').exists()||newData.child('payerName').isString())&&auth.uid!==null)))",
           ".read":"((auth.uid!==null))",
@@ -141,31 +157,6 @@
             ".read":"((auth.uid!==null))"
           },
           "payerName": {
-            ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
-            ".read":"((auth.uid!==null))"
-          }
-        }
-      },
-      "pendingSelection": {
-        ".indexOn": ["selectedByUid"],
-        ".write":"false",
-        ".read":"((auth.uid!==null))",
-        "$selected": {
-          ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('selected').exists()||newData.child('selected').isBoolean())&&(!newData.child('selectedTimestamp').exists()||newData.child('selectedTimestamp').isNumber())&&(!newData.child('selectedByUid').exists()||newData.child('selectedByUid').isString())&&(!newData.child('selectedByUserDisplayName').exists()||newData.child('selectedByUserDisplayName').isString())&&auth.uid!==null)))",
-          ".read":"((auth.uid!==null))",
-          "selected": {
-            ".write":"((((!newData.exists()||newData.isBoolean())&&auth.uid!==null)))",
-            ".read":"((auth.uid!==null))"
-          },
-          "selectedTimestamp": {
-            ".write":"((((!newData.exists()||newData.isNumber())&&auth.uid!==null)))",
-            ".read":"((auth.uid!==null))"
-          },
-          "selectedByUid": {
-            ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
-            ".read":"((auth.uid!==null))"
-          },
-          "selectedByUserDisplayName": {
             ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
             ".read":"((auth.uid!==null))"
           }
@@ -221,7 +212,7 @@
         ".write":"false",
         ".read":"((auth.uid!==null))",
         "$receipt": {
-          ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('payerId').exists()||newData.child('payerId').isString())&&(!newData.child('payerName').exists()||newData.child('payerName').isString())&&(!newData.child('timestamp').exists()||newData.child('timestamp').isNumber())&&auth.uid!==null)))",
+          ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('payerId').exists()||newData.child('payerId').isString())&&(!newData.child('payerName').exists()||newData.child('payerName').isString())&&(!newData.child('timestamp').exists()||newData.child('timestamp').isNumber())&&(!newData.child('cost').exists()||newData.child('cost').isNumber())&&auth.uid!==null)))",
           ".read":"((auth.uid!==null))",
           "payerId": {
             ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
@@ -232,6 +223,10 @@
             ".read":"((auth.uid!==null))"
           },
           "timestamp": {
+            ".write":"((((!newData.exists()||newData.isNumber())&&auth.uid!==null)))",
+            ".read":"((auth.uid!==null))"
+          },
+          "cost": {
             ".write":"((((!newData.exists()||newData.isNumber())&&auth.uid!==null)))",
             ".read":"((auth.uid!==null))"
           }

@@ -22,11 +22,11 @@ var OrderRow = React.createClass({
   },
 
   onSelectChange: function(sel, e){
-    this.props.model.selectOrder(this.props.order.key, sel);
+    this.props.model.selectOrder(this.props.order['.key'], sel);
   },
 
   onDelete: function(){
-    this.props.model.deleteOrder(this.props.order.key);
+    this.props.model.deleteOrder(this.props.order['.key']);
   },
 
   onNextValue: function(oldValue, props){

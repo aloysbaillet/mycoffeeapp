@@ -41,9 +41,8 @@ var CandidateList = React.createClass({
     this.setState({candidateMap: this.realCandidateList});
     this.props.model.firebaseRef
       .child('userPaymentCache')
-      .orderByKey()
-      .equalTo(order.uid)
-      .once('child_added', this.onPaymentCacheAddedOrChanged.bind(null, order));
+      .child(order.uid)
+      .once('value', this.onPaymentCacheAddedOrChanged.bind(null, order));
   },
 
   onPendingOrderRemoved: function(snapshot) {
@@ -78,7 +77,7 @@ var CandidateList = React.createClass({
     var createItem = function(item, index) {
       var payment;
       if(item.lastPayment == 0)
-        payment = <span>new member!</span>;
+        payment = <span>never paid!</span>;
       else
         payment = <span>last payment: <ReactIntl.FormattedDate value={item.lastPayment}/></span>;
       return (

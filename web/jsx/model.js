@@ -40,7 +40,6 @@ var Model = {
 
   deleteOrder: function(orderId) {
     this.firebaseRef.child('orderList').child('pending').child(orderId).remove();
-    this.firebaseRef.child('orderList').child('pendingSelection').child(orderId).remove();
   },
 
   selectOrder: function(orderId, selected) {
@@ -53,10 +52,13 @@ var Model = {
     console.log('selectOrder: data=', selData);
     this.firebaseRef
       .child('orderList')
-      .child('pendingSelection')
+      .child('pending')
       .child(orderId)
       .transaction(function(currentData) {
-      if (currentData === null) {
+      for(i in currentData){
+        if(!(i in selData)) selData[i] = currentData[i];
+      }
+      if (currentData === null || currentData.selectedByUid == undefined) {
         return selData;
       } else {
         console.log('selectedByUid=', currentData.selectedByUid, ' uid=', selData.selectedByUid)
@@ -90,6 +92,44 @@ var Model = {
     }, this);
   },
 
+  paySelectedOrders: function(payerId, payerDisplayName) {
+    var _this = this;
+    this.firebaseRef
+    .child('orderList')
+    .child('pending')
+    .orderByChild('selectedByUid')
+    .equalTo(this.uid)
+    .once('value', function(selectedSnapshot){
+      var selected = selectedSnapshot.val();
+      var data = {};
+      var orderIdList = {};
+      var cost = 0;
+      for(var key in selected){
+        data['/orderList/pending/' + key] = null;
+        data['/orderList/paid/' + key] = selected[key];
+        orderIdList[key] = selected[key].uid;
+        cost += 1;
+      }
+      var receiptId = this.firebaseRef.child('receiptList').child('current').push().key();
+      var receipt = {payerId: payerId,
+                     payerName: payerDisplayName,
+                     timestamp: Firebase.ServerValue.TIMESTAMP,
+                     orderList: orderIdList,
+                     cost: cost
+                     };
+      data['/receiptList/current/' + receiptId] = receipt;
+      this.firebaseRef.update(data, function(error){
+        if(error){
+          console.log('Payment did not succeed!', error);
+        }
+        else{
+          console.log('Payment complete!');
+          _this.updateUserPaymentCacheFromReceipts();
+        }
+      });
+    }, this);
+  },
+
   updateUserPaymentCacheFromReceipts: function() {
     this.firebaseRef
     .child('userPaymentCache')
@@ -108,14 +148,21 @@ var Model = {
       for(var i in receipts){
         var receipt = receipts[i];
         var key = '/userPaymentCache/' + receipt.payerId;
-        var cache = data[key];
-        if(!cache)
-          cache = {credit: 0,
-                   lastPayment: 0};
+        var cache = data[key] || {credit: 0, lastPayment: 0};
         cache.credit += receipt.cost;
         cache.lastPayment = receipt.timestamp;
         data[key] = cache;
+        console.log('updateUserPaymentCacheFromReceipts payer uid=', receipt.payerId, ' cache=', cache);
+        for(var orderId in receipt.orderList){
+          clientId = receipt.orderList[orderId];
+          var clientKey = '/userPaymentCache/' + clientId;
+          clientCache = data[clientKey] || {credit: 0, lastPayment: 0};
+          clientCache.credit -= 1;
+          data[clientKey] = clientCache;
+          console.log('updateUserPaymentCacheFromReceipts client uid=', clientId, ' cache=', clientCache);
+        }
       }
+      console.log('updateUserPaymentCacheFromReceipts: data=', data);
       this.firebaseRef.update(data, function(error){
         if(error){
           console.log('updateUserPaymentCacheFromReceipts did not succeed!', error);
@@ -125,54 +172,8 @@ var Model = {
         }
       });
     }, this);
-  },
-
-  paySelectedOrders: function(payerId, payerDisplayName) {
-    var _this = this;
-    this.firebaseRef
-    .child('orderList')
-    .child('pendingSelection')
-    .orderByChild('selectedByUid')
-    .equalTo(this.uid)
-    .once('value', function(selectedSnapshot){
-      var selected = selectedSnapshot.val();
-      if(!selected)
-        return;
-      var data = {};
-      var orderIdList = {};
-      var cost = 0;
-      for(var key in selected){
-        data['/orderList/pending/' + key] = null;
-        data['/orderList/pendingSelection/' + key] = null;
-        data['/orderList/paid/' + key] = selected[key];
-        orderIdList[key] = true;
-        cost += 1;
-      }
-      var receiptId = _this.firebaseRef.child('receiptList').child('current').push().key();
-      var receipt = {payerId: payerId,
-                     payerName: payerDisplayName,
-                     timestamp: Firebase.ServerValue.TIMESTAMP,
-                     orderList: orderIdList,
-                     cost: cost
-                     };
-      data['/receiptList/current/' + receiptId] = receipt;
-      _this.firebaseRef
-      .child('userPaymentCache')
-      .child(payerId)
-      .once('value', function(snapshot){
-        data['/userPaymentCache/' + payerId + '/credit'] = snapshot.val().credit + cost;
-        console.log('paySelectedOrders: data=', data);
-        _this.firebaseRef.update(data, function(error){
-          if(error){
-            console.log('Payment did not succeed!', error);
-          }
-          else{
-            console.log('Payment complete!');
-          }
-        });
-      });
-    });
   }
+
 };
 
 module.exports = Model;
