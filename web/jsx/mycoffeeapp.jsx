@@ -6,6 +6,7 @@ var Firebase = require('firebase');
 var FirebaseUtil = require('firebase-util');
 var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
+var Select = require('react-select');
 
 var Model = require('./model.js');
 var FacebookLogin = require('./login.jsx');
@@ -61,8 +62,9 @@ var MyCoffeeApp = React.createClass({
     this.model.updateUserPaymentCacheFromReceipts();
   },
 
-  onGroupSelect: function(groupId) {
+  onGroupSelect: function(option) {
     var _this = this;
+    var groupId = option.value;
     this.firebaseRef
     .child('users')
     .child(this.state.uid)
@@ -91,21 +93,36 @@ var MyCoffeeApp = React.createClass({
     });
   },
 
-  render: function() {
+  getGroupSelector: function() {
     var _this = this;
     function createGroupItem(item, index){
       return <li key={index} onClick={_this.onGroupSelect.bind(null, item['.key'])}><a href="#">{item.name}</a></li>
     }
-    var GroupSelector = <div>
-      Choose a Group:<ul>{this.state.groupList.map(createGroupItem)}</ul><br/>
+    var groupList = []
+    for(var gid in this.state.groupList){
+      var group = this.state.groupList[gid];
+      groupList.push({value: group['.key'], label: group.name});
+    }
+    return <div>
+      Group: <Select
+                  name="groupSelect"
+                  value={this.state.groupId}
+                  options={groupList}
+                  placeholder="Select a Group"
+                  onChange={this.onGroupSelect}
+              />
       Add a group:
       <input name="groupName" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
       <button type="button" disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</button>
     </div>;
+  },
 
+  render: function() {
     var MainApp;
     if(this.state.uid && this.state.groupId)
-      MainApp = <div>
+      MainApp = <div key={this.state.groupId} > // this key= tricks makes the whole dif refresh on group change!
+        <h3>Group</h3>
+        {this.getGroupSelector()}
         <h3>New Order</h3>
         <CoffeeOrder model={this.model} />
         <h3>Pending Orders</h3>
@@ -117,15 +134,13 @@ var MyCoffeeApp = React.createClass({
         <h3>Paid Orders</h3>
         <PaidOrderList model={this.model} />
         <a href="#" onClick={this.updateUserPaymentCacheFromReceipts}>Rebuild User Payment Cache</a>
-        <h3>Groups</h3>
-        {GroupSelector}
       </div>;
     else{
       if(!this.state.uid){
         MainApp = <p>Once logged in, you can start ordering coffees from your friends!</p>;
       }
       else if(!this.state.groupId){
-        MainApp = GroupSelector;
+        MainApp = this.getGroupSelector();
       }
     }
     return (
