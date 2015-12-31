@@ -2,6 +2,7 @@ var React = require('react');
 var Firebase = require('firebase');
 var ReactIntl = require('react-intl');
 var ReactFireMixin = require('reactfire');
+var TimeAgo = require('react-timeago');
 
 var Checkbox = require('./check.jsx');
 
@@ -54,7 +55,7 @@ var OrderRow = React.createClass({
       <li>
         <Checkbox checked={sel} onChange={this.onSelectChange} nextValue={this.onNextValue}>
           {msg}
-          { this.formatOrder(this.props.order) } ( { this.props.order.clientName } <ReactIntl.FormattedRelative value={this.props.order.timestamp} /> )
+          { this.formatOrder(this.props.order) } ( { this.props.order.clientName } <TimeAgo date={this.props.order.timestamp} /> )
         </Checkbox>
         <span onClick={ this.onDelete }
               style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
