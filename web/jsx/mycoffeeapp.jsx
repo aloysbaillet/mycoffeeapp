@@ -15,6 +15,7 @@ var PendingOrderList = require('./pendingorderlist.jsx');
 var PaidOrderList = require('./paidorderlist.jsx');
 var CandidateList = require('./candidatelist.jsx');
 var UserList = require('./userlist.jsx');
+var ChatBox = require('./chatbox.jsx');
 
 var C = require('./constants.js');
 
@@ -132,6 +133,8 @@ var MyCoffeeApp = React.createClass({
         <CandidateList model={this.model} />
         <h3>Users</h3>
         <UserList model={this.model} />
+        <h3>Chat</h3>
+        <ChatBox model={this.model} />
         <h3>Paid Orders</h3>
         <PaidOrderList model={this.model} />
         <a href="#" onClick={this.updateUserPaymentCacheFromReceipts}>Rebuild User Payment Cache</a>

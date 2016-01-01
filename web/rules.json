@@ -255,6 +255,30 @@
               }
             }
           }
+        },
+        "messages": {
+          ".write":"false",
+          ".read":"((auth.uid!==null))",
+          "$message": {
+            ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('uid').exists()||newData.child('uid').isString())&&(!newData.child('timestamp').exists()||newData.child('timestamp').isNumber())&&(!newData.child('userDisplayName').exists()||newData.child('userDisplayName').isString())&&(!newData.child('message').exists()||newData.child('message').isString())&&auth.uid!==null)))",
+            ".read":"((auth.uid!==null))",
+            "uid": {
+              ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+              ".read":"((auth.uid!==null))"
+            },
+            "timestamp": {
+              ".write":"((((!newData.exists()||newData.isNumber())&&auth.uid!==null)))",
+              ".read":"((auth.uid!==null))"
+            },
+            "userDisplayName": {
+              ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+              ".read":"((auth.uid!==null))"
+            },
+            "message": {
+              ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+              ".read":"((auth.uid!==null))"
+            }
+          }
         }
       }
     }

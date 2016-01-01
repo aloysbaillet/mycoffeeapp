@@ -202,6 +202,15 @@ var Model = {
         }
       });
     }, this);
+  },
+
+  newChatMessage: function(message){
+    this.groupRef
+    .child('messages')
+    .push({uid: this.uid,
+       userDisplayName: this.userDisplayName,
+       timestamp: Firebase.ServerValue.TIMESTAMP,
+       text: message});
   }
 
 };

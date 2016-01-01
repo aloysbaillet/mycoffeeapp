@@ -117,6 +117,16 @@ schema:
                     #   type: object
                     #   $orderId: {type: string} # value is userId
 
+          messages:
+            type: object
+            $message:
+              type: object
+              properties:
+                uid: {type: string}
+                timestamp: {type: number}
+                userDisplayName: {type: string}
+                message: {type: string}
+
 access:
   - location: /
     read:  true && isLoggedIn()
