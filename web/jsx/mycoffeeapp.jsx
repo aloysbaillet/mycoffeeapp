@@ -46,6 +46,7 @@ var MyCoffeeApp = React.createClass({
         this.model.setGroupId(snapshot.val().groupId);
         this.setState({groupId: snapshot.val().groupId})
       }, this);
+      this.bindAsArray(this.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
     }
     else{
       this.model.setGroupId(null);
@@ -55,7 +56,6 @@ var MyCoffeeApp = React.createClass({
 
   componentWillMount: function() {
     this.firebaseRef = new Firebase(C.BASE_FIREBASE_URL);
-    this.bindAsArray(this.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
     this.onLogin();
   },
 
