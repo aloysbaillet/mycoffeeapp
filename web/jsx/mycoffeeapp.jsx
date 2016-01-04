@@ -8,6 +8,11 @@ var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
 var Select = require('react-select');
 
+if (!global.Intl) {
+  require('intl');
+  require('intl/locale-data/jsonp/en.js');
+}
+
 var Model = require('./model.js');
 var FacebookLogin = require('./login.jsx');
 var CoffeeOrder = require('./coffeeorder.jsx');
