@@ -9,7 +9,10 @@ var Model = {
     var auth = this.firebaseRef.getAuth();
     if(auth){
       this.uid = auth.uid;
-      this.userDisplayName = auth.facebook.displayName;
+      if(auth.provider == 'facebook')
+        this.userDisplayName = auth.facebook.displayName;
+      else if(auth.provider == 'google')
+        this.userDisplayName = auth.google.displayName;
       this.firebaseRef.child('users').child(this.uid).update({displayName: this.userDisplayName});
     }
     else{

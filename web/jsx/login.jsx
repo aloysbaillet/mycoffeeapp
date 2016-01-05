@@ -24,7 +24,11 @@ var FacebookLogin = React.createClass({
       this.props.onLogin(null);
     } else {
       if(authData){
-        this.setState( {login: authData.facebook.displayName} );
+        if(authData.provider == 'facebook')
+          this.setState( {login: authData.facebook.displayName} );
+        else if (authData.provider == 'google') {
+          this.setState( {login: authData.google.displayName} );
+        }
         this.props.onLogin();
       }
       else{
@@ -34,8 +38,12 @@ var FacebookLogin = React.createClass({
     }
   },
 
-  handleLogin: function(event) {
+  handleFacebookLogin: function(event) {
     this.props.model.firebaseRef.authWithOAuthPopup("facebook", this.handleAuth)
+  },
+
+  handleGoogleLogin: function(event) {
+    this.props.model.firebaseRef.authWithOAuthPopup("google", this.handleAuth)
   },
 
   handleLogout: function(event) {
@@ -52,7 +60,7 @@ var FacebookLogin = React.createClass({
       );
     else
       return (
-        <p>Login with <a href="#" data-provider="facebook" onClick={this.handleLogin}>Facebook</a>
+        <p>Login with <a href="#" data-provider="facebook" onClick={this.handleFacebookLogin}>Facebook</a> <a href="#" data-provider="facebook" onClick={this.handleGoogleLogin}>Google</a>
         </p>
       );
   }
