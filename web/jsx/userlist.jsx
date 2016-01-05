@@ -17,14 +17,14 @@ var UserList = React.createClass({
 
   componentWillMount: function() {
     this.bindAsArray(this.props.model.firebaseRef.child('users'), 'users');
-    this.bindAsArray(this.props.model.groupRef.child('userPaymentCache'), 'userPaymentCache');
+    this.bindAsObject(this.props.model.groupRef.child('userPaymentCache'), 'userPaymentCache');
   },
 
   getUserList: function() {
     var userList = [];
     for(var i in this.state.users){
       var user = _.extend(this.state.users[i], {});
-      var cache = this.state.userPaymentCache[i] || {credit:0, lastPayment: 0};
+      var cache = this.state.userPaymentCache[user['.key']] || {credit:0, lastPayment: 0};
       user.credit = cache.credit;
       user.lastPayment = cache.lastPayment;
       userList.push(user);
