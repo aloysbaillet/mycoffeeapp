@@ -8,7 +8,7 @@ console.log("\n *START* \n");
 
 var firebaseRef = new Firebase(C.BASE_FIREBASE_URL).child('coffeeData');
 
-var tokenGenerator = new FirebaseTokenGenerator(secret);
+var tokenGenerator = new FirebaseTokenGenerator('8wQstO5LRL2Orupe1JhrgNGKRQJ3Xeuhu4SnWiFI');
 var token = tokenGenerator.createToken({ "uid": "admin" }, {admin: true});
 
 firebaseRef.authWithCustomToken(token, function(error, authData) {

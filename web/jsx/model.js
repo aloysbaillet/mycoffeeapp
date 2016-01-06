@@ -187,7 +187,7 @@ var Model = {
         data[key] = cache;
         console.log('updateUserPaymentCacheFromReceipts payer uid=', receipt.payerId, ' cache=', cache);
         for(var orderId in receipt.orderList){
-          clientId = receipt.orderList[orderId];
+          var clientId = receipt.orderList[orderId];
           var clientKey = '/groupData/' + this.groupId + '/userPaymentCache/' + clientId;
           clientCache = data[clientKey] || {credit: 0, lastPayment: 0};
           clientCache.credit -= 1;
