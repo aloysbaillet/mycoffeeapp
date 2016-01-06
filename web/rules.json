@@ -3,6 +3,7 @@
     ".write":"false",
     ".read":"((auth.uid!==null))",
     "users": {
+      ".indexOn": ["displayName"],
       ".write":"false",
       ".read":"((auth.uid!==null))",
       "$uid": {

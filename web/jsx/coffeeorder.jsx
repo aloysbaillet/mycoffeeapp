@@ -101,7 +101,11 @@ var CoffeeOrder = React.createClass({
     for(var i in userList){
       options.push({ label: userList[i].displayName,
                      value: i });
+      console.log('user: ', userList[i].displayName)
     }
+    options.sort(function(a, b) {
+        return a.label < b.label ? -1 : 1;
+      });
     this.setState({userList: options});
   },
 

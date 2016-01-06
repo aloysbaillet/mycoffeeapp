@@ -19,6 +19,7 @@ schema:
   properties:
     users:
       type: object
+      indexOn: displayName
       $uid:
         type: object
         properties:
