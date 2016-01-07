@@ -1,3 +1,31 @@
+
+. {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.clearBoth {
+  clear:both;
+}
+
+.floatRight {
+  float: right;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  border-bottom: 1px solid #ccc;
+}
+
+li:last-child {
+  border: none;
+}
+
+
 /**
  * React Select
  * ============
@@ -7,6 +35,8 @@
 */
 .Select {
   position: relative;
+  float: left;
+  width: 25%;
 }
 .Select,
 .Select div,

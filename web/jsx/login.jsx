@@ -55,13 +55,13 @@ var FacebookLogin = React.createClass({
   render: function() {
     if(this.state.login)
       return (
-        <p>Logged in as { this.state.login } [<a href="#" onClick={this.handleLogout}>Logout</a>]
-        </p>
+        <div className="floatRight">Logged in as { this.state.login } [<a href="#" onClick={this.handleLogout}>Logout</a>]
+        </div>
       );
     else
       return (
-        <p>Login with <a href="#" data-provider="facebook" onClick={this.handleFacebookLogin}>Facebook</a> <a href="#" data-provider="facebook" onClick={this.handleGoogleLogin}>Google</a>
-        </p>
+        <div>Login with <a href="#" data-provider="facebook" onClick={this.handleFacebookLogin}>Facebook</a> <a href="#" data-provider="facebook" onClick={this.handleGoogleLogin}>Google</a>
+        </div>
       );
   }
 });

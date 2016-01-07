@@ -114,16 +114,20 @@ var MyCoffeeApp = React.createClass({
       groupList.push({value: group['.key'], label: group.name});
     }
     return <div>
-      Group: <Select
-                  name="groupSelect"
-                  value={this.state.groupId}
-                  options={groupList}
-                  placeholder="Select a Group"
-                  onChange={this.onGroupSelect}
-              />
-      Add a group:
-      <input name="groupName" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
-      <button type="button" disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</button>
+      <span>
+        <Select
+          name="groupSelect"
+          value={this.state.groupId}
+          options={groupList}
+          placeholder="Select a Group"
+          onChange={this.onGroupSelect}
+          />
+      </span>
+      <span className="floatRight">
+        Add a group:
+        <input name="groupName" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
+        <button type="button" disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</button>
+      </span>
     </div>;
   },
 
@@ -134,6 +138,7 @@ var MyCoffeeApp = React.createClass({
       MainApp = <div key={this.state.groupId} >
         <h3>Group</h3>
         {this.getGroupSelector()}
+        <br className="clearBoth" />
         <h3>New Order</h3>
         <CoffeeOrder model={this.model} />
         <h3>Pending Orders</h3>
@@ -158,6 +163,7 @@ var MyCoffeeApp = React.createClass({
     }
     return (
       <div>
+        <h2>My Coffee App</h2>
         <FacebookLogin onLogin={this.onLogin} model={this.model} />
         {MainApp}
       </div>
