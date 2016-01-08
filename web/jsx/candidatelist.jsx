@@ -1,6 +1,7 @@
 var React = require('react');
 var Firebase = require('firebase');
 var ReactIntl = require('react-intl');
+var ReactBootstrap = require('react-bootstrap');
 
 var PayButton = require('./paybutton.jsx');
 
@@ -81,11 +82,13 @@ var CandidateList = React.createClass({
       else
         payment = <span>last payment: <ReactIntl.FormattedDate value={item.lastPayment}/></span>;
       return (
-        <li key={index}>{item.clientName} ( credit: {item.credit}, {payment} ) <PayButton model={_this.props.model} payerId={item.uid} payerDisplayName={item.clientName}/></li>
+        <ReactBootstrap.ListGroupItem key={index}>
+          {item.clientName} ( credit: {item.credit}, {payment} ) <PayButton model={_this.props.model} payerId={item.uid} payerDisplayName={item.clientName}/>
+        </ReactBootstrap.ListGroupItem>
       );
     };
     return (
-      <ul>{ this.getCandidateList().map(createItem) }</ul>
+      <ReactBootstrap.ListGroup>{ this.getCandidateList().map(createItem) }</ReactBootstrap.ListGroup>
     );
   }
 });

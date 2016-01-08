@@ -2,7 +2,7 @@ var React = require('react');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
 var Select = require('react-select');
-var C = require('./constants.js');
+var Button = require('react-bootstrap').Button;
 
 var CoffeeOrder = React.createClass({
 
@@ -185,7 +185,7 @@ var CoffeeOrder = React.createClass({
             onChange={this.onSugarChange}
         />
         <br className="clearBoth" />
-        <button>Order</button>
+        <Button bsStyle="success" onClick={this.handleSubmit} >Order</Button>
       </form>
     );
   }

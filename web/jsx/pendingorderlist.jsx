@@ -1,8 +1,8 @@
 var React = require('react');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
+var ReactBootstrap = require('react-bootstrap');
 
-var C = require('./constants.js');
 var OrderRow = require('./orderrow.jsx');
 var PayButton = require('./paybutton.jsx');
 var Checkbox = require('./check.jsx');
@@ -71,7 +71,7 @@ var PendingOrderList = React.createClass({
     return (
       <form name="takeOrderForm" onSubmit={ this.handleSubmit }>
         {selAll} <PayButton model={this.props.model} payerId={this.props.model.uid} payerDisplayName={this.props.model.userDisplayName}/>
-        <ul>{ reversed.map(createItem) }</ul>
+        <ReactBootstrap.ListGroup>{ reversed.map(createItem) }</ReactBootstrap.ListGroup>
       </form>
     );
   }

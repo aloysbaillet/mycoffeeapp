@@ -7,7 +7,9 @@ var FirebaseUtil = require('firebase-util');
 var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
 var Select = require('react-select');
+var ReactBootstrap = require('react-bootstrap');
 
+// for iOS
 if (!global.Intl) {
   require('intl');
   require('intl/locale-data/jsonp/en.js');
@@ -123,35 +125,41 @@ var MyCoffeeApp = React.createClass({
           onChange={this.onGroupSelect}
           />
       </span>
-      <span className="floatRight">
-        Add a group:
-        <input name="groupName" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
-        <button type="button" disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</button>
-      </span>
+      <div className="input-group pull-right col-xs-2">
+        <ReactBootstrap.Input type="text" placeholder="New Group" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
+        <span className="input-group-btn">
+          <ReactBootstrap.Button disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</ReactBootstrap.Button>
+        </span>
+      </div>
     </div>;
   },
 
   render: function() {
     var MainApp;
     if(this.state.uid && this.state.groupId)
-      // this key= tricks makes the whole dif refresh on group change!
+      // this key={} tricks makes the whole dif refresh on group change!
       MainApp = <div key={this.state.groupId} >
-        <h3>Group</h3>
-        {this.getGroupSelector()}
-        <br className="clearBoth" />
-        <h3>New Order</h3>
-        <CoffeeOrder model={this.model} />
-        <h3>Pending Orders</h3>
-        <PendingOrderList model={this.model} />
-        <h3>Candidates</h3>
-        <CandidateList model={this.model} />
-        <h3>Users</h3>
-        <UserList model={this.model} />
-        <h3>Chat</h3>
-        <ChatBox model={this.model} />
-        <h3>Paid Orders</h3>
-        <PaidOrderList model={this.model} />
-        <a href="#" onClick={this.updateUserPaymentCacheFromReceipts}>Rebuild User Payment Cache</a>
+        <ReactBootstrap.Panel header="Group">
+          {this.getGroupSelector()}
+        </ReactBootstrap.Panel>
+        <ReactBootstrap.Panel header="New Order" bsStyle="primary">
+          <CoffeeOrder model={this.model} />
+        </ReactBootstrap.Panel>
+        <ReactBootstrap.Panel header="Pending Orders" bsStyle="info">
+          <PendingOrderList model={this.model} />
+        </ReactBootstrap.Panel>
+        <ReactBootstrap.Panel header="Candidates" bsStyle="info">
+          <CandidateList model={this.model} />
+        </ReactBootstrap.Panel>
+        <ReactBootstrap.Panel header="Users">
+          <UserList model={this.model} />
+        </ReactBootstrap.Panel>
+        <ReactBootstrap.Panel header="Chat">
+          <ChatBox model={this.model} />
+        </ReactBootstrap.Panel>
+        <ReactBootstrap.Panel header="Paid Orders">
+          <PaidOrderList model={this.model} />
+        </ReactBootstrap.Panel>
       </div>;
     else{
       if(!this.state.uid){
@@ -163,7 +171,7 @@ var MyCoffeeApp = React.createClass({
     }
     return (
       <div>
-        <h2>My Coffee App</h2>
+        <ReactBootstrap.PageHeader>My Coffee App</ReactBootstrap.PageHeader>
         <FacebookLogin onLogin={this.onLogin} model={this.model} />
         {MainApp}
       </div>

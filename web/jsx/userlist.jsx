@@ -4,6 +4,8 @@ var ReactFireMixin = require('reactfire');
 var FirebaseUtil = require('firebase-util');
 var ReactIntl = require('react-intl');
 var _ = require('underscore');
+var ReactBootstrap = require('react-bootstrap');
+
 
 var UserList = React.createClass({
   mixins: [ReactFireMixin],
@@ -47,11 +49,11 @@ var UserList = React.createClass({
       else
         payment = <span>last payment: <ReactIntl.FormattedDate value={item.lastPayment}/></span>;
       return (
-        <li key={index} >{item.displayName} ( credit: {item.credit}, {payment} )</li>
+        <ReactBootstrap.ListGroupItem key={index} >{item.displayName} ( credit: {item.credit}, {payment} )</ReactBootstrap.ListGroupItem>
       );
     };
     return (
-      <ul>{ this.getUserList().map(createItem) }</ul>
+      <ReactBootstrap.ListGroup>{ this.getUserList().map(createItem) }</ReactBootstrap.ListGroup>
     );
   }
 });

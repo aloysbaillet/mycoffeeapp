@@ -55,7 +55,7 @@ var FacebookLogin = React.createClass({
   render: function() {
     if(this.state.login)
       return (
-        <div className="floatRight">Logged in as { this.state.login } [<a href="#" onClick={this.handleLogout}>Logout</a>]
+        <div className="pull-right">Logged in as { this.state.login } [<a href="#" onClick={this.handleLogout}>Logout</a>]
         </div>
       );
     else

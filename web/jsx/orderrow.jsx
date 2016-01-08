@@ -2,9 +2,8 @@ var React = require('react');
 var Firebase = require('firebase');
 var ReactIntl = require('react-intl');
 var ReactFireMixin = require('reactfire');
-var TimeAgo = require('react-timeago');
-
-var Checkbox = require('./check.jsx');
+var ReactBootstrap = require('react-bootstrap');
+var moment = require('moment');
 
 var OrderRow = React.createClass({
   formatOrder: function(order){
@@ -22,19 +21,12 @@ var OrderRow = React.createClass({
     return milk + order.coffeeType + sug;
   },
 
-  onSelectChange: function(sel, e){
-    this.props.model.selectOrder(this.props.order['.key'], sel);
+  onSelectChange: function(){
+    this.props.model.selectOrder(this.props.order['.key'], this.refs.selected.getChecked());
   },
 
   onDelete: function(){
     this.props.model.deleteOrder(this.props.order['.key']);
-  },
-
-  onNextValue: function(oldValue, props){
-    if(oldValue == null){
-      return true;
-    }
-    return !oldValue;
   },
 
   render: function() {
@@ -51,17 +43,16 @@ var OrderRow = React.createClass({
         msg = '[selected by ' + this.props.order.selectedByUserDisplayName + ']';
       }
     }
+    var label = msg + this.formatOrder(this.props.order)  + " (" + this.props.order.clientName + " " + moment(this.props.order.timestamp).fromNow() + ")";
     return (
-      <li>
-        <Checkbox checked={sel} onChange={this.onSelectChange} nextValue={this.onNextValue}>
-          {msg}
-          { this.formatOrder(this.props.order) } ( { this.props.order.clientName } <TimeAgo date={this.props.order.timestamp} /> )
-        </Checkbox>
-        <span onClick={ this.onDelete }
-              style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
-          X
-        </span>
-      </li>
+      <ReactBootstrap.ListGroupItem>
+        <div className="input-group">
+          <ReactBootstrap.Input type="checkbox" checked={sel} onChange={this.onSelectChange} ref="selected" label={label} />
+          <span className="input-group-btn">
+            <ReactBootstrap.Button bsStyle="danger" onClick={this.onDelete}>Cancel</ReactBootstrap.Button>
+          </span>
+        </div>
+      </ReactBootstrap.ListGroupItem>
     );
   }
 });

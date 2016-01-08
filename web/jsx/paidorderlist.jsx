@@ -2,6 +2,7 @@ var React = require('react');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
+var ReactBootstrap = require('react-bootstrap');
 
 var PaidOrder = require('./paidorder.jsx');
 
@@ -10,7 +11,8 @@ var PaidOrderList = React.createClass({
 
   getInitialState: function() {
     return {
-      receiptList: []
+      receiptList: [],
+      expanded: false
     };
   },
 
@@ -22,13 +24,19 @@ var PaidOrderList = React.createClass({
     var _this = this;
     var createItem = function(item, index) {
       return (
-        <li key={item['.key']}><PaidOrder model={_this.props.model} receipt={item} /></li>
+        <ReactBootstrap.ListGroupItem key={item['.key']}><PaidOrder model={_this.props.model} receipt={item} /></ReactBootstrap.ListGroupItem>
       );
     };
     var revOrderList = this.state.receiptList.slice();
     revOrderList.reverse();
     return (
-      <ul>{ revOrderList.map(createItem) }</ul>
+      <div>
+      <ReactBootstrap.Button onClick={ ()=> this.setState({ expanded: !this.state.expanded })}>{this.state.expanded?"Hide":"Show"}</ReactBootstrap.Button>
+      <ReactBootstrap.Panel collapsible expanded={this.state.expanded}>
+        <ReactBootstrap.ListGroup>{ revOrderList.map(createItem) }</ReactBootstrap.ListGroup>
+        <ReactBootstrap.Button onClick={this.updateUserPaymentCacheFromReceipts}>Rebuild User Payment Cache</ReactBootstrap.Button>
+      </ReactBootstrap.Panel>
+      </div>
     );
   }
 });

@@ -1,18 +1,19 @@
 var React = require('react');
 var ReactFireMixin = require('reactfire');
 var TimeAgo = require('react-timeago');
+var ReactBootstrap = require('react-bootstrap');
 
 var ChatMessages = React.createClass({
     render() {
-        return <ul>{this.renderMessages()}</ul>;
+        return <ReactBootstrap.ListGroup>{this.renderMessages()}</ReactBootstrap.ListGroup>;
     },
 
     renderMessages() {
         return this.props.messages.map(function (message) {
-            return <li key={message['.key']}>
+            return <ReactBootstrap.ListGroupItem key={message['.key']}>
                 <strong>{message.userDisplayName} (<TimeAgo date={message.timestamp} />)</strong>:
                 {message.text}
-            </li>
+            </ReactBootstrap.ListGroupItem>
         });
     }
 });
@@ -20,14 +21,19 @@ var ChatMessages = React.createClass({
 var ChatInput = React.createClass({
   sendMessage(e) {
     e.preventDefault();
-    var message = this.refs.input.value;
+    var message = this.refs.input.getValue();
     this.props.model.newChatMessage(message);
     this.refs.input.value = '';
   },
 
   render() {
     return <form onSubmit={this.sendMessage}>
-        <input ref="input" />
+        <div className="input-group">
+          <ReactBootstrap.Input type="text" placeholder="Chat a bit..." ref="input"/>
+          <span className="input-group-btn">
+            <ReactBootstrap.Button onClick={this.sendMessage}>Post</ReactBootstrap.Button>
+          </span>
+        </div>
     </form>;
   }
 });

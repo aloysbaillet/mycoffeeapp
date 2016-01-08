@@ -1,7 +1,6 @@
 var React = require('react');
 var Firebase = require('firebase');
-
-var C = require('./constants.js');
+var Button = require('react-bootstrap').Button;
 
 var PayButton = React.createClass({
   getInitialState: function() {
@@ -39,7 +38,7 @@ var PayButton = React.createClass({
     if(this.state.numSelected){
       var payMsg = isMePaying ? "Pay " : "Make " + this.props.payerDisplayName + " pay ";
       return (
-        <a href="#" onClick={this.onClick}>{payMsg} for { this.state.numSelected } coffees</a>
+        <Button bsStyle="success" onClick={this.onClick} >{payMsg} for { this.state.numSelected } coffees</Button>
       );
     }
     else{
