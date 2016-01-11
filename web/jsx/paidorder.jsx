@@ -5,6 +5,8 @@ var FirebaseUtil = require('firebase-util');
 var ReactIntl = require('react-intl');
 var _ = require('underscore');
 
+var FormattedDate = require('./formatteddate');
+
 var UserList = React.createClass({
   mixins: [ReactFireMixin],
 
@@ -50,8 +52,7 @@ var UserList = React.createClass({
           other="coffees"
         />&nbsp;
         paid by {this.props.receipt.payerName} on&nbsp;
-        <ReactIntl.FormattedDate value={this.props.receipt.timestamp}/>&nbsp;
-        at <ReactIntl.FormattedTime value={this.props.receipt.timestamp} hour="numeric" minute="numeric"/>&nbsp;
+        <FormattedDate value={this.props.receipt.timestamp}/>&nbsp;
         {orders}
       </span>
     );

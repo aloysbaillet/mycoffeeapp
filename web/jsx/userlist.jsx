@@ -6,6 +6,8 @@ var ReactIntl = require('react-intl');
 var _ = require('underscore');
 var ReactBootstrap = require('react-bootstrap');
 
+var FormattedDate = require('./formatteddate');
+
 
 var UserList = React.createClass({
   mixins: [ReactFireMixin],
@@ -47,7 +49,7 @@ var UserList = React.createClass({
       if(item.lastPayment == 0)
         payment = <span>never paid!</span>;
       else
-        payment = <span>last payment: <ReactIntl.FormattedDate value={item.lastPayment}/></span>;
+        payment = <span>last payment on <FormattedDate value={item.lastPayment}/></span>;
       return (
         <ReactBootstrap.ListGroupItem key={index} >{item.displayName} ( credit: {item.credit}, {payment} )</ReactBootstrap.ListGroupItem>
       );
