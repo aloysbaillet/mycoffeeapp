@@ -198,7 +198,7 @@ var Model = {
       for(var i in legacyReceipts){
         this.updateUserPaymentCacheFromReceipt(legacyReceipts[i], data);
       }
-      var currentReceipts = snapshot.child('legacy').val();
+      var currentReceipts = snapshot.child('current').val();
       for(var i in currentReceipts){
         this.updateUserPaymentCacheFromReceipt(currentReceipts[i], data);
       }
