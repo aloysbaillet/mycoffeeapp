@@ -20,6 +20,10 @@ var PaidOrderList = React.createClass({
     this.bindAsArray(this.props.model.groupRef.child('receiptList').child('current').orderByChild('timestamp').limitToLast(50), 'receiptList');
   },
 
+  updateUserPaymentCacheFromReceipts: function() {
+    this.props.model.updateUserPaymentCacheFromReceipts();
+  },
+
   render: function() {
     var _this = this;
     var createItem = function(item, index) {

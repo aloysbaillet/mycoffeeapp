@@ -163,6 +163,24 @@ var Model = {
     }, this);
   },
 
+  updateUserPaymentCacheFromReceipt: function(receipt, data) {
+    console.log('receipt: ', receipt);
+    var key = '/groupData/' + this.groupId + '/userPaymentCache/' + receipt.payerId;
+    var cache = data[key] || {credit: 0, lastPayment: 0};
+    cache.credit += receipt.cost;
+    cache.lastPayment = receipt.timestamp;
+    data[key] = cache;
+    console.log('updateUserPaymentCacheFromReceipts payer uid=', receipt.payerId, ' cache=', cache);
+    for(var orderId in receipt.orderList){
+      var clientId = receipt.orderList[orderId];
+      var clientKey = '/groupData/' + this.groupId + '/userPaymentCache/' + clientId;
+      var clientCache = data[clientKey] || {credit: 0, lastPayment: 0};
+      clientCache.credit -= 1;
+      data[clientKey] = clientCache;
+      console.log('updateUserPaymentCacheFromReceipts client uid=', clientId, ' cache=', clientCache);
+    }
+  },
+
   updateUserPaymentCacheFromReceipts: function() {
     this.groupRef
     .child('userPaymentCache')
@@ -173,27 +191,16 @@ var Model = {
     });
     this.groupRef
     .child('receiptList')
-    .child('current')
     .orderByChild('timestamp')
     .once('value', function(snapshot){
-      var receipts = snapshot.val();
       var data = {};
-      for(var i in receipts){
-        var receipt = receipts[i];
-        var key = '/groupData/' + this.groupId + '/userPaymentCache/' + receipt.payerId;
-        var cache = data[key] || {credit: 0, lastPayment: 0};
-        cache.credit += receipt.cost;
-        cache.lastPayment = receipt.timestamp;
-        data[key] = cache;
-        console.log('updateUserPaymentCacheFromReceipts payer uid=', receipt.payerId, ' cache=', cache);
-        for(var orderId in receipt.orderList){
-          var clientId = receipt.orderList[orderId];
-          var clientKey = '/groupData/' + this.groupId + '/userPaymentCache/' + clientId;
-          var clientCache = data[clientKey] || {credit: 0, lastPayment: 0};
-          clientCache.credit -= 1;
-          data[clientKey] = clientCache;
-          console.log('updateUserPaymentCacheFromReceipts client uid=', clientId, ' cache=', clientCache);
-        }
+      var legacyReceipts = snapshot.child('legacy').val();
+      for(var i in legacyReceipts){
+        this.updateUserPaymentCacheFromReceipt(legacyReceipts[i], data);
+      }
+      var currentReceipts = snapshot.child('legacy').val();
+      for(var i in currentReceipts){
+        this.updateUserPaymentCacheFromReceipt(currentReceipts[i], data);
       }
       console.log('updateUserPaymentCacheFromReceipts: data=', data);
       this.firebaseRef.update(data, function(error){

@@ -70,10 +70,6 @@ var MyCoffeeApp = React.createClass({
     this.onLogin();
   },
 
-  updateUserPaymentCacheFromReceipts: function() {
-    this.model.updateUserPaymentCacheFromReceipts();
-  },
-
   onGroupSelect: function(option) {
     var _this = this;
     var groupId = option.value;
