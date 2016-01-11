@@ -3,12 +3,13 @@ var FirebaseTokenGenerator = require("firebase-token-generator");
 
 var C = require('../jsx/constants.js');
 var coffeeData = require("./coffeeData.json");
+var secret = require('./firebase-secret')
 
 console.log("\n *START* \n");
 
 var firebaseRef = new Firebase(C.BASE_FIREBASE_URL).child('coffeeData');
 
-var tokenGenerator = new FirebaseTokenGenerator('8wQstO5LRL2Orupe1JhrgNGKRQJ3Xeuhu4SnWiFI');
+var tokenGenerator = new FirebaseTokenGenerator(secret);
 var token = tokenGenerator.createToken({ "uid": "admin" }, {admin: true});
 
 firebaseRef.authWithCustomToken(token, function(error, authData) {
