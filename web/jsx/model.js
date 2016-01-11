@@ -80,6 +80,7 @@ var Model = {
       selectedByUserDisplayName: this.userDisplayName
     };
     console.log('selectOrder: data=', selData);
+    var _this = this;
     this.groupRef
       .child('orderList')
       .child('pending')
@@ -88,18 +89,12 @@ var Model = {
       for(var i in currentData){
         if(!(i in selData)) selData[i] = currentData[i];
       }
-      if (currentData === null || currentData.selectedByUid == undefined) {
-        return selData;
-      } else {
-        console.log('selectedByUid=', currentData.selectedByUid, ' uid=', selData.selectedByUid)
-        if(currentData.selectedByUid == selData.selectedByUid){
-          return selData;
-        }
-        else{
-          console.log('Order already selected by: ', currentData.selectedByUserDisplayName, currentData);
-          return; // Abort the transaction.
-        }
+      if(currentData != null && currentData.selected && currentData.selectedByUid != _this.uid){
+	    console.log('Order already selected by: ', currentData.selectedByUserDisplayName, currentData);
+        return; // Abort the transaction.
       }
+      console.log('selectedByUid=', currentData.selectedByUid, ' uid=', selData.selectedByUid);
+      return selData;
     }, function(error, committed, snapshot) {
       if (error) {
         console.log('Transaction failed abnormally!', error);
