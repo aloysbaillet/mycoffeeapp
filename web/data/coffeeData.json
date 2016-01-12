@@ -24,6 +24,10 @@
   {
   "name": "long black",
   "shortName": "LB"
+  },
+  {
+  "name": "mocha",
+  "shortname": "mocha"
   }
  ],
   "sugarTypeList":
