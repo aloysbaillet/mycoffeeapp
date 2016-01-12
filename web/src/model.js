@@ -1,4 +1,3 @@
-require('firebase-util');
 var C = require('./constants.js')
 
 var Model = {

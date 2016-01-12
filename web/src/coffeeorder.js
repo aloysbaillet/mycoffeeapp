@@ -1,6 +1,4 @@
 var React = require('react');
-var Firebase = require('firebase');
-var ReactFireMixin = require('reactfire');
 var Select = require('react-select');
 var Button = require('react-bootstrap').Button;
 
@@ -52,8 +50,8 @@ var CoffeeOrder = React.createClass({
     var coffeeType = '';
     if(value)
       coffeeType = value.value;
-    this.setState({coffeeType: coffeeType})
-    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredCoffeeType: coffeeType})
+    this.setState({coffeeType: coffeeType});
+    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredCoffeeType: coffeeType});
   },
 
   onSugarListValue: function(snapshot) {
@@ -71,8 +69,8 @@ var CoffeeOrder = React.createClass({
     var sugar = 0;
     if(value)
       sugar = value.value;
-    this.setState({sugar: sugar})
-    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredSugar: sugar})
+    this.setState({sugar: sugar});
+    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredSugar: sugar});
   },
 
   onMilkListValue: function(snapshot) {
@@ -91,7 +89,7 @@ var CoffeeOrder = React.createClass({
     if(value)
       milk = value.value;
     this.setState({milk: milk});
-    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredMilk: milk})
+    this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredMilk: milk});
   },
 
   onUserListValue: function(snapshot) {

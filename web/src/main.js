@@ -1,13 +1,9 @@
-'use strict';
-
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Firebase = require('firebase');
-var FirebaseUtil = require('firebase-util');
-var ReactFireMixin = require('reactfire');
-var ReactIntl = require('react-intl');
-var Select = require('react-select');
-var ReactBootstrap = require('react-bootstrap');
+import Firebase from 'firebase';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {IntlProvider} from 'react-intl';
+import Select from 'react-select';
+import {PageHeader, Panel, Input, Button} from 'react-bootstrap';
 
 // for iOS
 if (!global.Intl) {
@@ -15,29 +11,23 @@ if (!global.Intl) {
   require('intl/locale-data/jsonp/en.js');
 }
 
-var Model = require('./model.js');
-var FacebookLogin = require('./login.jsx');
-var CoffeeOrder = require('./coffeeorder.jsx');
-var PendingOrderList = require('./pendingorderlist.jsx');
-var PaidOrderList = require('./paidorderlist.jsx');
-var CandidateList = require('./candidatelist.jsx');
-var UserList = require('./userlist.jsx');
-var ChatBox = require('./chatbox.jsx');
-
-var C = require('./constants.js');
-
-Firebase.util.log('MyCoffeeApp starting!');
-Firebase.util.logLevel(true);
+import Model from './model.js';
+import FacebookLogin from './login.js';
+import GroupSelect from './groupselect.js';
+import CoffeeOrder from './coffeeorder.js';
+import PendingOrderList from './pendingorderlist.js';
+import PaidOrderList from './paidorderlist.js';
+import CandidateList from './candidatelist.js';
+import UserList from './userlist.js';
+import ChatBox from './chatbox.js';
+import C from './constants.js';
 
 var MyCoffeeApp = React.createClass({
-  mixins: [ReactFireMixin],
 
   getInitialState: function() {
     return {
       uid: null,
       groupId: null,
-      groupList: [],
-      groupNameToAdd: ''
     };
   },
 
@@ -53,10 +43,6 @@ var MyCoffeeApp = React.createClass({
         this.model.setGroupId(snapshot.val().groupId);
         this.setState({groupId: snapshot.val().groupId})
       }, this);
-      if(!this.bound){
-        this.bindAsArray(this.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
-        this.bound = true;
-      }
     }
     else{
       this.model.setGroupId(null);
@@ -66,7 +52,6 @@ var MyCoffeeApp = React.createClass({
 
   componentWillMount: function() {
     this.firebaseRef = new Firebase(C.BASE_FIREBASE_URL);
-    this.bound = false;
     this.onLogin();
   },
 
@@ -122,9 +107,9 @@ var MyCoffeeApp = React.createClass({
           />
       </span>
       <div className="input-group pull-right col-xs-2">
-        <ReactBootstrap.Input type="text" placeholder="New Group" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
+        <Input type="text" placeholder="New Group" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
         <span className="input-group-btn">
-          <ReactBootstrap.Button disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</ReactBootstrap.Button>
+          <Button disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</Button>
         </span>
       </div>
     </div>;
@@ -135,27 +120,27 @@ var MyCoffeeApp = React.createClass({
     if(this.state.uid && this.state.groupId)
       // this key={} tricks makes the whole dif refresh on group change!
       MainApp = <div key={this.state.groupId} >
-        <ReactBootstrap.Panel header="Group">
+        <Panel header="Group">
           {this.getGroupSelector()}
-        </ReactBootstrap.Panel>
-        <ReactBootstrap.Panel header="New Order" bsStyle="primary">
+        </Panel>
+        <Panel header="New Order" bsStyle="primary">
           <CoffeeOrder model={this.model} />
-        </ReactBootstrap.Panel>
-        <ReactBootstrap.Panel header="Pending Orders" bsStyle="info">
+        </Panel>
+        <Panel header="Pending Orders" bsStyle="info">
           <PendingOrderList model={this.model} />
-        </ReactBootstrap.Panel>
-        <ReactBootstrap.Panel header="Candidates" bsStyle="info">
+        </Panel>
+        <Panel header="Candidates" bsStyle="info">
           <CandidateList model={this.model} />
-        </ReactBootstrap.Panel>
-        <ReactBootstrap.Panel header="Users">
+        </Panel>
+        <Panel header="Users">
           <UserList model={this.model} />
-        </ReactBootstrap.Panel>
-        <ReactBootstrap.Panel header="Chat">
+        </Panel>
+        <Panel header="Chat">
           <ChatBox model={this.model} />
-        </ReactBootstrap.Panel>
-        <ReactBootstrap.Panel header="Paid Orders">
+        </Panel>
+        <Panel header="Paid Orders">
           <PaidOrderList model={this.model} />
-        </ReactBootstrap.Panel>
+        </Panel>
       </div>;
     else{
       if(!this.state.uid){
@@ -167,7 +152,7 @@ var MyCoffeeApp = React.createClass({
     }
     return (
       <div>
-        <ReactBootstrap.PageHeader>My Coffee App</ReactBootstrap.PageHeader>
+        <PageHeader>My Coffee App</PageHeader>
         <FacebookLogin onLogin={this.onLogin} model={this.model} />
         {MainApp}
       </div>
@@ -176,8 +161,8 @@ var MyCoffeeApp = React.createClass({
 });
 
 ReactDOM.render(
-    <ReactIntl.IntlProvider locales={['en-AU', 'en-US']}>
+    <IntlProvider locales={['en-AU', 'en-US']}>
         <MyCoffeeApp />
-    </ReactIntl.IntlProvider>,
+    </IntlProvider>,
     document.getElementById('MyCoffeeApp')
 );
