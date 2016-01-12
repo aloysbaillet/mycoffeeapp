@@ -163,7 +163,7 @@ var Model = {
     var key = '/groupData/' + this.groupId + '/userPaymentCache/' + receipt.payerId;
     var cache = data[key] || {credit: 0, lastPayment: 0};
     cache.credit += receipt.cost;
-    cache.lastPayment = receipt.timestamp;
+    cache.lastPayment = Math.max(receipt.timestamp, cache.lastPayment);
     data[key] = cache;
     console.log('updateUserPaymentCacheFromReceipts payer uid=', receipt.payerId, ' cache=', cache);
     for(var orderId in receipt.orderList){
