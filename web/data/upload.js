@@ -1,7 +1,7 @@
 var Firebase = require('firebase');
 var FirebaseTokenGenerator = require("firebase-token-generator");
 
-var C = require('../jsx/constants.js');
+var C = require('../src/constants.js');
 var coffeeData = require("./coffeeData.json");
 var secret = require('./firebase-secret')
 
