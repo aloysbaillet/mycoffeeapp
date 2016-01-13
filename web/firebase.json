@@ -1,6 +1,6 @@
 {
   "firebase": "mycoffeeapp",
-  "public": "public",
+  "public": "target",
   "ignore": [
     "firebase.json",
     "**/.*",

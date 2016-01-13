@@ -43,9 +43,13 @@ module.exports = {
   module: {
     loaders: [
       {test: /\.js$/, exclude: /node_modules/, loader: 'babel'},
-      {test: /\.scss$/, loader: ExtractTextPlugin.extract(
-        'css!autoprefixer-loader?{browsers:["last 3 versions", "Firefox ESR"]}!sass'
-      )}
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
+      { test: /\.ico/, loader: "file" },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
+      { test: /\.(woff|woff2)$/, loader:"url?prefix=font/&limit=5000" },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
+      { test: /\.scss$/, loader: 'style!css!autoprefixer-loader?{browsers:["last 3 versions", "Firefox ESR"]}!sass' }
     ]
   },
 
@@ -59,7 +63,8 @@ module.exports = {
       filename: 'index.html',
       hash: true,
       inject: 'body',
-      template: './src/index.html'
+      template: './src/index.html',
+      favicon: './src/favicon.ico'
     }),
     new UglifyJsPlugin({
       compress: {
