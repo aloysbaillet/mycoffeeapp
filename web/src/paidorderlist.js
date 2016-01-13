@@ -4,7 +4,7 @@ var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
 var ReactBootstrap = require('react-bootstrap');
 
-var PaidOrder = require('./paidorder.jsx');
+var PaidOrder = require('./paidorder.js');
 
 var PaidOrderList = React.createClass({
   mixins: [ReactFireMixin],

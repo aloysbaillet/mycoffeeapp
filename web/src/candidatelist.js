@@ -1,9 +1,8 @@
 var React = require('react');
-var Firebase = require('firebase');
 var ReactIntl = require('react-intl');
 var ReactBootstrap = require('react-bootstrap');
 
-var PayButton = require('./paybutton.jsx');
+var PayButton = require('./paybutton.js');
 
 var CandidateList = React.createClass({
   getInitialState: function() {
@@ -65,8 +64,8 @@ var CandidateList = React.createClass({
       }
     }
     candidateList.sort(function(a, b) {
-      if(a.credit == b.credit){
-        return a.lastPayment < b.lastPayment ? -1 : (a.lastPayment > b.lastPayment ? 1 : 0)
+      if(a.credit === b.credit){
+        return a.lastPayment < b.lastPayment ? -1 : (a.lastPayment > b.lastPayment ? 1 : 0);
       }
       return a.credit < b.credit ? -1 : 1;
     });
@@ -77,7 +76,7 @@ var CandidateList = React.createClass({
     var _this = this;
     var createItem = function(item, index) {
       var payment;
-      if(item.lastPayment == 0)
+      if(item.lastPayment === 0)
         payment = <span>never paid!</span>;
       else
         payment = <span>last payment: <ReactIntl.FormattedDate value={item.lastPayment}/></span>;

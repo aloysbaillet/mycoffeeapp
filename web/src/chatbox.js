@@ -13,7 +13,7 @@ var ChatMessages = React.createClass({
             return <ReactBootstrap.ListGroupItem key={message['.key']}>
                 <strong>{message.userDisplayName} (<TimeAgo date={message.timestamp} />)</strong>:
                 {message.text}
-            </ReactBootstrap.ListGroupItem>
+            </ReactBootstrap.ListGroupItem>;
         });
     }
 });

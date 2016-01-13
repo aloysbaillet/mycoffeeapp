@@ -3,9 +3,9 @@ var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
 var ReactBootstrap = require('react-bootstrap');
 
-var OrderRow = require('./orderrow.jsx');
-var PayButton = require('./paybutton.jsx');
-var Checkbox = require('./check.jsx');
+var OrderRow = require('./orderrow.js');
+var PayButton = require('./paybutton.js');
+var Checkbox = require('./check.js');
 
 var PendingOrderList = React.createClass({
   mixins: [ReactFireMixin],

@@ -1,7 +1,6 @@
 var React = require('react');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
-var FirebaseUtil = require('firebase-util');
 var ReactIntl = require('react-intl');
 var _ = require('underscore');
 
