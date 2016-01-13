@@ -2,8 +2,7 @@ import Firebase from 'firebase';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {IntlProvider} from 'react-intl';
-import Select from 'react-select';
-import {PageHeader, Panel, Input, Button} from 'react-bootstrap';
+import {PageHeader, Panel} from 'react-bootstrap';
 
 // for iOS
 if (!global.Intl) {
@@ -11,6 +10,13 @@ if (!global.Intl) {
   require('intl/locale-data/jsonp/en.js');
 }
 
+// Styles
+import "react-select/dist/react-select.css";
+import 'bootstrap/dist/css/bootstrap.css';
+
+import "!style!css!sass!./styles/main.scss";
+
+// Components
 import Model from './model.js';
 import FacebookLogin from './login.js';
 import GroupSelect from './groupselect.js';
@@ -49,70 +55,15 @@ var MyCoffeeApp = React.createClass({
       this.setState({uid: null, groupId: null});
     }
   },
+  
+  onGroupSelect: function(groupId){
+    this.setState({groupId: groupId});
+    this.model.setGroupId(groupId);
+  },
 
   componentWillMount: function() {
     this.firebaseRef = new Firebase(C.BASE_FIREBASE_URL);
     this.onLogin();
-  },
-
-  onGroupSelect: function(option) {
-    var _this = this;
-    var groupId = option.value;
-    this.firebaseRef
-    .child('users')
-    .child(this.state.uid)
-    .update({groupId: groupId}, function(error){
-      if(!error){
-        _this.model.setGroupId(groupId);
-        _this.setState({groupId: groupId});
-      }
-      else{
-        _this.model.setGroupId(null);
-        _this.setState({groupId: null});
-      }
-    });
-  },
-
-  onGroupNameChange: function(e) {
-    this.setState({groupNameToAdd: e.target.value})
-  },
-
-  onGroupAdd: function(e) {
-    var users = {};
-    users[this.state.uid] = true;
-    this.firebaseRef.child('userGroups').push({
-      name: this.state.groupNameToAdd,
-      users: users
-    });
-  },
-
-  getGroupSelector: function() {
-    var _this = this;
-    function createGroupItem(item, index){
-      return <li key={index} onClick={_this.onGroupSelect.bind(null, item['.key'])}><a href="#">{item.name}</a></li>
-    }
-    var groupList = []
-    for(var gid in this.state.groupList){
-      var group = this.state.groupList[gid];
-      groupList.push({value: group['.key'], label: group.name});
-    }
-    return <div>
-      <span>
-        <Select
-          name="groupSelect"
-          value={this.state.groupId}
-          options={groupList}
-          placeholder="Select a Group"
-          onChange={this.onGroupSelect}
-          />
-      </span>
-      <div className="input-group pull-right col-xs-2">
-        <Input type="text" placeholder="New Group" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
-        <span className="input-group-btn">
-          <Button disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</Button>
-        </span>
-      </div>
-    </div>;
   },
 
   render: function() {
@@ -121,7 +72,7 @@ var MyCoffeeApp = React.createClass({
       // this key={} tricks makes the whole dif refresh on group change!
       MainApp = <div key={this.state.groupId} >
         <Panel header="Group">
-          {this.getGroupSelector()}
+          <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />
         </Panel>
         <Panel header="New Order" bsStyle="primary">
           <CoffeeOrder model={this.model} />
@@ -147,7 +98,9 @@ var MyCoffeeApp = React.createClass({
         MainApp = <p>Once logged in, you can start ordering coffees from your friends!</p>;
       }
       else if(!this.state.groupId){
-        MainApp = this.getGroupSelector();
+        MainApp = <Panel header="Group">
+          <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />
+        </Panel>;
       }
     }
     return (

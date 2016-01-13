@@ -15,7 +15,7 @@ module.exports = {
 
   entry: {
     main: [
-      'webpack-dev-server/client?http://localhost:3000',
+      'webpack-dev-server/client?http://localhost:5000',
       'webpack/hot/dev-server',
       './src/main.js'
     ]
@@ -28,7 +28,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['', '.js'],
+    extensions: ['', '.js', '.scss'],
     modulesDirectories: ['node_modules'],
     root: path.resolve('./src')
   },
@@ -47,7 +47,12 @@ module.exports = {
         ]
       }},
 
-      {test: /\.scss$/, loader: 'style!css!autoprefixer-loader?{browsers:["last 3 versions", "Firefox ESR"]}!sass'}
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
+      { test: /\.(woff|woff2)$/, loader:"url?prefix=font/&limit=5000" },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
+      { test: /\.scss$/, loader: 'style!css!autoprefixer-loader?{browsers:["last 3 versions", "Firefox ESR"]}!sass' }
     ]
   },
 
@@ -73,7 +78,7 @@ module.exports = {
     contentBase: './src',
     historyApiFallback: true,
     hot: true,
-    port: 3000,
+    port: 5000,
     publicPath: '/',
     stats: {
       cached: true,

@@ -22,8 +22,13 @@ var Model = {
 
   setGroupId: function(groupId){
     this.groupId = groupId;
-    if(groupId)
+    if(groupId){
+      this.firebaseRef
+      .child('users')
+      .child(this.uid)
+      .update({groupId: groupId});
       this.groupRef = this.firebaseRef.child('groupData').child(this.groupId);
+    }
     else
       this.groupRef = null;
   },

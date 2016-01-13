@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactFireMixin from 'reactfire';
+import Select from 'react-select';
+import {Input, Button} from 'react-bootstrap';
 
 var GroupSelect = React.createClass({
   mixins: [ReactFireMixin],
@@ -12,25 +14,12 @@ var GroupSelect = React.createClass({
   },
 
   componentWillMount: function() {
-	this.bindAsArray(this.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
+	this.bindAsArray(this.props.model.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
   },
   
   onGroupSelect: function(option) {
-    var _this = this;
     var groupId = option.value;
-    this.firebaseRef
-    .child('users')
-    .child(this.state.uid)
-    .update({groupId: groupId}, function(error){
-      if(!error){
-        _this.model.setGroupId(groupId);
-        _this.setState({groupId: groupId});
-      }
-      else{
-        _this.model.setGroupId(null);
-        _this.setState({groupId: null});
-      }
-    });
+  	this.props.onGroupSelect(null);
   },
 
   onGroupNameChange: function(e) {
@@ -39,8 +28,8 @@ var GroupSelect = React.createClass({
 
   onGroupAdd: function(e) {
     var users = {};
-    users[this.state.uid] = true;
-    this.firebaseRef.child('userGroups').push({
+    users[this.props.model.uid] = true;
+    this.props.model.firebaseRef.child('userGroups').push({
       name: this.state.groupNameToAdd,
       users: users
     });
@@ -57,16 +46,16 @@ var GroupSelect = React.createClass({
       groupList.push({value: group['.key'], label: group.name});
     }
     return <div>
-      <span>
+      <div className="input-group pull-left col-xs-5">
         <Select
           name="groupSelect"
-          value={this.state.groupId}
+          value={this.props.model.groupId}
           options={groupList}
           placeholder="Select a Group"
           onChange={this.onGroupSelect}
           />
-      </span>
-      <div className="input-group pull-right col-xs-2">
+      </div>
+      <div className="input-group pull-right col-xs-4 input-sm">
         <Input type="text" placeholder="New Group" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
         <span className="input-group-btn">
           <Button disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</Button>
