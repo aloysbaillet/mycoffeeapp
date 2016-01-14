@@ -15,7 +15,7 @@ module.exports = {
 
   entry: {
     main: [
-      'webpack-dev-server/client?http://localhost:5000',
+      'webpack-dev-server/client?http://junior.al.com.au:5000',
       'webpack/hot/dev-server',
       './src/main.js'
     ]
@@ -47,7 +47,7 @@ module.exports = {
         ]
       }},
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.png$/, loader: "file" },
+      { test: /\.ico/, loader: "file" },
       { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
       { test: /\.(woff|woff2)$/, loader:"url?prefix=font/&limit=5000" },
       { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
@@ -70,7 +70,8 @@ module.exports = {
       filename: 'index.html',
       hash: true,
       inject: 'body',
-      template: './src/index.html'
+      template: './src/index.html',
+      favicon: './src/favicon.ico'
     })
   ],
 
