@@ -40,13 +40,13 @@ var CoffeeOrder = React.createClass({
     this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredCoffeeType: coffeeType});
   },
 
-  onSugarChange: function(value){
+  onSugarChange: function(event){
     var sugar = event.target.value || 0;
     this.setState({sugar: sugar});
     this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredSugar: sugar});
   },
 
-  onMilkChange: function(value){
+  onMilkChange: function(event){
     var milk = event.target.value || '';
     this.setState({milk: milk});
     this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredMilk: milk});
@@ -81,9 +81,9 @@ var CoffeeOrder = React.createClass({
                        milk: ''});
         return;
       }
-      this.setState({coffeeType: u.preferredCoffeeType ? u.preferredCoffeeType : '',
-                      sugar: u.preferredSugar ? u.preferredSugar : 0,
-                      milk: u.preferredMilk ? u.preferredMilk: ''});
+      this.setState({coffeeType: u.preferredCoffeeType || '',
+                      sugar: u.preferredSugar || 0,
+                      milk: u.preferredMilk || ''});
     }, this);
   },
 
@@ -113,29 +113,27 @@ var CoffeeOrder = React.createClass({
   },
 
   render: function() {
-    function createUserOption(item, index){
-      return <option key={index} value={item.value}>{item.label}</option>;
-    }
-    function createOption(item, index){
-      return <option key={index} value={item.shortName}>{item.name}</option>;
-    }
-    function createSugarOption(item, index){
-      return <option key={index} value={item.quantity}>{item.quantity}</option>;
-    }
     return (
-      <form onSubmit={ this.handleSubmit } className="form-inline">
-        <select className="form-control col-xs-10" value={this.state.uid} onChange={this.onUserChange}>
-          {this.state.userList.map(createUserOption)}
+      <form onSubmit={this.handleSubmit} className="form-inline">
+        <select className="form-control" value={this.state.uid} onChange={this.onUserChange}>
+          {this.state.userList.map(function(item){
+            return <option key={item.value} value={item.value}>{item.label}</option>;
+          })}
         </select>
-        <select className="form-control col-sm-4" value={this.state.milk} onChange={this.onMilkChange}>
-          <option value=""></option>
-          {this.state.milkList.map(createOption)}
+        <select className="form-control" value={this.state.milk} onChange={this.onMilkChange}>
+          {this.state.milkList.map(function(item){
+            return <option key={item.name} value={item.name}>{item.name}</option>;
+          })}
         </select>
-        <select className="form-control col-sm-4" value={this.state.coffeeType} onChange={this.onCoffeeTypeChange}>
-          {this.state.coffeeTypeList.map(createOption)}
+        <select className="form-control" value={this.state.coffeeType} onChange={this.onCoffeeTypeChange}>
+          {this.state.coffeeTypeList.map(function(item){
+            return <option key={item.name} value={item.name}>{item.name}</option>;
+          })}
         </select>
-        <select className="form-control col-sm-4" value={this.state.sugar} onChange={this.onSugarChange}>
-          {this.state.sugarList.map(createSugarOption)}
+        <select className="form-control" value={this.state.sugar} onChange={this.onSugarChange}>
+          {this.state.sugarList.map(function(item){
+            return <option key={item.quantity} value={item.quantity}>{item.quantity}</option>;
+          })}
         </select>
         <Button bsStyle="success" onClick={this.handleSubmit} >Order</Button>
       </form>
