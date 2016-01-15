@@ -15,7 +15,7 @@ module.exports = {
 
   entry: {
     main: [
-      'webpack-dev-server/client?http://junior.al.com.au:5000',
+      'webpack-dev-server/client?http://localhost:5000',
       'webpack/hot/dev-server',
       './src/main.js'
     ]

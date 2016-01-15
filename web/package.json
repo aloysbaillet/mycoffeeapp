@@ -5,7 +5,7 @@
   "author": "Aloys Baillet <aloys.baillet@gmail.com>",
   "style": "public/bundle.css",
   "scripts": {
-    "build": "NODE_ENV=production browserify -t babelify --presets react jsx/mycoffeeapp.jsx -o public/bundle.js",
+    "build": "NODE_ENV=production gulp build",
     "test": "jest",
     "rules": "blaze rules.yaml && firebase deploy:rules",
     "deploy": "npm run build && firebase deploy",
