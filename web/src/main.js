@@ -23,7 +23,6 @@ import GroupSelect from './groupselect.js';
 import CoffeeOrder from './coffeeorder.js';
 import PendingOrderList from './pendingorderlist.js';
 import PaidOrderList from './paidorderlist.js';
-import CandidateList from './candidatelist.js';
 import UserList from './userlist.js';
 import ChatBox from './chatbox.js';
 import C from './constants.js';
@@ -79,9 +78,6 @@ var MyCoffeeApp = React.createClass({
         </Panel>
         <Panel header="Pending Orders" bsStyle="info">
           <PendingOrderList model={this.model} />
-        </Panel>
-        <Panel header="Candidates" bsStyle="info">
-          <CandidateList model={this.model} />
         </Panel>
         <Panel header="Users">
           <UserList model={this.model} />

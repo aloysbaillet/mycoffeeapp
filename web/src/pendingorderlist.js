@@ -12,7 +12,8 @@ var PendingOrderList = React.createClass({
 
   getInitialState: function() {
     return {
-      pendingOrderList: {}
+      pendingOrderList: [],
+      paymentCache: {}
     };
   },
 
@@ -20,8 +21,29 @@ var PendingOrderList = React.createClass({
     this.bindAsArray(this.props.model.groupRef
       .child('orderList')
       .child('pending')
-      .orderByChild('timestamp')
       , 'pendingOrderList');
+    this.bindAsObject(this.props.model.groupRef
+        .child('userPaymentCache')
+        , 'paymentCache');
+  },
+
+  getOrderList: function() {
+    var orderList = [];
+    var done = {};
+    for(var i in this.state.pendingOrderList){
+      var order = this.state.pendingOrderList[i];
+      var cache = this.state.paymentCache[order.uid] || {credit: 0, lastPayment: 0};
+      order.credit = cache.credit;
+      order.lastPayment = cache.lastPayment;
+      orderList.push(order);
+    }
+    orderList.sort(function(a, b) {
+      if(a.credit === b.credit){
+        return a.lastPayment < b.lastPayment ? -1 : (a.lastPayment > b.lastPayment ? 1 : 0);
+      }
+      return a.credit < b.credit ? -1 : 1;
+    });
+    return orderList;
   },
 
   handleSubmit: function(e) {
@@ -59,19 +81,18 @@ var PendingOrderList = React.createClass({
     };
     var numSelected = this.getNumSelected();
     var sel = null;
+    var orderList = this.getOrderList();
     if(numSelected == 0)
       sel = false;
-    else if (numSelected == this.state.pendingOrderList.length)
+    else if (numSelected == orderList.length)
       sel = true;
     var selAll;
-    if(this.state.pendingOrderList.length>0)
+    if(orderList.length>0)
       selAll = <Checkbox checked={sel} onChange={this.onSelectAll} nextValue={this.onNextValue}>Select All</Checkbox>;
-    var reversed = this.state.pendingOrderList.slice();
-    reversed.reverse();
     return (
       <form name="takeOrderForm" onSubmit={ this.handleSubmit }>
         {selAll} <PayButton model={this.props.model} payerId={this.props.model.uid} payerDisplayName={this.props.model.userDisplayName}/>
-        <ReactBootstrap.ListGroup>{ reversed.map(createItem) }</ReactBootstrap.ListGroup>
+        <ReactBootstrap.ListGroup>{ orderList.map(createItem) }</ReactBootstrap.ListGroup>
       </form>
     );
   }

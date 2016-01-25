@@ -5,6 +5,8 @@ var ReactFireMixin = require('reactfire');
 var ReactBootstrap = require('react-bootstrap');
 var moment = require('moment');
 
+var PayButton = require('./paybutton.js');
+
 var OrderRow = React.createClass({
   formatOrder: function(order){
     var milk = "";
@@ -43,11 +45,17 @@ var OrderRow = React.createClass({
         msg = '[selected by ' + this.props.order.selectedByUserDisplayName + ']';
       }
     }
-    var label = msg + this.formatOrder(this.props.order)  + " (" + this.props.order.clientName + " " + moment(this.props.order.timestamp).fromNow() + ")";
+    var payment;
+    if(this.props.order.lastPayment === 0)
+      payment = <span>never paid!</span>;
+    else
+      payment = <span>last payment: <ReactIntl.FormattedDate value={this.props.order.lastPayment}/></span>;
+    var label = <span>{msg} {this.formatOrder(this.props.order)} for {this.props.order.clientName} ({moment(this.props.order.timestamp).fromNow()}, credit: {this.props.order.credit} {payment})</span>;
     return (
       <ReactBootstrap.ListGroupItem>
         <div className="input-group">
           <ReactBootstrap.Input type="checkbox" checked={sel} onChange={this.onSelectChange} ref="selected" label={label} />
+          <PayButton model={this.props.model} payerId={this.props.order.uid} payerDisplayName={this.props.order.clientName}/>
           <span className="input-group-btn">
             <ReactBootstrap.Button bsStyle="danger" onClick={this.onDelete}>Cancel</ReactBootstrap.Button>
           </span>
