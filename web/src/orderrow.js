@@ -6,6 +6,7 @@ var ReactBootstrap = require('react-bootstrap');
 var moment = require('moment');
 
 var PayButton = require('./paybutton.js');
+var FormattedDate = require('./formatteddate');
 
 var OrderRow = React.createClass({
   formatOrder: function(order){
@@ -49,8 +50,8 @@ var OrderRow = React.createClass({
     if(this.props.order.lastPayment === 0)
       payment = <span>never paid!</span>;
     else
-      payment = <span>last payment: <ReactIntl.FormattedDate value={this.props.order.lastPayment}/></span>;
-    var label = <span>{msg} {this.formatOrder(this.props.order)} for {this.props.order.clientName} ({moment(this.props.order.timestamp).fromNow()}, credit: {this.props.order.credit} {payment})</span>;
+      payment = <span>last payment: <FormattedDate value={this.props.order.lastPayment}/></span>;
+    var label = <span>{msg} {this.formatOrder(this.props.order)} for {this.props.order.clientName} ({moment(this.props.order.timestamp).fromNow()}, credit: {this.props.order.credit}, {payment})</span>;
     return (
       <ReactBootstrap.ListGroupItem>
         <div className="input-group">
