@@ -68,7 +68,7 @@ var MyCoffeeApp = React.createClass({
   render: function() {
     var MainApp;
     if(this.state.uid && this.state.groupId)
-      // this key={} tricks makes the whole dif refresh on group change!
+      // this key={} tricks makes the whole div refresh on group change!
       MainApp = <div key={this.state.groupId} >
         <Panel header="Group">
           <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />
