@@ -44,7 +44,7 @@ var PayButton = React.createClass({
     else{
       if(isMePaying)
         return (
-          <span>Select an order to pay</span>
+          <span></span>
         );
       else {
         return null;
