@@ -17,8 +17,7 @@ To see in action: https://mycoffeeapp.firebaseapp.com
 cd web
 npm install
 npm install firebase-tools gulp -g
-firebase serve& # starts the firebase server locally
-gulp& # watches for js changes and recompiles on the fly, notifies of errors as well!
+gulp # runs local server, watches for js changes and recompiles on the fly, notifies of errors as well!
 
 ```
 * visit http://localhost:5000/
