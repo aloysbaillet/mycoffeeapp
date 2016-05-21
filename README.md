@@ -11,9 +11,7 @@ To see in action: https://mycoffeeapp.firebaseapp.com
 
 * Install node.js
 * Run this:
-```
-#!shell
-
+```shell
 cd web
 npm install
 npm install firebase-tools gulp -g
@@ -23,8 +21,13 @@ gulp # runs local server, watches for js changes and recompiles on the fly, noti
 * visit http://localhost:5000/
 
 ### To Deploy: ###
-```npm run deploy```
+```shell
+npm run deploy
+```
 
 ### To change the schema: ###
 * Edit the rules.yaml file (it's using the blaze format)
-* To rebuild the rules.json and upload it: ```npm run rules```
+* To rebuild the rules.json and upload it: 
+```shell
+npm run rules
+```
