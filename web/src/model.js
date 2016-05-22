@@ -1,18 +1,16 @@
 var C = require('./constants.js')
+var firebase = require('firebase');
 
-var Model = {
-  init: function(firebaseRef){
+var CoffeeModel = {
+  init: function(firebaseRef, user, userDisplayName){
     this.firebaseRef = firebaseRef;
     this.groupId = null; // will be set by mycoffeeapp
     this.groupRef = null;
-    var auth = this.firebaseRef.getAuth();
-    if(auth){
-      this.uid = auth.uid;
-      if(auth.provider == 'facebook')
-        this.userDisplayName = auth.facebook.displayName;
-      else if(auth.provider == 'google')
-        this.userDisplayName = auth.google.displayName;
-      this.firebaseRef.child('users').child(this.uid).update({displayName: this.userDisplayName});
+    console.log('Model.init displayName='+userDisplayName);
+    if(user){
+      this.uid = user.uid;
+      this.userDisplayName = userDisplayName;
+      this.firebaseRef.child('users').child(this.uid).update({displayName: userDisplayName});
     }
     else{
       this.uid = null;
@@ -49,7 +47,7 @@ var Model = {
       sugar: sugar,
       milk: milk,
       uid: uid,
-      timestamp: Firebase.ServerValue.TIMESTAMP,
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
       clientName: clientName,
       payerId: '',
       payerName: ''
@@ -79,7 +77,7 @@ var Model = {
   selectOrder: function(orderId, selected) {
     var selData = {
       selected: selected,
-      selectedTimestamp: Firebase.ServerValue.TIMESTAMP,
+      selectedTimestamp: firebase.database.ServerValue.TIMESTAMP,
       selectedByUid: this.uid,
       selectedByUserDisplayName: this.userDisplayName
     };
@@ -142,10 +140,10 @@ var Model = {
       var receiptId = this.groupRef
       .child('receiptList')
       .child('current')
-      .push().key();
+      .push().key;
       var receipt = {payerId: payerId,
                      payerName: payerDisplayName,
-                     timestamp: Firebase.ServerValue.TIMESTAMP,
+                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                      orderList: orderIdList,
                      cost: cost
                      };
@@ -185,7 +183,7 @@ var Model = {
     .child('userPaymentCache')
     .once('value', function(snapshot){
       snapshot.forEach(function(childSnapshot) {
-        childSnapshot.ref().remove();
+        childSnapshot.ref.remove();
       });
     });
     this.groupRef
@@ -218,10 +216,10 @@ var Model = {
     .child('messages')
     .push({uid: this.uid,
        userDisplayName: this.userDisplayName,
-       timestamp: Firebase.ServerValue.TIMESTAMP,
+       timestamp: firebase.database.ServerValue.TIMESTAMP,
        text: message});
   }
 
 };
 
-module.exports = Model;
+module.exports = CoffeeModel;
