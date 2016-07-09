@@ -9,7 +9,8 @@
     "test": "jest",
     "rules": "blaze rules.yaml && firebase deploy:rules",
     "deploy": "npm run build && firebase deploy",
-    "upload-data": "node data/upload.js"
+    "upload-data": "node data/upload.js",
+    "start": "gulp"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",
@@ -57,7 +58,7 @@
     "bootstrap": "^3.3.6",
     "bootstrap-sass": "^3.3.6",
     "classnames": "^2.2.3",
-    "firebase": "^3.0.2",
+    "firebase": "^3.1.0",
     "firebase-util": "^0.2.5",
     "fireproof": "^3.1.0",
     "gulp-notify": "^2.2.0",
@@ -72,7 +73,7 @@
     "moment": "^2.11.0",
     "node-sass": "^3.4.2",
     "object-assign": "^4.0.1",
-    "react": "^0.14.3",
+    "react": "^0.14.8",
     "react-bootstrap": "^0.28.2",
     "react-check3": "^0.1.1",
     "react-dom": "^0.14.3",
@@ -80,7 +81,7 @@
     "react-router": "^1.0.3",
     "react-select": "^1.0.0-beta8",
     "react-timeago": "^2.2.1",
-    "reactfire": "github:firebase/reactfire#1.0",
+    "reactfire": "^1.0.0",
     "sinon": "^1.17.2",
     "style-loader": "^0.13.0",
     "underscore": "^1.8.3"
