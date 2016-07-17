@@ -6,6 +6,7 @@ const HotModuleReplacementPlugin = webpack.HotModuleReplacementPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NoErrorsPlugin = webpack.NoErrorsPlugin;
 const OccurenceOrderPlugin = webpack.optimize.OccurenceOrderPlugin;
+const PurifyCssPlugin = require("purifycss-webpack-plugin");
 
 
 module.exports = {
@@ -72,6 +73,12 @@ module.exports = {
       inject: 'body',
       template: './src/index.html',
       favicon: './src/favicon.ico'
+    }),
+    new PurifyCssPlugin({
+        basePath: __dirname,
+        paths: [
+          "src/*.html"
+        ]
     })
   ],
 

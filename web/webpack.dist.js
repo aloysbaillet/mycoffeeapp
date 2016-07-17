@@ -9,6 +9,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OccurenceOrderPlugin = webpack.optimize.OccurenceOrderPlugin;
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const PurifyCssPlugin = require("purifycss-webpack-plugin");
 
 
 module.exports = {
@@ -73,6 +74,12 @@ module.exports = {
         unused: true,
         warnings: false
       }
+    }),
+    new PurifyCssPlugin({
+        basePath: __dirname,
+        paths: [
+          "src/*.html"
+        ]
     })
   ],
 

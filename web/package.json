@@ -73,6 +73,7 @@
     "moment": "^2.11.0",
     "node-sass": "^3.4.2",
     "object-assign": "^4.0.1",
+    "purifycss-webpack-plugin": "^2.0.3",
     "react": "^0.14.8",
     "react-bootstrap": "^0.28.2",
     "react-check3": "^0.1.1",
