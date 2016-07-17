@@ -2,6 +2,7 @@ import firebase from 'firebase';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {PageHeader, Panel} from 'react-bootstrap';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 // for iOS
 if (!global.Intl) {
@@ -36,6 +37,7 @@ var MyCoffeeApp = React.createClass({
     return {
       uid: null,
       groupId: null,
+      currentTab: 0
     };
   },
 
@@ -61,6 +63,10 @@ var MyCoffeeApp = React.createClass({
 
   },
 
+  onTabSelect(index, last) {
+    this.setState({currentTab: index});
+  },
+
   onGroupSelect: function(groupId){
     this.setState({groupId: groupId});
     this.model.setGroupId(groupId);
@@ -73,14 +79,14 @@ var MyCoffeeApp = React.createClass({
     var displayName = user.displayName;
     console.log("displayName: 1 "+displayName);
     user.providerData.forEach(function(profile) {
-      if(profile.displayName) 
+      if(profile.displayName)
         displayName = profile.displayName;
       console.log("displayName: 2 "+displayName);
     });
     console.log("displayName: "+displayName);
     return displayName;
   },
-  
+
   handleAuth: function(user) {
     console.log('handleAuth: 0 user=' + user);
     var displayName = this.getDisplayName(user);
@@ -108,41 +114,56 @@ var MyCoffeeApp = React.createClass({
     var MainApp;
     console.log('render: uid='+this.state.uid+' groupId='+this.state.groupId);
     var topKey = 'key_' + this.state.uid + '_' + this.state.groupId;
-    if(this.state.uid && this.state.groupId)
+    if(this.state.uid && this.state.groupId){
       // this key={} tricks makes the whole div refresh on group change!
-      MainApp = 
-      <div uid={this.state.uid} groupId={this.state.groupId} key={topKey + '_ready'}>
-        <Panel header="Group">
+      MainApp =
+      <Tabs key={topKey + '_ready'}
+          onSelect={this.onTabSelect}
+          selectedIndex={this.state.currentTab}>
+        <TabList>
+          <Tab>Main</Tab>
+          <Tab>Orders</Tab>
+          <Tab>Chat</Tab>
+          <Tab>Groups</Tab>
+        </TabList>
+        <TabPanel>
+          <Panel header="New Order" bsStyle="primary">
+            <CoffeeOrder model={this.model} />
+          </Panel>
+          <Panel header="Pending Orders" bsStyle="info">
+            <PendingOrderList model={this.model} />
+          </Panel>
+          <Panel header="Users">
+            <UserList model={this.model} />
+          </Panel>
+        </TabPanel>
+        <TabPanel>
+          <Panel header="Paid Orders">
+            <PaidOrderList model={this.model} />
+          </Panel>
+        </TabPanel>
+        <TabPanel>
+          <Panel header="Chat">
+            <ChatBox model={this.model} />
+          </Panel>
+        </TabPanel>
+        <TabPanel>
           <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />
-        </Panel>
-        <Panel header="New Order" bsStyle="primary">
-          <CoffeeOrder model={this.model} />
-        </Panel>
-        <Panel header="Pending Orders" bsStyle="info">
-          <PendingOrderList model={this.model} />
-        </Panel>
-        <Panel header="Users">
-          <UserList model={this.model} />
-        </Panel>
-        <Panel header="Chat">
-          <ChatBox model={this.model} />
-        </Panel>
-        <Panel header="Paid Orders">
-          <PaidOrderList model={this.model} />
-        </Panel>
-      </div>;
+        </TabPanel>
+      </Tabs>;
+    }
     else{
       console.log('render: 0 uid='+this.state.uid);
       if(!this.state.uid){
        console.log('render: 1 uid='+this.state.uid);
-       MainApp = 
+       MainApp =
        <div uid={this.state.uid} groupId={this.state.groupId} key={topKey + '_loggedOut'}>
          <p key={this.state.uid}>Once logged in, you can start ordering coffees from your friends!</p>
        </div>;
       }
       else if(!this.state.groupId){
         console.log('render: 2 uid='+this.state.uid);
-        MainApp = 
+        MainApp =
         <div uid={this.state.uid} groupId={this.state.groupId} key={topKey + '_loggedIn'}>
           <Panel header="Group">
             <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />

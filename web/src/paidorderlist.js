@@ -35,11 +35,8 @@ var PaidOrderList = React.createClass({
     revOrderList.reverse();
     return (
       <div>
-      <ReactBootstrap.Button onClick={ ()=> this.setState({ expanded: !this.state.expanded })}>{this.state.expanded?"Hide":"Show"}</ReactBootstrap.Button>
-      <ReactBootstrap.Panel collapsible expanded={this.state.expanded}>
         <ReactBootstrap.ListGroup>{ revOrderList.map(createItem) }</ReactBootstrap.ListGroup>
         <ReactBootstrap.Button onClick={this.updateUserPaymentCacheFromReceipts}>Rebuild User Payment Cache</ReactBootstrap.Button>
-      </ReactBootstrap.Panel>
       </div>
     );
   }

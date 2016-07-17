@@ -161,6 +161,10 @@ var CoffeeModel = {
   },
 
   updateUserPaymentCacheFromReceipt: function(receipt, data) {
+    if(receipt.cancelled){
+      console.log('updateUserPaymentCacheFromReceipts ignoring cancelled order ', receipt.timestamp);
+      return;
+    }
     console.log('receipt: ', receipt);
     var key = '/groupData/' + this.groupId + '/userPaymentCache/' + receipt.payerId;
     var cache = data[key] || {credit: 0, lastPayment: 0};
@@ -218,6 +222,29 @@ var CoffeeModel = {
        userDisplayName: this.userDisplayName,
        timestamp: firebase.database.ServerValue.TIMESTAMP,
        text: message});
+  },
+
+  toggleOrderCancellation: function(receipt){
+    var cancel = (receipt.cancelled != true);
+    var data = {};
+    var receiptId = receipt['.key'];
+    var _this = this;
+    data['/groupData/' + this.groupId + '/receiptList/current/' + receiptId + "/cancelled"] = cancel;
+    if(cancel){
+      console.log('Going to cancel receipt ' + receiptId + ": " + data);
+    }
+    else{
+      console.log('Going to restore receipt ' + receiptId + ": " + data);
+    }
+    this.firebaseRef.update(data, function(error){
+      if(error){
+        console.log('Receipt not toggled!', error);
+      }
+      else{
+        console.log('Receipt toggled!');
+        _this.updateUserPaymentCacheFromReceipts();
+      }
+    });
   }
 
 };
