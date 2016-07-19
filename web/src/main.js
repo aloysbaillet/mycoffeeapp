@@ -60,7 +60,6 @@ var MyCoffeeApp = React.createClass({
     }, function(error) {
       console.error(error);
     });
-
   },
 
   onTabSelect(index, last) {
@@ -94,14 +93,14 @@ var MyCoffeeApp = React.createClass({
     this.model.init(this.firebaseRef, user, displayName);
     if(user) {
       console.log('handleAuth: 2 uid=' + user.uid);
-      this.setState({uid: user.uid});
       this.firebaseRef
       .child('users')
       .child(user.uid)
       .once('value', function(snapshot){
         console.log('handleAuth: 5 groupId=' + snapshot.val().groupId);
         this.model.setGroupId(snapshot.val().groupId);
-        this.setState({groupId: snapshot.val().groupId})
+        this.setState({uid: user.uid,
+                       groupId: snapshot.val().groupId})
       }, this);
     } else {
       console.log('handleAuth: 3 no user');
@@ -115,6 +114,7 @@ var MyCoffeeApp = React.createClass({
     console.log('render: uid='+this.state.uid+' groupId='+this.state.groupId);
     var topKey = 'key_' + this.state.uid + '_' + this.state.groupId;
     if(this.state.uid && this.state.groupId){
+      console.log('render: 0 uid='+this.state.uid);
       // this key={} tricks makes the whole div refresh on group change!
       MainApp =
       <Tabs key={topKey + '_ready'}
@@ -153,8 +153,7 @@ var MyCoffeeApp = React.createClass({
       </Tabs>;
     }
     else{
-      console.log('render: 0 uid='+this.state.uid);
-      if(!this.state.uid){
+      if(!this.state.uid && !firebase.auth().currentUser){
        console.log('render: 1 uid='+this.state.uid);
        MainApp =
        <div uid={this.state.uid} groupId={this.state.groupId} key={topKey + '_loggedOut'}>
