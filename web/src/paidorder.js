@@ -43,7 +43,7 @@ var UserList = React.createClass({
       orders = <ul>{this.state.orderList.map(createItem)}</ul>
     }
     else{
-      orders = <a href="#" onClick={this.onExpand}>Expand Orders</a>
+      orders = "";
     }
     return <span>{this.props.receipt.cost}&nbsp;
       <ReactIntl.FormattedPlural value={this.props.receipt.cost}
@@ -58,11 +58,13 @@ var UserList = React.createClass({
 
   render: function() {
     var _this = this;
+    var expand = (this.state.orderList.length == 0) ? <ReactBootstrap.Button onClick={this.onExpand}>Expand</ReactBootstrap.Button> : "";
     return <div className="clearfix">
       <span>
         {this.renderOrder()}
       </span>
       <span className="pull-right">
+        {expand}
         <ReactBootstrap.Button
           bsStyle="danger"
           onClick={ ()=> this.props.model.toggleOrderCancellation(this.props.receipt)}>
