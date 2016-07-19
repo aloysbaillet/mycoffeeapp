@@ -23,7 +23,7 @@ module.exports = {
   },
 
   output: {
-    filename: '[name].js',
+    filename: '[name]-[hash].js',
     path: path.resolve('./target'),
     publicPath: '/'
   },
