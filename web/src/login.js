@@ -39,9 +39,7 @@ var FacebookLogin = React.createClass({
       );
     else{
       return (
-        <div>Login with
-          <a href="#" data-provider="facebook" onClick={this.handleFacebookLogin}>Facebook</a>
-          <a href="#" data-provider="facebook" onClick={this.handleGoogleLogin}>Google</a>
+        <div>Login with <a href="#" data-provider="facebook" onClick={this.handleFacebookLogin}>Facebook</a> | <a href="#" data-provider="facebook" onClick={this.handleGoogleLogin}>Google</a>
         </div>
       );
     }
