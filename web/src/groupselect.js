@@ -47,7 +47,7 @@ var GroupSelect = React.createClass({
     return <div>
       <FormGroup>
         <ControlLabel>Select a group:</ControlLabel>
-        <FormControl componentClass="select" placeholder="Group" onChange={this.onGroupSelect}>
+        <FormControl componentClass="select" value={this.props.model.groupId || ""} placeholder="Group" onChange={this.onGroupSelect}>
           <option key={-1} value={""}></option>
           {this.state.groupList.map(createGroupOption)}
         </FormControl>
