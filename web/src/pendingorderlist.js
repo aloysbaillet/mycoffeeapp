@@ -1,11 +1,13 @@
-var React = require('react');
-var Firebase = require('firebase');
-var ReactFireMixin = require('reactfire');
-var ReactBootstrap = require('react-bootstrap');
+import React from 'react';
+import ReactFireMixin from 'reactfire';
+import Firebase from 'firebase';
+import ReactIntl from 'react-intl';
+import moment from 'moment';
+import {ListGroup, Checkbox} from 'react-bootstrap';
 
-var OrderRow = require('./orderrow.js');
-var PayButton = require('./paybutton.js');
-var Checkbox = require('./check.js');
+import OrderRow from './orderrow.js';
+import PayButton from './paybutton.js';
+
 
 var PendingOrderList = React.createClass({
   mixins: [ReactFireMixin],
@@ -51,8 +53,8 @@ var PendingOrderList = React.createClass({
     this.props.model.paySelectedOrders();
   },
 
-  onSelectAll: function(value, e) {
-    this.props.model.selectAllPendingOrders(value);
+  onSelectAll: function(e) {
+    this.props.model.selectAllPendingOrders(e.target.checked);
   },
 
   onNextValue: function(oldValue, props){
@@ -80,7 +82,7 @@ var PendingOrderList = React.createClass({
       );
     };
     var numSelected = this.getNumSelected();
-    var sel = null;
+    var sel = false;
     var orderList = this.getOrderList();
     if(numSelected == 0)
       sel = false;
@@ -88,11 +90,11 @@ var PendingOrderList = React.createClass({
       sel = true;
     var selAll;
     if(orderList.length>0)
-      selAll = <Checkbox checked={sel} onChange={this.onSelectAll} nextValue={this.onNextValue}>Select All</Checkbox>;
+      selAll = <Checkbox checked={sel} onChange={this.onSelectAll}>Select All</Checkbox>;
     return (
       <form name="takeOrderForm" onSubmit={ this.handleSubmit }>
         {selAll} <PayButton model={this.props.model} payerId={this.props.model.uid} payerDisplayName={this.props.model.userDisplayName}/>
-        <ReactBootstrap.ListGroup>{ orderList.map(createItem) }</ReactBootstrap.ListGroup>
+        <ListGroup>{ orderList.map(createItem) }</ListGroup>
       </form>
     );
   }
