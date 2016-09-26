@@ -12,7 +12,7 @@ const PurifyCssPlugin = require("purifycss-webpack-plugin");
 module.exports = {
   cache: true,
   debug: true,
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
 
   entry: {
     main: [
