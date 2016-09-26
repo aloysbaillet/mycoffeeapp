@@ -25,7 +25,7 @@ var CoffeeOrder = React.createClass({
     this.bindAsArray(coffeeDataRef.child('coffeeTypeList'), 'coffeeTypeList');
     this.bindAsArray(coffeeDataRef.child('sugarTypeList'), 'sugarList');
     this.bindAsArray(coffeeDataRef.child('milkTypeList'), 'milkList');
-    
+
     this.props.model.firebaseRef.child('users').on('value', this.onUserListValue);
     this.setUser(this.props.model.uid, this.props.model.userDisplayName);
   },
@@ -41,7 +41,7 @@ var CoffeeOrder = React.createClass({
   },
 
   onSugarChange: function(event){
-    var sugar = event.target.value || 0;
+    var sugar = parseInt(event.target.value) || 0;
     this.setState({sugar: sugar});
     this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredSugar: sugar});
   },
@@ -97,8 +97,10 @@ var CoffeeOrder = React.createClass({
 
   handleSubmit: function(e) {
     e.preventDefault();
-    if(this.state.coffeeType == '')
+    if(this.state.coffeeType == ''){
+      console.log("Order cancelled: empty coffee type!")
       return;
+    }
     var uid = this.state.uid;
     var userDisplayName = this.state.userDisplayName;
     if(!uid){
@@ -116,16 +118,19 @@ var CoffeeOrder = React.createClass({
     return (
       <form onSubmit={this.handleSubmit} className="form-inline">
         <select className="form-control" value={this.state.uid} onChange={this.onUserChange}>
+          <option value=""/>
           {this.state.userList.map(function(item){
             return <option key={item.value} value={item.value}>{item.label}</option>;
           })}
         </select>
         <select className="form-control" value={this.state.milk} onChange={this.onMilkChange}>
+          <option value=""/>
           {this.state.milkList.map(function(item){
             return <option key={item.name} value={item.name}>{item.name}</option>;
           })}
         </select>
         <select className="form-control" value={this.state.coffeeType} onChange={this.onCoffeeTypeChange}>
+          <option value=""/>
           {this.state.coffeeTypeList.map(function(item){
             return <option key={item.name} value={item.name}>{item.name}</option>;
           })}
