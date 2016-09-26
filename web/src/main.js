@@ -49,6 +49,7 @@ var MyCoffeeApp = React.createClass({
       authDomain: "mycoffeeapp.firebaseapp.com",
       databaseURL: C.BASE_FIREBASE_URL,
       storageBucket: "firebase-mycoffeeapp.appspot.com",
+      messagingSenderId: "585668274935"
     };
     firebase.initializeApp(config);
 
@@ -106,7 +107,7 @@ var MyCoffeeApp = React.createClass({
     var MainApp;
     var topKey = 'key_' + this.state.uid + '_' + this.state.groupId;
     if(!this.state.authDone){
-      MainApp = <button className="btn btn-lg btn-info"><span className='glyphicon-left glyphicon glyphicon-refresh spinning'></span>Loading...</button>
+      MainApp = <button className="btn btn-lg btn-info"><span className='glyphicon-left glyphicon glyphicon-refresh spinning'></span>Authenticating...</button>
     }
     else if(this.state.uid && this.state.groupId){
       // this key={} tricks makes the whole div refresh on group change!
