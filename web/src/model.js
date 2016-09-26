@@ -89,13 +89,14 @@ var CoffeeModel = {
       .child(orderId)
       .transaction(function(currentData) {
       for(var i in currentData){
-        if(!(i in selData)) selData[i] = currentData[i];
+        if(!(i in selData))
+          selData[i] = currentData[i];
       }
       if(currentData != null && currentData.selected && currentData.selectedByUid != _this.uid){
-	    console.log('Order already selected by: ', currentData.selectedByUserDisplayName, currentData);
+	      console.log('Order already selected by: ', currentData.selectedByUserDisplayName, currentData);
         return; // Abort the transaction.
       }
-      console.log('selectedByUid=', currentData.selectedByUid, ' uid=', selData.selectedByUid);
+      console.log('selectedByUid=' + currentData.selectedByUid + ' uid=' + selData.selectedByUid + " selData=", selData);
       return selData;
     }, function(error, committed, snapshot) {
       if (error) {
