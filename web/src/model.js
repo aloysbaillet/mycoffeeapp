@@ -89,13 +89,14 @@ var CoffeeModel = {
       .child(orderId)
       .transaction(function(currentData) {
       for(var i in currentData){
-        if(!(i in selData)) selData[i] = currentData[i];
+        if(!(i in selData))
+          selData[i] = currentData[i];
       }
       if(currentData != null && currentData.selected && currentData.selectedByUid != _this.uid){
-	    console.log('Order already selected by: ', currentData.selectedByUserDisplayName, currentData);
+	      console.log('Order already selected by: ', currentData.selectedByUserDisplayName, currentData);
         return; // Abort the transaction.
       }
-      console.log('selectedByUid=', currentData.selectedByUid, ' uid=', selData.selectedByUid);
+      console.log('selectedByUid=' + currentData.selectedByUid + ' uid=' + selData.selectedByUid + " selData=", selData);
       return selData;
     }, function(error, committed, snapshot) {
       if (error) {
@@ -161,6 +162,10 @@ var CoffeeModel = {
   },
 
   updateUserPaymentCacheFromReceipt: function(receipt, data) {
+    if(receipt.cancelled){
+      console.log('updateUserPaymentCacheFromReceipts ignoring cancelled order ', receipt.timestamp);
+      return;
+    }
     console.log('receipt: ', receipt);
     var key = '/groupData/' + this.groupId + '/userPaymentCache/' + receipt.payerId;
     var cache = data[key] || {credit: 0, lastPayment: 0};
@@ -218,6 +223,29 @@ var CoffeeModel = {
        userDisplayName: this.userDisplayName,
        timestamp: firebase.database.ServerValue.TIMESTAMP,
        text: message});
+  },
+
+  toggleOrderCancellation: function(receipt){
+    var cancel = (receipt.cancelled != true);
+    var data = {};
+    var receiptId = receipt['.key'];
+    var _this = this;
+    data['/groupData/' + this.groupId + '/receiptList/current/' + receiptId + "/cancelled"] = cancel;
+    if(cancel){
+      console.log('Going to cancel receipt ' + receiptId + ": " + data);
+    }
+    else{
+      console.log('Going to restore receipt ' + receiptId + ": " + data);
+    }
+    this.firebaseRef.update(data, function(error){
+      if(error){
+        console.log('Receipt not toggled!', error);
+      }
+      else{
+        console.log('Receipt toggled!');
+        _this.updateUserPaymentCacheFromReceipts();
+      }
+    });
   }
 
 };

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "staging": "firebase-mycoffeeapp"
+    "staging": "firebase-mycoffeeapp",
+    "prod": "firebase-mycoffeeapp"
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactFireMixin from 'reactfire';
-import {Input, Button, Select} from 'react-bootstrap';
+import {FormGroup, FormControl, ControlLabel, Button, Select} from 'react-bootstrap';
 
 var GroupSelect = React.createClass({
   mixins: [ReactFireMixin],
@@ -13,9 +13,9 @@ var GroupSelect = React.createClass({
   },
 
   componentWillMount: function() {
-	this.bindAsArray(this.props.model.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
+	  this.bindAsArray(this.props.model.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
   },
-  
+
   onGroupSelect: function(event) {
     var groupId = event.target.value;
   	this.props.onGroupSelect(groupId);
@@ -45,19 +45,20 @@ var GroupSelect = React.createClass({
       groupList.push({value: group['.key'], label: group.name});
     }
     return <div>
-      <div className="input-group pull-left col-xs-5">
-        <select value={this.props.model.groupId || ""} className="form-control" onChange={this.onGroupSelect}>
+      <FormGroup>
+        <ControlLabel>Select a group:</ControlLabel>
+        <FormControl componentClass="select" value={this.props.model.groupId || ""} placeholder="Group" onChange={this.onGroupSelect}>
+          <option key={-1} value={""}></option>
           {this.state.groupList.map(createGroupOption)}
-        </select>
-      </div>
-      <div className="input-group pull-right col-xs-4 input-sm">
-        <Input type="text" placeholder="New Group" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange}/>
-        <span className="input-group-btn">
-          <Button disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</Button>
-        </span>
-      </div>
-    </div>;
+        </FormControl>
+      </FormGroup>
+      <FormGroup>
+        <ControlLabel>Add new group:</ControlLabel>
+        <FormControl type="text" placeholder="New Group" value={this.state.groupNameToAdd} onChange={this.onGroupNameChange} />
+        <Button disabled={!this.state.groupNameToAdd} onClick={this.onGroupAdd}>Add</Button>
+      </FormGroup>
+    </div>
   }
 });
-module.exports = GroupSelect;
 
+module.exports = GroupSelect;

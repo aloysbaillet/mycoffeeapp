@@ -6,12 +6,13 @@ const HotModuleReplacementPlugin = webpack.HotModuleReplacementPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NoErrorsPlugin = webpack.NoErrorsPlugin;
 const OccurenceOrderPlugin = webpack.optimize.OccurenceOrderPlugin;
+const PurifyCssPlugin = require("purifycss-webpack-plugin");
 
 
 module.exports = {
   cache: true,
   debug: true,
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
 
   entry: {
     main: [
@@ -22,7 +23,7 @@ module.exports = {
   },
 
   output: {
-    filename: '[name].js',
+    filename: '[name]-[hash].js',
     path: path.resolve('./target'),
     publicPath: '/'
   },
@@ -72,6 +73,12 @@ module.exports = {
       inject: 'body',
       template: './src/index.html',
       favicon: './src/favicon.ico'
+    }),
+    new PurifyCssPlugin({
+        basePath: __dirname,
+        paths: [
+          "src/*.html"
+        ]
     })
   ],
 

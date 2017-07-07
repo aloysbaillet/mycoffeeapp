@@ -9,6 +9,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OccurenceOrderPlugin = webpack.optimize.OccurenceOrderPlugin;
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const PurifyCssPlugin = require("purifycss-webpack-plugin");
 
 
 module.exports = {
@@ -29,7 +30,7 @@ module.exports = {
   },
 
   output: {
-    filename: '[name].js',
+    filename: '[name]-[hash].js',
     path: path.resolve('./target'),
     publicPath: '/'
   },
@@ -54,11 +55,11 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('styles.css'),
+    new ExtractTextPlugin('styles-[hash].css'),
     new OccurenceOrderPlugin(),
     new DedupePlugin(),
     new AggressiveMergingPlugin(),
-    new CommonsChunkPlugin('vendor', '[name].js'),
+    new CommonsChunkPlugin('vendor', '[name]-[hash].js'),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       hash: true,
@@ -73,6 +74,12 @@ module.exports = {
         unused: true,
         warnings: false
       }
+    }),
+    new PurifyCssPlugin({
+        basePath: __dirname,
+        paths: [
+          "src/*.html"
+        ]
     })
   ],
 

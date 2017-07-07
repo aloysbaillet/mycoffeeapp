@@ -1,10 +1,31 @@
 {
-  "firebase": "mycoffeeapp",
-  "public": "target",
-  "ignore": [
-    "firebase.json",
-    "**/.*",
-    "**/node_modules/**"
-  ],
-  "rules": "rules.json"
+  "rules": "rules.json",
+  "hosting": {
+    "firebase": "mycoffeeapp",
+    "public": "target",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [ {
+        "source" : "**/*.@(jpg|jpeg|gif|png)",
+        "headers" : [ {
+        "key" : "Cache-Control",
+        "value" : "max-age=7200"
+        } ]
+      }, {
+        "source" : "**/*.@(js|map|eot|svg|woff|woff2|ttf)",
+        "headers" : [ {
+        "key" : "Cache-Control",
+        "value" : "max-age=31536000"
+        } ]
+      }, {
+        "source" : "404.html",
+        "headers" : [ {
+        "key" : "Cache-Control",
+        "value" : "max-age=300"
+        } ]
+      } ]
+  }
 }

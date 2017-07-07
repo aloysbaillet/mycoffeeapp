@@ -2,6 +2,7 @@ import firebase from 'firebase';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {PageHeader, Panel} from 'react-bootstrap';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 // for iOS
 if (!global.Intl) {
@@ -36,6 +37,8 @@ var MyCoffeeApp = React.createClass({
     return {
       uid: null,
       groupId: null,
+      currentTab: 0,
+      authDone: false
     };
   },
 
@@ -46,6 +49,7 @@ var MyCoffeeApp = React.createClass({
       authDomain: "mycoffeeapp.firebaseapp.com",
       databaseURL: C.BASE_FIREBASE_URL,
       storageBucket: "firebase-mycoffeeapp.appspot.com",
+      messagingSenderId: "585668274935"
     };
     firebase.initializeApp(config);
 
@@ -58,7 +62,10 @@ var MyCoffeeApp = React.createClass({
     }, function(error) {
       console.error(error);
     });
+  },
 
+  onTabSelect(index, last) {
+    this.setState({currentTab: index});
   },
 
   onGroupSelect: function(groupId){
@@ -67,93 +74,103 @@ var MyCoffeeApp = React.createClass({
   },
 
   getDisplayName: function(user) {
-    console.log("getDisplayName: user="+user);
     if(!user)
       return '';
     var displayName = user.displayName;
-    console.log("displayName: 1 "+displayName);
     user.providerData.forEach(function(profile) {
-      if(profile.displayName) 
+      if(profile.displayName)
         displayName = profile.displayName;
-      console.log("displayName: 2 "+displayName);
     });
-    console.log("displayName: "+displayName);
     return displayName;
   },
-  
+
   handleAuth: function(user) {
-    console.log('handleAuth: 0 user=' + user);
     var displayName = this.getDisplayName(user);
-    console.log('handleAuth: 1 displayName=' + displayName);
     this.model.init(this.firebaseRef, user, displayName);
     if(user) {
-      console.log('handleAuth: 2 uid=' + user.uid);
-      this.setState({uid: user.uid});
       this.firebaseRef
       .child('users')
       .child(user.uid)
       .once('value', function(snapshot){
-        console.log('handleAuth: 5 groupId=' + snapshot.val().groupId);
         this.model.setGroupId(snapshot.val().groupId);
-        this.setState({groupId: snapshot.val().groupId})
+        this.setState({uid: user.uid,
+                       groupId: snapshot.val().groupId,
+                       authDone: true})
       }, this);
     } else {
-      console.log('handleAuth: 3 no user');
       this.model.setGroupId(null);
-      this.setState({uid: null, groupId: null});
+      this.setState({uid: null, groupId: null, authDone: true});
     }
   },
 
   render: function() {
     var MainApp;
-    console.log('render: uid='+this.state.uid+' groupId='+this.state.groupId);
     var topKey = 'key_' + this.state.uid + '_' + this.state.groupId;
-    if(this.state.uid && this.state.groupId)
+    if(!this.state.authDone){
+      MainApp = <button className="btn btn-lg btn-info"><span className='glyphicon-left glyphicon glyphicon-refresh spinning'></span>Authenticating...</button>
+    }
+    else if(this.state.uid && this.state.groupId){
       // this key={} tricks makes the whole div refresh on group change!
-      MainApp = 
-      <div uid={this.state.uid} groupId={this.state.groupId} key={topKey + '_ready'}>
-        <Panel header="Group">
-          <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />
-        </Panel>
-        <Panel header="New Order" bsStyle="primary">
-          <CoffeeOrder model={this.model} />
-        </Panel>
-        <Panel header="Pending Orders" bsStyle="info">
-          <PendingOrderList model={this.model} />
-        </Panel>
-        <Panel header="Users">
-          <UserList model={this.model} />
-        </Panel>
-        <Panel header="Chat">
-          <ChatBox model={this.model} />
-        </Panel>
-        <Panel header="Paid Orders">
-          <PaidOrderList model={this.model} />
-        </Panel>
-      </div>;
+      MainApp =
+      <div>
+        <FacebookLogin model={this.model} uid={this.model.uid}/>
+        <Tabs key={topKey + '_ready'}
+            onSelect={this.onTabSelect}
+            selectedIndex={this.state.currentTab}>
+          <TabList>
+            <Tab>Main</Tab>
+            <Tab>Orders</Tab>
+            <Tab>Chat</Tab>
+            <Tab>Groups</Tab>
+          </TabList>
+          <TabPanel>
+            <Panel header="New Order" bsStyle="primary">
+              <CoffeeOrder model={this.model} />
+            </Panel>
+            <Panel header="Pending Orders" bsStyle="info">
+              <PendingOrderList model={this.model} />
+            </Panel>
+            <Panel header="Users">
+              <UserList model={this.model} />
+            </Panel>
+          </TabPanel>
+          <TabPanel>
+            <Panel header="Paid Orders">
+              <PaidOrderList model={this.model} />
+            </Panel>
+          </TabPanel>
+          <TabPanel>
+            <Panel header="Chat">
+              <ChatBox model={this.model} />
+            </Panel>
+          </TabPanel>
+          <TabPanel>
+            <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />
+          </TabPanel>
+        </Tabs>
+      </div>
+    }
     else{
-      console.log('render: 0 uid='+this.state.uid);
       if(!this.state.uid){
-       console.log('render: 1 uid='+this.state.uid);
-       MainApp = 
-       <div uid={this.state.uid} groupId={this.state.groupId} key={topKey + '_loggedOut'}>
+       MainApp =
+       <div>
+         <FacebookLogin model={this.model} uid={this.model.uid}/>
          <p key={this.state.uid}>Once logged in, you can start ordering coffees from your friends!</p>
-       </div>;
+       </div>
       }
       else if(!this.state.groupId){
-        console.log('render: 2 uid='+this.state.uid);
-        MainApp = 
-        <div uid={this.state.uid} groupId={this.state.groupId} key={topKey + '_loggedIn'}>
+        MainApp =
+        <div>
           <Panel header="Group">
+            <FacebookLogin model={this.model} uid={this.model.uid}/>
             <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />
-          </Panel>;
+          </Panel>
         </div>
       }
     }
     return (
-      <div key={topKey}>
+      <div>
         <PageHeader>My Coffee App</PageHeader>
-        <FacebookLogin model={this.model} uid={this.model.uid}/>
         {MainApp}
       </div>
     );
