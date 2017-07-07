@@ -27,8 +27,13 @@ var CoffeeModel = {
       .update({groupId: groupId});
       this.groupRef = this.firebaseRef.child('groupData').child(this.groupId);
     }
-    else
+    else {
       this.groupRef = null;
+      this.firebaseRef
+      .child('users')
+      .child(this.uid)
+      .update({groupId: null});
+    }
   },
 
   formatOrder: function(order){

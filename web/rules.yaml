@@ -33,9 +33,9 @@ schema:
         type: object
         properties:
           name: {type: string}
-          # users:
-          #   type: object
-          #   $userId: {type: boolean} #value is meaningless
+          users:
+            type: object
+            $userId: {type: boolean} #value is meaningless
 
     userPreferences:
       type: object
@@ -76,6 +76,13 @@ schema:
       $groupId:
         type: object
         properties:
+          userList:
+            type: object
+            $uid:
+              type: object
+              properties:
+                inviteAccepted: {type boolean}
+
           userPaymentCache:
             type: object
             $uid:

@@ -44,12 +44,20 @@ var MyCoffeeApp = React.createClass({
 
   componentWillMount: function() {
     // Initialize Firebase
+    // var config = {
+    //   apiKey: "AIzaSyCIcEq226PG6WLM6pHHDMNN7iSWP64mWNY",
+    //   authDomain: "mycoffeeapp.firebaseapp.com",
+    //   databaseURL: C.BASE_FIREBASE_URL,
+    //   storageBucket: "firebase-mycoffeeapp.appspot.com",
+    //   messagingSenderId: "585668274935"
+    // };
     var config = {
-      apiKey: "AIzaSyCIcEq226PG6WLM6pHHDMNN7iSWP64mWNY",
-      authDomain: "mycoffeeapp.firebaseapp.com",
-      databaseURL: C.BASE_FIREBASE_URL,
-      storageBucket: "firebase-mycoffeeapp.appspot.com",
-      messagingSenderId: "585668274935"
+      apiKey: "AIzaSyDgOuhoMQkho2CiED1_ckz11vYk8B0r8Bw",
+      authDomain: "coffeetest-da22d.firebaseapp.com",
+      databaseURL: "https://coffeetest-da22d.firebaseio.com",
+      projectId: "coffeetest-da22d",
+      storageBucket: "coffeetest-da22d.appspot.com",
+      messagingSenderId: "995392601975"
     };
     firebase.initializeApp(config);
 
@@ -92,10 +100,27 @@ var MyCoffeeApp = React.createClass({
       .child('users')
       .child(user.uid)
       .once('value', function(snapshot){
-        this.model.setGroupId(snapshot.val().groupId);
-        this.setState({uid: user.uid,
-                       groupId: snapshot.val().groupId,
-                       authDone: true})
+        let gid = snapshot.val().groupId;
+        if (gid != null) {
+          this.firebaseRef
+          .child('userGroups')
+          .child(gid)
+          .child('users')
+          .child(user.uid)
+          .once('value', function(isUserAllowed) {
+            let ua = isUserAllowed.val();
+            this.model.setGroupId(ua ? gid : null);
+            this.setState({uid: user.uid,
+                            groupId: ua ? gid : null,
+                            authDone: true})
+          }, this);
+        }
+        else {
+          this.model.setGroupId(null);
+          this.setState({uid: user.uid,
+                          groupId: null,
+                          authDone: true})
+        }
       }, this);
     } else {
       this.model.setGroupId(null);

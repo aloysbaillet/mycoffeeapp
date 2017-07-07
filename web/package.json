@@ -22,6 +22,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
+    "blaze_compiler": "0.0.36",
     "bootstrap-loader": "^2.1.0",
     "browser-sync": "^2.18.12",
     "css-loader": "^0.25.0",
