@@ -45,20 +45,12 @@ var MyCoffeeApp = React.createClass({
 
   componentWillMount: function() {
     // Initialize Firebase
-    // var config = {
-    //   apiKey: "AIzaSyCIcEq226PG6WLM6pHHDMNN7iSWP64mWNY",
-    //   authDomain: "mycoffeeapp.firebaseapp.com",
-    //   databaseURL: C.BASE_FIREBASE_URL,
-    //   storageBucket: "firebase-mycoffeeapp.appspot.com",
-    //   messagingSenderId: "585668274935"
-    // };
     var config = {
-      apiKey: "AIzaSyDgOuhoMQkho2CiED1_ckz11vYk8B0r8Bw",
-      authDomain: "coffeetest-da22d.firebaseapp.com",
-      databaseURL: "https://coffeetest-da22d.firebaseio.com",
-      projectId: "coffeetest-da22d",
-      storageBucket: "coffeetest-da22d.appspot.com",
-      messagingSenderId: "995392601975"
+      apiKey: "AIzaSyCIcEq226PG6WLM6pHHDMNN7iSWP64mWNY",
+      authDomain: "mycoffeeapp.firebaseapp.com",
+      databaseURL: C.BASE_FIREBASE_URL,
+      storageBucket: "firebase-mycoffeeapp.appspot.com",
+      messagingSenderId: "585668274935"
     };
     firebase.initializeApp(config);
 
