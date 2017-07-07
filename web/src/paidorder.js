@@ -66,7 +66,7 @@ var UserList = React.createClass({
       <span className="pull-right">
         {expand}
         <ReactBootstrap.Button
-          bsStyle="danger"
+          bsStyle={this.props.receipt.cancelled?"secondary":"danger"}
           onClick={ ()=> this.props.model.toggleOrderCancellation(this.props.receipt)}>
             {this.props.receipt.cancelled?"Restore":"Cancel"}
         </ReactBootstrap.Button>
