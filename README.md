@@ -14,7 +14,7 @@ To see in action: https://mycoffeeapp.firebaseapp.com
 ```shell
 cd web
 npm install
-npm install firebase-tools gulp -g
+npm install firebase-tools "gulpjs/gulp#4.0" -g
 gulp # runs local server, watches for js changes and recompiles on the fly, notifies of errors as well!
 
 ```
