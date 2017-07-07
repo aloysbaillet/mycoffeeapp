@@ -2,7 +2,7 @@ var C = require('./constants.js')
 var firebase = require('firebase');
 
 var CoffeeModel = {
-  init: function(firebaseRef, user, userDisplayName){
+  init: function(firebaseRef, user, userDisplayName, userProvider){
     this.firebaseRef = firebaseRef;
     this.groupId = null; // will be set by mycoffeeapp
     this.groupRef = null;
@@ -10,11 +10,13 @@ var CoffeeModel = {
     if(user){
       this.uid = user.uid;
       this.userDisplayName = userDisplayName;
-      this.firebaseRef.child('users').child(this.uid).update({displayName: userDisplayName});
+      this.provider = userProvider;
+      this.firebaseRef.child('users').child(this.uid).update({ displayName: userDisplayName, authProvider: userProvider });
     }
     else{
       this.uid = null;
       this.userDisplayName = '';
+      this.provider = '';
     }
   },
 
@@ -251,6 +253,19 @@ var CoffeeModel = {
         _this.updateUserPaymentCacheFromReceipts();
       }
     });
+  },
+
+  removeUserFromGroup: function(userToRemove) {
+    var obj = {};
+    obj[userToRemove] = false;
+    this.firebaseRef.child('userGroups').child(this.groupId).child('users').update(obj);
+    this.firebaseRef.child('users').child(userToRemove).update({groupId: null});
+  },
+
+  addUserToGroup: function(userToAdd) {
+    var obj = {};
+    obj[userToAdd] = true;
+    this.firebaseRef.child('userGroups').child(this.groupId).child('users').update(obj);
   }
 
 };

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "NODE_ENV=production gulp build",
     "test": "jest",
-    "rules": "blaze rules.yaml && firebase deploy:rules",
+    "rules": "blaze rules.yaml && firebase deploy --only database",
     "deploy": "npm run build && firebase deploy",
     "upload-data": "node data/upload.js",
     "start": "gulp"
