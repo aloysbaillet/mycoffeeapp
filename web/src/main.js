@@ -49,6 +49,7 @@ var MyCoffeeApp = React.createClass({
       apiKey: "AIzaSyCIcEq226PG6WLM6pHHDMNN7iSWP64mWNY",
       authDomain: "mycoffeeapp.firebaseapp.com",
       databaseURL: C.BASE_FIREBASE_URL,
+      projectId: "firebase-mycoffeeapp",
       storageBucket: "firebase-mycoffeeapp.appspot.com",
       messagingSenderId: "585668274935"
     };
