@@ -30,6 +30,7 @@ import PaidOrderList from './paidorderlist.js';
 import UserList from './userlist.js';
 import ChatBox from './chatbox.js';
 import C from './constants.js';
+import UserManagement from './usermanagement.js';
 
 var MyCoffeeApp = React.createClass({
 
@@ -75,30 +76,49 @@ var MyCoffeeApp = React.createClass({
 
   getDisplayName: function(user) {
     if(!user)
-      return '';
+      return { name: '', provider: 'none' };
     var displayName = user.displayName;
+    var providerName = "unknown";
     user.providerData.forEach(function(profile) {
-      if(profile.displayName)
+      if(profile.displayName) {
         displayName = profile.displayName;
+        providerName = profile.providerId;
+      }
     });
-    return displayName;
+    return { name: displayName, provider: providerName };
   },
 
   handleAuth: function(user) {
-    var displayName = this.getDisplayName(user);
-    this.model.init(this.firebaseRef, user, displayName);
+    var profile = this.getDisplayName(user);
+    this.model.init(this.firebaseRef, user, profile.name, profile.provider);
     if(user) {
       this.firebaseRef
       .child('users')
       .child(user.uid)
       .once('value', function(snapshot){
-        this.model.setGroupId(snapshot.val().groupId);
-        this.setState({uid: user.uid,
-                       groupId: snapshot.val().groupId,
-                       authDone: true})
+        let gid = snapshot.val().groupId;
+        if (gid != null) {
+          this.firebaseRef
+          .child('userGroups')
+          .child(gid)
+          .child('users')
+          .child(user.uid)
+          .once('value', function(isUserAllowed) {
+            let ua = isUserAllowed.val();
+            this.model.setGroupId(ua ? gid : null);
+            this.setState({uid: user.uid,
+                            groupId: ua ? gid : null,
+                            authDone: true})
+          }, this);
+        }
+        else {
+          this.model.setGroupId(null);
+          this.setState({uid: user.uid,
+                          groupId: null,
+                          authDone: true})
+        }
       }, this);
     } else {
-      this.model.setGroupId(null);
       this.setState({uid: null, groupId: null, authDone: true});
     }
   },
@@ -122,6 +142,7 @@ var MyCoffeeApp = React.createClass({
             <Tab>Orders</Tab>
             <Tab>Chat</Tab>
             <Tab>Groups</Tab>
+            <Tab>Group Users</Tab>
           </TabList>
           <TabPanel>
             <Panel header="New Order" bsStyle="primary">
@@ -146,6 +167,9 @@ var MyCoffeeApp = React.createClass({
           </TabPanel>
           <TabPanel>
             <GroupSelect model={this.model} onGroupSelect={this.onGroupSelect} />
+          </TabPanel>
+          <TabPanel>
+            <UserManagement model={this.model} />
           </TabPanel>
         </Tabs>
       </div>

@@ -8,12 +8,14 @@ var GroupSelect = React.createClass({
   getInitialState: function() {
     return {
       groupList: [],
+      uid: '',
       groupNameToAdd: ''
     };
   },
 
   componentWillMount: function() {
 	  this.bindAsArray(this.props.model.firebaseRef.child('userGroups').orderByChild('name'), 'groupList');
+    this.state.uid = this.props.model.uid;
   },
 
   onGroupSelect: function(event) {
@@ -37,19 +39,21 @@ var GroupSelect = React.createClass({
   render: function() {
     var _this = this;
     function createGroupOption(item, index){
-      return <option key={index} value={item['.key']}>{item.name}</option>
+      return <option key={index} value={item.value}>{item.label}</option>
     }
     var groupList = [];
     for(var gid in this.state.groupList){
       var group = this.state.groupList[gid];
-      groupList.push({value: group['.key'], label: group.name});
+      if (group.users[this.state.uid]) {
+        groupList.push({ value: group['.key'], label: group.name });
+      }
     }
     return <div>
       <FormGroup>
         <ControlLabel>Select a group:</ControlLabel>
         <FormControl componentClass="select" value={this.props.model.groupId || ""} placeholder="Group" onChange={this.onGroupSelect}>
           <option key={-1} value={""}></option>
-          {this.state.groupList.map(createGroupOption)}
+          {groupList.map(createGroupOption)}
         </FormControl>
       </FormGroup>
       <FormGroup>

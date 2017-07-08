@@ -25,6 +25,7 @@ schema:
         properties:
           displayName: {type: string}
           groupId: {type: string}
+          authProvider: {type: string}
 
     userGroups:
       type: object
@@ -33,9 +34,9 @@ schema:
         type: object
         properties:
           name: {type: string}
-          # users:
-          #   type: object
-          #   $userId: {type: boolean} #value is meaningless
+          users:
+            type: object
+            $uid: {type: boolean}
 
     userPreferences:
       type: object

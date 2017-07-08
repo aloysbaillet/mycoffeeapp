@@ -14,23 +14,31 @@ var UserList = React.createClass({
   getInitialState: function() {
     return {
       users: [],
-      userPaymentCache: []
+      userPaymentCache: [],
+      permittedUsers: []
     };
   },
 
   componentWillMount: function() {
     this.bindAsArray(this.props.model.firebaseRef.child('users'), 'users');
     this.bindAsObject(this.props.model.groupRef.child('userPaymentCache'), 'userPaymentCache');
+    this.bindAsArray(this.props.model.firebaseRef.child('userGroups').child(this.props.model.groupId).child('users'), 'permittedUsers');
   },
 
   getUserList: function() {
     var userList = [];
+    var lookup = {};
+    this.state.permittedUsers.forEach(function(elem, idx, arr) {
+      lookup[elem['.key']] = elem['.value'];
+    });
     for(var i in this.state.users){
       var user = _.extend(this.state.users[i], {});
-      var cache = this.state.userPaymentCache[user['.key']] || {credit:0, lastPayment: 0};
-      user.credit = cache.credit;
-      user.lastPayment = cache.lastPayment;
-      userList.push(user);
+      if (lookup[user['.key']]) {
+        var cache = this.state.userPaymentCache[user['.key']] || { credit: 0, lastPayment: 0 };
+        user.credit = cache.credit;
+        user.lastPayment = cache.lastPayment;
+        userList.push(user);
+      }
     }
     userList.sort(function(a, b) {
       if(a.credit == b.credit){

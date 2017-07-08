@@ -16,7 +16,8 @@ var CoffeeOrder = React.createClass({
       uid:'',
       userDisplayName:'',
       userList:[],
-      userMap:{}
+      userMap:{},
+      permittedUsers:[]
     };
   },
 
@@ -26,6 +27,7 @@ var CoffeeOrder = React.createClass({
     this.bindAsArray(coffeeDataRef.child('sugarTypeList'), 'sugarList');
     this.bindAsArray(coffeeDataRef.child('milkTypeList'), 'milkList');
 
+    this.bindAsArray(this.props.model.firebaseRef.child('userGroups').child(this.props.model.groupId).child('users'), 'permittedUsers');
     this.props.model.firebaseRef.child('users').on('value', this.onUserListValue);
     this.setUser(this.props.model.uid, this.props.model.userDisplayName);
   },
@@ -52,13 +54,28 @@ var CoffeeOrder = React.createClass({
     this.props.model.firebaseRef.child('userPreferences').child(this.state.uid).update({preferredMilk: milk});
   },
 
+  getUserList: function() {
+    var lookup = {};
+    this.state.permittedUsers.forEach(function(elem, idx, arr) {
+      lookup[elem['.key']] = elem['.value'];
+    });
+    var users = [];
+    this.state.userList.forEach(function(elem, idx, arr){
+      if (lookup[elem.value])
+        users.push(elem);
+    });
+    return users;
+  },
+
   onUserListValue: function(snapshot) {
     var users = [];
     var userMap = snapshot.val();
     var options = [];
     for(var i in userMap){
-      options.push({ label: userMap[i].displayName,
-                     value: i });
+      options.push({
+        label: userMap[i].displayName,
+        value: i
+      });
     }
     options.sort(function(a, b) {
         return a.label < b.label ? -1 : 1;
@@ -119,7 +136,7 @@ var CoffeeOrder = React.createClass({
       <form onSubmit={this.handleSubmit} className="form-inline">
         <select className="form-control" value={this.state.uid} onChange={this.onUserChange}>
           <option value=""/>
-          {this.state.userList.map(function(item){
+          {this.getUserList().map(function(item){
             return <option key={item.value} value={item.value}>{item.label}</option>;
           })}
         </select>

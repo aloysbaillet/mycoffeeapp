@@ -7,13 +7,17 @@
       ".write":"false",
       ".read":"((auth.uid!==null))",
       "$uid": {
-        ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('displayName').exists()||newData.child('displayName').isString())&&(!newData.child('groupId').exists()||newData.child('groupId').isString())&&auth.uid!==null)))",
+        ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('displayName').exists()||newData.child('displayName').isString())&&(!newData.child('groupId').exists()||newData.child('groupId').isString())&&(!newData.child('authProvider').exists()||newData.child('authProvider').isString())&&auth.uid!==null)))",
         ".read":"((auth.uid!==null))",
         "displayName": {
           ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
           ".read":"((auth.uid!==null))"
         },
         "groupId": {
+          ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
+          ".read":"((auth.uid!==null))"
+        },
+        "authProvider": {
           ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
           ".read":"((auth.uid!==null))"
         }
@@ -24,11 +28,19 @@
       ".write":"false",
       ".read":"((auth.uid!==null))",
       "$group": {
-        ".write":"((((!newData.exists()||newData.hasChildren())&&(!newData.child('name').exists()||newData.child('name').isString())&&auth.uid!==null)))",
+        ".write":"false",
         ".read":"((auth.uid!==null))",
         "name": {
           ".write":"((((!newData.exists()||newData.isString())&&auth.uid!==null)))",
           ".read":"((auth.uid!==null))"
+        },
+        "users": {
+          ".write":"false",
+          ".read":"((auth.uid!==null))",
+          "$uid": {
+            ".write":"((((!newData.exists()||newData.isBoolean())&&auth.uid!==null)))",
+            ".read":"((auth.uid!==null))"
+          }
         }
       }
     },
