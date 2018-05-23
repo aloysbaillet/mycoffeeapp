@@ -1,8 +1,9 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var firebase = require('firebase');
 var C = require('./constants.js');
 
-var FacebookLogin = React.createClass({
+var FacebookLogin = createReactClass({
   getInitialState: function() {
     return {login: null};
   },

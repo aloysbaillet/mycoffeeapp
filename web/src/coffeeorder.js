@@ -1,8 +1,9 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var ReactFireMixin = require('reactfire');
 var Button = require('react-bootstrap').Button;
 
-var CoffeeOrder = React.createClass({
+var CoffeeOrder = createReactClass({
   mixins: [ReactFireMixin],
 
   getInitialState: function() {

@@ -1,4 +1,5 @@
 const path = require('path');
+const glob = require('glob');
 const webpack = require('webpack');
 
 // plugins
@@ -9,7 +10,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OccurenceOrderPlugin = webpack.optimize.OccurenceOrderPlugin;
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-const PurifyCssPlugin = require("purifycss-webpack-plugin");
+const PurifyCssPlugin = require("purifycss-webpack");
 
 
 module.exports = {
@@ -43,14 +44,14 @@ module.exports = {
 
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.ico/, loader: "file" },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
+      { test: /\.ico/, loader: "file-loader" },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
       { test: /\.(woff|woff2)$/, loader:"url?prefix=font/&limit=5000" },
       { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
       { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
-      { test: /\.scss$/, loader: 'style!css!autoprefixer-loader?{browsers:["last 3 versions", "Firefox ESR"]}!sass' }
+      { test: /\.scss$/, loader: 'style-loader!css!autoprefixer-loader?{browsers:["last 3 versions", "Firefox ESR"]}!sass' }
     ]
   },
 
@@ -76,10 +77,7 @@ module.exports = {
       }
     }),
     new PurifyCssPlugin({
-        basePath: __dirname,
-        paths: [
-          "src/*.html"
-        ]
+      paths: glob.sync(path.join(__dirname, 'src/*.html'))
     })
   ],
 

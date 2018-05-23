@@ -1,10 +1,11 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var ReactFireMixin = require('reactfire');
 var ReactBootstrap = require('react-bootstrap');
 
 import ManageUserRow from './manageuserrow.js';
 
-var UserManagement = React.createClass({
+var UserManagement = createReactClass({
     mixins: [ReactFireMixin],
 
     getInitialState: function () {

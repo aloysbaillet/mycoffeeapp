@@ -1,9 +1,10 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var ReactFireMixin = require('reactfire');
-var TimeAgo = require('react-timeago');
+var TimeAgo = require('react-timeago').default;
 var ReactBootstrap = require('react-bootstrap');
 
-var ChatMessages = React.createClass({
+var ChatMessages = createReactClass({
     render() {
         return <ReactBootstrap.ListGroup>{this.renderMessages()}</ReactBootstrap.ListGroup>;
     },
@@ -18,7 +19,7 @@ var ChatMessages = React.createClass({
     }
 });
 
-var ChatInput = React.createClass({
+var ChatInput = createReactClass({
   sendMessage(e) {
     e.preventDefault();
     var message = this.refs.input.getValue();
@@ -29,7 +30,7 @@ var ChatInput = React.createClass({
   render() {
     return <form onSubmit={this.sendMessage}>
         <div className="input-group">
-          <ReactBootstrap.Input type="text" placeholder="Chat a bit..." ref="input"/>
+          <ReactBootstrap.FormControl type="text" placeholder="Chat a bit..." ref="input"/>
           <span className="input-group-btn">
             <ReactBootstrap.Button onClick={this.sendMessage}>Post</ReactBootstrap.Button>
           </span>
@@ -38,7 +39,7 @@ var ChatInput = React.createClass({
   }
 });
 
-var ChatBox = React.createClass({
+var ChatBox = createReactClass({
   mixins: [ReactFireMixin],
 
   componentWillMount() {
@@ -58,4 +59,5 @@ var ChatBox = React.createClass({
     </div>;
   }
 });
+
 module.exports = ChatBox;

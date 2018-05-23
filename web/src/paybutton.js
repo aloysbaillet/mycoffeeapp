@@ -1,8 +1,9 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var Firebase = require('firebase');
 var Button = require('react-bootstrap').Button;
 
-var PayButton = React.createClass({
+var PayButton = createReactClass({
   getInitialState: function() {
     return {
       numSelected: 0,

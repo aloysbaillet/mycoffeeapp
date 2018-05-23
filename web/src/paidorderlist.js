@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
@@ -6,7 +7,7 @@ var ReactBootstrap = require('react-bootstrap');
 
 var PaidOrder = require('./paidorder.js');
 
-var PaidOrderList = React.createClass({
+var PaidOrderList = createReactClass({
   mixins: [ReactFireMixin],
 
   getInitialState: function() {
