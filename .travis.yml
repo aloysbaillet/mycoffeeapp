@@ -1,9 +1,9 @@
 language: node_js
 node_js:
-  - "iojs"
-  - "7"
+  - "8"
 before_script:
   - npm install -g gulp-cli
+  - cd web && npm install
 script: cd web && gulp build
 addons:
   apt:
