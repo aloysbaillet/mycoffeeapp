@@ -1,10 +1,12 @@
 language: node_js
 node_js:
   - "8"
+before_install:
+  - cd web
 before_script:
   - npm install -g gulp-cli
-  - cd web && npm install
-script: cd web && gulp build
+  - npm install
+script: gulp build
 addons:
   apt:
     update: true
