@@ -1,7 +1,8 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var ReactIntl = require('react-intl');
 
-var FormattedDate = React.createClass({
+var FormattedDate = createReactClass({
   render: function() {
     return (
       <span>

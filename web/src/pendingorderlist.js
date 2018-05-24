@@ -1,4 +1,5 @@
 import React from 'react';
+var createReactClass = require('create-react-class');
 import ReactFireMixin from 'reactfire';
 import Firebase from 'firebase';
 import ReactIntl from 'react-intl';
@@ -9,7 +10,7 @@ import OrderRow from './orderrow.js';
 import PayButton from './paybutton.js';
 
 
-var PendingOrderList = React.createClass({
+var PendingOrderList = createReactClass({
   mixins: [ReactFireMixin],
 
   getInitialState: function() {

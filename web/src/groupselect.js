@@ -1,8 +1,9 @@
 import React from 'react';
+var createReactClass = require('create-react-class');
 import ReactFireMixin from 'reactfire';
 import {FormGroup, FormControl, ControlLabel, Button, Select} from 'react-bootstrap';
 
-var GroupSelect = React.createClass({
+var GroupSelect = createReactClass({
   mixins: [ReactFireMixin],
 
   getInitialState: function() {

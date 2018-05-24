@@ -1,8 +1,9 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var ReactFireMixin = require('reactfire');
 var ReactBootstrap = require('react-bootstrap');
 
-var ManageUserRow = React.createClass({
+var ManageUserRow = createReactClass({
     mixins: [ReactFireMixin],
 
     render: function () {

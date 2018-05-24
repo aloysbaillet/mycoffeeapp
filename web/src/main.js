@@ -1,8 +1,9 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {PageHeader, Panel} from 'react-bootstrap';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+var createReactClass = require('create-react-class');
 
 // for iOS
 if (!global.Intl) {
@@ -16,9 +17,10 @@ ReactIntl.addLocaleData(auLocale);
 
 // Styles
 import "react-select/dist/react-select.css";
+import 'react-tabs/style/react-tabs.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import "!style!css!sass!./styles/main.scss";
+import "!style-loader!css-loader!sass-loader!./styles/main.scss";
 
 // Components
 import CoffeeModel from './model.js';
@@ -32,7 +34,7 @@ import ChatBox from './chatbox.js';
 import C from './constants.js';
 import UserManagement from './usermanagement.js';
 
-var MyCoffeeApp = React.createClass({
+var MyCoffeeApp = createReactClass({
 
   getInitialState: function() {
     return {

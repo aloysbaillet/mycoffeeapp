@@ -4,14 +4,15 @@ const browserSync   = require('browser-sync');
 const del           = require('del');
 const eslint        = require('gulp-eslint');
 const gulp          = require('gulp');
-const gutil         = require('gulp-util');
 const header        = require('gulp-header');
 const historyApi    = require('connect-history-api-fallback');
 const karma         = require('karma');
 const path          = require('path');
 const webpack       = require('webpack');
 const WebpackServer = require("webpack-dev-server");
-
+const PluginError   = require('plugin-error');
+const colors        = require('ansi-colors');
+var log             = require('fancy-log');
 
 //=========================================================
 //  PATHS
@@ -79,8 +80,8 @@ gulp.task('headers', () => {
 gulp.task('js', done => {
   let conf = require(config.webpack.dist);
   webpack(conf).run((error, stats) => {
-    if (error) throw new gutil.PluginError('webpack', error);
-    gutil.log(stats.toString(conf.stats));
+    if (error) throw new PluginError('webpack', error);
+    log(stats.toString(conf.stats));
     done();
   });
 });
@@ -108,9 +109,9 @@ gulp.task('serve.dev', done => {
   let server = new WebpackServer(compiler, conf.devServer);
 
   server.listen(conf.devServer.port, 'localhost', () => {
-    gutil.log(gutil.colors.gray('-------------------------------------------'));
-    gutil.log('WebpackDevServer:', gutil.colors.magenta(`http://localhost:${conf.devServer.port}`));
-    gutil.log(gutil.colors.gray('-------------------------------------------'));
+    log(colors.gray('-------------------------------------------'));
+    log('WebpackDevServer:', colors.magenta(`http://localhost:${conf.devServer.port}`));
+    log(colors.gray('-------------------------------------------'));
     done();
   });
 });

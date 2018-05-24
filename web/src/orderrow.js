@@ -1,4 +1,5 @@
 import React from 'react';
+var createReactClass = require('create-react-class');
 import ReactFireMixin from 'reactfire';
 import firebase from 'firebase';
 import ReactIntl from 'react-intl';
@@ -8,7 +9,7 @@ import {FormGroup, ListGroupItem, Button, Checkbox, InputGroup} from 'react-boot
 import PayButton from './paybutton.js';
 import FormattedDate from './formatteddate';
 
-var OrderRow = React.createClass({
+var OrderRow = createReactClass({
   formatOrder: function(order){
     var milk = "";
     if(order.milk)

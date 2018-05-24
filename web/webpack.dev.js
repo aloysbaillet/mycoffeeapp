@@ -1,19 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
+const glob = require('glob');
 
 // plugins
 const HotModuleReplacementPlugin = webpack.HotModuleReplacementPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const NoErrorsPlugin = webpack.NoErrorsPlugin;
-const OccurenceOrderPlugin = webpack.optimize.OccurenceOrderPlugin;
-const PurifyCssPlugin = require("purifycss-webpack-plugin");
+const NoEmitOnErrorsPlugin = webpack.NoEmitOnErrorsPlugin;
+const OccurrenceOrderPlugin = webpack.optimize.OccurrenceOrderPlugin;
+const PurifyCssPlugin = require("purifycss-webpack");
 
 
 module.exports = {
   cache: true,
-  debug: true,
   devtool: 'inline-source-map',
-
+  mode: 'development',
   entry: {
     main: [
       'webpack-dev-server/client?http://localhost:5000',
@@ -29,14 +29,13 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['', '.js', '.scss'],
-    modulesDirectories: ['node_modules'],
-    root: path.resolve('./src')
+    extensions: ['.js', '.scss'],
+    modules: ['./src', 'node_modules']
   },
 
   module: {
-    loaders: [
-      {test: /\.js$/, exclude: /node_modules/, loader: 'babel', query: {
+    rules: [
+      {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', query: {
         plugins: [
           ['react-transform', {
             transforms: [{
@@ -48,25 +47,19 @@ module.exports = {
         ]
       }},
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.ico/, loader: "file" },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
+      { test: /\.ico/, loader: "file-loader" },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
       { test: /\.(woff|woff2)$/, loader:"url?prefix=font/&limit=5000" },
       { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
       { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
-      { test: /\.scss$/, loader: 'style!css!autoprefixer-loader?{browsers:["last 3 versions", "Firefox ESR"]}!sass' }
+      { test: /\.scss$/, loader: 'style-loader!css-loader!autoprefixer-loader?{browsers:["last 3 versions", "Firefox ESR"]}!sass' }
     ]
   },
 
-  sassLoader: {
-    outputStyle: 'nested',
-    precision: 10,
-    sourceComments: false
-  },
-
   plugins: [
-    new OccurenceOrderPlugin(),
+    new OccurrenceOrderPlugin(),
     new HotModuleReplacementPlugin(),
-    new NoErrorsPlugin(),
+    new NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       hash: true,
@@ -75,10 +68,7 @@ module.exports = {
       favicon: './src/favicon.ico'
     }),
     new PurifyCssPlugin({
-        basePath: __dirname,
-        paths: [
-          "src/*.html"
-        ]
+      paths: glob.sync(path.join(__dirname, 'src/*.html'))
     })
   ],
 

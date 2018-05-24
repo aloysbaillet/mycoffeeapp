@@ -1,4 +1,5 @@
 var React = require('react');
+var createReactClass = require('create-react-class');
 var Firebase = require('firebase');
 var ReactFireMixin = require('reactfire');
 var ReactIntl = require('react-intl');
@@ -7,7 +8,7 @@ var _ = require('underscore');
 
 var FormattedDate = require('./formatteddate');
 
-var UserList = React.createClass({
+var UserList = createReactClass({
   mixins: [ReactFireMixin],
 
   getInitialState: function() {
@@ -66,7 +67,7 @@ var UserList = React.createClass({
       <span className="pull-right">
         {expand}
         <ReactBootstrap.Button
-          bsStyle={this.props.receipt.cancelled?"secondary":"danger"}
+          bsStyle={this.props.receipt.cancelled?"info":"danger"}
           onClick={ ()=> this.props.model.toggleOrderCancellation(this.props.receipt)}>
             {this.props.receipt.cancelled?"Restore":"Cancel"}
         </ReactBootstrap.Button>

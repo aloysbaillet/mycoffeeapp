@@ -1,8 +1,17 @@
 {
   "presets": [
-    "es2015",
+    "env",
     "react",
-    "stage-1"
+    "stage-1",
+    [
+      {
+        "env": {
+          "production": {
+            "presets": ["minify"]
+          }
+        }
+      }
+    ]
   ],
 
   "sourceRoot": "./src"
