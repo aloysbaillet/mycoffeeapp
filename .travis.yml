@@ -4,4 +4,7 @@ node_js:
   - "7"
 before_script:
   - npm install -g gulp-cli
-script: gulp build
+script: cd web && gulp build
+addons:
+  apt:
+    update: true
