@@ -6,30 +6,28 @@
   "style": "public/bundle.css",
   "scripts": {
     "build": "NODE_ENV=production gulp build",
-    "test": "jest",
+    "test": "gulp dist",
     "rules": "blaze rules.yaml && firebase deploy --only database",
     "deploy": "npm run build && firebase deploy",
     "upload-data": "node data/upload.js",
-    "start": "gulp",
-    "update:packages": "node wipe-dependencies.js && rm -rf node_modules && npm update --save-dev && npm update --save"
+    "start": "gulp"
   },
   "devDependencies": {
     "ansi-colors": "^2.0.1",
     "babel-core": "*",
     "babel-eslint": "*",
-    "babel-jest": "*",
     "babel-loader": "*",
     "babel-plugin-react-transform": "*",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-minify": "^0.4.3",
     "babel-preset-react": "*",
     "babel-preset-stage-1": "*",
     "blaze_compiler": "*",
     "bootstrap-loader": "*",
-    "browser-sync": "*",
+    "browser-sync": "^2.24.4",
     "css-loader": "*",
-    "del": "*",
     "eslint-plugin-react": "*",
-    "extract-text-webpack-plugin": "*",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "*",
     "firebase-server": "*",
     "firebase-token-generator": "*",
@@ -38,20 +36,13 @@
     "gulp-header": "^2.0.5",
     "html-webpack-plugin": "*",
     "imports-loader": "*",
-    "jasmine-core": "*",
-    "jest-cli": "*",
-    "karma": "*",
+    "karma": "^2.0.2",
     "mockfirebase": "*",
     "node-sass": "*",
     "plugin-error": "^1.0.1",
     "postcss-loader": "*",
-    "proxyquire": "*",
     "purify-css": "^1.2.5",
     "purifycss-webpack": "^0.7.0",
-    "react-addons-test-utils": "*",
-    "react-sanfona": "*",
-    "react-transform-hmr": "*",
-    "resolve-url-loader": "*",
     "sass-loader": "*",
     "sass-resources-loader": "*",
     "url-loader": "*",
@@ -71,10 +62,6 @@
     "history": "*",
     "intl": "*",
     "jquery": "*",
-    "karma-chrome-launcher": "*",
-    "karma-jasmine": "*",
-    "karma-sourcemap-loader": "*",
-    "karma-webpack": "*",
     "moment": "*",
     "object-assign": "*",
     "react": "*",
@@ -89,18 +76,5 @@
     "sinon": "*",
     "style-loader": "*",
     "underscore": "*"
-  },
-  "jest": {
-    "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2",
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react",
-      "<rootDir>/node_modules/react-dom",
-      "<rootDir>/node_modules/react-addons-test-utils",
-      "<rootDir>/node_modules/fbjs"
-    ],
-    "modulePathIgnorePatterns": [
-      "<rootDir>/node_modules/"
-    ]
   }
 }

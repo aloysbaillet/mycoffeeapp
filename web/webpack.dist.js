@@ -3,19 +3,13 @@ const glob = require('glob');
 const webpack = require('webpack');
 
 // plugins
-const AggressiveMergingPlugin = webpack.optimize.AggressiveMergingPlugin;
-const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
-const DedupePlugin = webpack.optimize.DedupePlugin;
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const OccurenceOrderPlugin = webpack.optimize.OccurenceOrderPlugin;
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const PurifyCssPlugin = require("purifycss-webpack");
 
-
 module.exports = {
+  mode: 'production',
   cache: false,
-  debug: true,
   devtool: 'source-map',
 
   entry: {
@@ -37,13 +31,12 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['', '.js'],
-    modulesDirectories: ['node_modules'],
-    root: path.resolve('./src')
+    extensions: ['.js'],
+    modules: ['./src', 'node_modules']
   },
 
   module: {
-    loaders: [
+    rules: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.ico/, loader: "file-loader" },
@@ -57,10 +50,6 @@ module.exports = {
 
   plugins: [
     new ExtractTextPlugin('styles-[hash].css'),
-    new OccurenceOrderPlugin(),
-    new DedupePlugin(),
-    new AggressiveMergingPlugin(),
-    new CommonsChunkPlugin('vendor', '[name]-[hash].js'),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       hash: true,
@@ -68,17 +57,10 @@ module.exports = {
       template: './src/index.html',
       favicon: './src/favicon.ico'
     }),
-    new UglifyJsPlugin({
-      compress: {
-        dead_code: true,
-        screw_ie8: true,
-        unused: true,
-        warnings: false
-      }
-    }),
     new PurifyCssPlugin({
       paths: glob.sync(path.join(__dirname, 'src/*.html'))
-    })
+    }),
+    new webpack.optimize.AggressiveSplittingPlugin()
   ],
 
   stats: {

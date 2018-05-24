@@ -2,7 +2,16 @@
   "presets": [
     "env",
     "react",
-    "stage-1"
+    "stage-1",
+    [
+      {
+        "env": {
+          "production": {
+            "presets": ["minify"]
+          }
+        }
+      }
+    ]
   ],
 
   "sourceRoot": "./src"
